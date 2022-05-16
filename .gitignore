@@ -1,7 +1,12 @@
 build/
 debug/
 dist/
-.vscode/
 
 *.obj
 *.i
+
+**/.generated_files/
+
+**/nbproject/**/*.mk
+**/nbproject/**/*.properties
+**/nbproject/**/*.bash

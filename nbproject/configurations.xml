@@ -4,14 +4,49 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f3" displayName="Framework" projectFiles="true">
+        <itemPath>Include/Framework/Framework.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="HardwareProfile" projectFiles="true">
+        <itemPath>Include/HardwareProfile/HardwareProfile.h</itemPath>
+        <itemPath>Include/HardwareProfile/HardwareProfile_PIC32MX_USB_StarterKit.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="USB" projectFiles="true">
+        <itemPath>Include/USB/Usb_Tasks.h</itemPath>
+        <itemPath>Include/USB/usb.h</itemPath>
+        <itemPath>Include/USB/usb_ch9.h</itemPath>
+        <itemPath>Include/USB/usb_common.h</itemPath>
+        <itemPath>Include/USB/usb_config.h</itemPath>
+        <itemPath>Include/USB/usb_config_device.h</itemPath>
+        <itemPath>Include/USB/usb_device.h</itemPath>
+        <itemPath>Include/USB/usb_device_local.h</itemPath>
+        <itemPath>Include/USB/usb_function_hid.h</itemPath>
+        <itemPath>Include/USB/usb_hal.h</itemPath>
+        <itemPath>Include/USB/usb_hal_local.h</itemPath>
+        <itemPath>Include/USB/usb_hal_pic32.h</itemPath>
+        <itemPath>Include/USB/usb_pic32.h</itemPath>
+      </logicalFolder>
+      <itemPath>Include/Compiler.h</itemPath>
+      <itemPath>Include/GenericTypeDefs.h</itemPath>
+      <itemPath>Include/addressConvertion.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
+      <itemPath>app_32MX220F032B.ld</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="USB" projectFiles="true">
+        <itemPath>Source/USB/Usb_HID_tasks.c</itemPath>
+        <itemPath>Source/USB/usb_config.c</itemPath>
+        <itemPath>Source/USB/usb_descriptors.c</itemPath>
+        <itemPath>Source/USB/usb_device.c</itemPath>
+        <itemPath>Source/USB/usb_function_hid.c</itemPath>
+      </logicalFolder>
+      <itemPath>Source/main.c</itemPath>
+      <itemPath>Source/addressConvertion.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -19,6 +54,9 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -69,17 +107,17 @@
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
-        <property key="exclude-floating-point" value="false"/>
+        <property key="exclude-floating-point" value="true"/>
         <property key="extra-include-directories" value=""/>
-        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-16-bit-code" value="true"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O2"/>
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value=""/>
+        <property key="preprocessor-macros" value="TRANSPORT_LAYER_USB"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="toplevel-reordering" value=""/>
@@ -121,7 +159,7 @@
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
-        <property key="exclude-floating-point-library" value="false"/>
+        <property key="exclude-floating-point-library" value="true"/>
         <property key="exclude-standard-libraries" value="false"/>
         <property key="extra-lib-directories" value=""/>
         <property key="fill-flash-options-addr" value=""/>
@@ -143,7 +181,7 @@
         <property key="no-device-startup-code" value="false"/>
         <property key="no-startup-files" value="false"/>
         <property key="oXC32ld-extra-opts" value=""/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O2"/>
         <property key="preprocessor-macros" value=""/>
         <property key="remove-unused-sections" value="false"/>
         <property key="report-memory-usage" value="false"/>
@@ -170,7 +208,7 @@
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
-        <property key="optimization-level" value=""/>
+        <property key="optimization-level" value="-O2"/>
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
