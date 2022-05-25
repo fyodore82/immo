@@ -47,14 +47,11 @@
 #include "../../Include/USB/usb_function_hid.h"
 
 //#include "../../Include/BootLoader.h"
-#include "../../Include/Framework/Framework.h"
+#include "../../Custom_HID.h"
 
 
 #define UsbTxBusy() 		(USBHandleBusy(USBInHandle))
 #define UsbRxDataAvlbl() 	(!USBHandleBusy(USBOutHandle))
-
-
-#define MaxUsbPacketSize 64
 
 
 static UINT8 UsbRxData[MaxUsbPacketSize];
@@ -187,7 +184,7 @@ void UsbTasks(void)
     if(USBGetDeviceState() == CONFIGURED_STATE)
 	{
     	// Check if bootloader has something to send out to PC. 
-//    	TxLen = FRAMEWORK_GetTransmitFrame(UsbTxData);
+    	TxLen = FRAMEWORK_GetTransmitFrame(UsbTxData);
     
     	// Initialize the transmit pointer.
     	TxPtr = &UsbTxData[0];
@@ -224,7 +221,7 @@ void UsbTasks(void)
         {
     	    // Yes, we got a packet from HID End point.	    
     	    // Pass the buffer to frame work. Framework decodes the packet and executes the Bootloder specific commands (Erasing/Programming etc).
-//    		FRAMEWORK_BuildRxFrame(UsbRxData, MaxUsbPacketSize);
+      		FRAMEWORK_BuildRxFrame(UsbRxData, MaxUsbPacketSize);
     	    	    
     	    // Re-arm the HID endpoint to receive next packet.(Remember! We have armed the HID endpoint for the first time in function USBCBInitEP())
     	    USBOutHandle = HIDRxPacket(HID_EP,(BYTE*)UsbRxData,MaxUsbPacketSize);	    	    		

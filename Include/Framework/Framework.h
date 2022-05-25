@@ -25,14 +25,14 @@
 #define __FRAMEWORK_H__
 
 
-#define FRAMEWORK_BUFF_SIZE					1000
+
 
 
 // Exported functions
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
     
 #ifdef __cplusplus
 }
