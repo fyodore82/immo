@@ -29,7 +29,7 @@ OPTIONAL("libmchp_peripheral_32MX220F032B.a")
  * For interrupt vector handling
  *************************************************************************/
 PROVIDE(_vector_spacing = 0x00000001);
-_bootloader_length = 0x2400;
+_bootloader_length = 0x3000;
 _ebase_address =  (0x9D000000 + _bootloader_length);
 
 /*************************************************************************

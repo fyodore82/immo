@@ -48,6 +48,9 @@ unsigned int __attribute__((nomips16)) INTDisableInterrupts(void);
  ********************************************************************/
 void __attribute__((nomips16))  INTRestoreInterrupts(unsigned int status);
 
+unsigned int __attribute__((nomips16))  INTEnableInterrupts(void);
+void __attribute__ ((nomips16)) INTEnableSystemMultiVectoredInt(void);
+
 #ifdef	__cplusplus
 }
 #endif

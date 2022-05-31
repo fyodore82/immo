@@ -7,10 +7,10 @@ dist/
 
 **/.generated_files/
 
-#**/nbproject/**/*.mk
-#**/nbproject/**/*.properties
-#**/nbproject/**/*.bash
+**/nbproject/**/*.mk
+**/nbproject/**/*.properties
+**/nbproject/**/*.bash
 
-**/nbproject/Makefile-*
-**/nbproject/Package-*
-nbproject/private
+#**/nbproject/Makefile-*
+#**/nbproject/Package-*
+#nbproject/private
