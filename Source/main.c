@@ -42,6 +42,8 @@
 #include <stdlib.h>
 #include <xc.h>
 #include "..\Include\addressConvertion.h"
+#include "..\Include\init.h"
+#include <bean.h>
 
 // From Bootloader.h
 #if defined(TRANSPORT_LAYER_USB)
@@ -89,19 +91,8 @@
 #pragma config FMIIEN = OFF, FETHIO = OFF	// external PHY in RMII/alternate configuration. Applicable for devices with internal MAC only.
 #endif
 
-#define SWITCH_PRESSED 0
-
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-  BOOL CheckTrigger(void);
-  void JumpToApp(void);
-  BOOL ValidAppPresent(void);
-#ifdef __cplusplus
-}
-#endif
+#pragma config IOL1WAY = ON
+#pragma config PMDL1WAY = ON
 
 /*********************************************************************
  * Function:       unsigned int SYSTEMConfig(unsigned int sys_clock, unsigned int flags)
@@ -187,10 +178,15 @@ extern inline unsigned int __attribute__((always_inline)) SYSTEMConfig(unsigned 
  * Note:		 	None.
  ********************************************************************/
 INT main(void) {
+  mapIOPorts();
+  
   UINT pbClk;
 
   // Setup configuration
   pbClk = SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
+  
+  SendBeanData sendBeanData;
+  sendBean(&sendBeanData);
 
   // Initialize the transport layer - UART/USB/Ethernet
   TRANS_LAYER_Init(pbClk);

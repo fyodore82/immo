@@ -43,8 +43,8 @@ _exception_address = 0x9D003000;
  * _GEN_EXCPT_ADDR  -- General Exception Vector
  *************************************************************************/
 _RESET_ADDR              = _ebase_address;
-_BEV_EXCPT_ADDR          = _ebase_address + 0x380;
-_DBG_EXCPT_ADDR          = _ebase_address + 0x380 + 0x10;
+_BEV_EXCPT_ADDR          = _ebase_address + 0x200;
+_DBG_EXCPT_ADDR          = _ebase_address + 0x200 + 0x10;
 
 _GEN_EXCPT_ADDR          = _exception_address + 0x180;
 
@@ -62,7 +62,7 @@ _DBG_CODE_ADDR           = 0x9D008000 - _DBG_CODE_SIZE;
 MEMORY
 {
   exception_mem              : ORIGIN = _exception_address, LENGTH = 0x500 /* Interrupt vector table */
-  kseg0_program_mem    (rx)  : ORIGIN = _ebase_address, LENGTH = 0x8000 - (_bootloader_length + _DBG_CODE_SIZE + 0x10) /* All C Files will be located here */ 
+  kseg0_program_mem    (rx)  : ORIGIN = _ebase_address + 0x210, LENGTH = 0x8000 - (_bootloader_length + _DBG_CODE_SIZE + 0x210) /* All C Files will be located here */ 
   debug_exec_mem             : ORIGIN = _DBG_CODE_ADDR, LENGTH = _DBG_CODE_SIZE
   kseg0_boot_mem             : ORIGIN = _ebase_address, LENGTH = 0x0 /* This memory region is dummy */ 
   kseg1_boot_mem             : ORIGIN = _ebase_address, LENGTH = 0x490 /* C Startup code */
