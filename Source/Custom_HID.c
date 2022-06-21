@@ -1,8 +1,8 @@
-#include "Custom_HID.h"
 #include <string.h>
 #include <stdlib.h>
 #include <xc.h>
-#include ".\Include\globalState.h"
+#include "..\Include\globalState.h"
+#include "..\Include\Custom_HID.h"
 
 void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
 {

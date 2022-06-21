@@ -1,4 +1,4 @@
-#include "../Include/addressConvertion.h"
+#include "..\Include\USB\addressConvertion.h"
 #include <xc.h>
 
 void init ()
@@ -6,6 +6,7 @@ void init ()
   unsigned int int_status;
   int_status = INTDisableInterrupts();
   
+  // PMD tested using USB module disable
   SYSKEY = 0x00000000; //write invalid key to force lock
   SYSKEY = 0xAA996655; //write key1 to SYSKEY
   SYSKEY = 0x556699AA; //write key2 to SYSKEY

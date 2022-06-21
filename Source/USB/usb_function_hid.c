@@ -94,8 +94,8 @@
 #define USB_FUNCTION_HID_C
 
 /** INCLUDES *******************************************************/
-#include "../../Include/GenericTypeDefs.h"
-#include "../../Include/Compiler.h"
+#include "../../Include/USB/GenericTypeDefs.h"
+#include "../../Include/USB/Compiler.h"
 #include "../../Include/USB/usb.h"
 #include "../../Include/USB/usb_function_hid.h"
 

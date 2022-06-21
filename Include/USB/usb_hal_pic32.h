@@ -124,9 +124,9 @@ Description:
 #if !defined(USB_HAL_PIC32_H)
 #define USB_HAL_PIC32_H
 
-#include "../Compiler.h"
+#include "Compiler.h"
 #include "usb_config.h"
-#include "../addressConvertion.h"
+#include "addressConvertion.h"
 
 #if (USB_PING_PONG_MODE != USB_PING_PONG__FULL_PING_PONG)
     #error "PIC32 only supports full ping pong mode.  A different mode other than full ping pong is selected in the usb_config.h file."

@@ -5,12 +5,9 @@
         <group>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Custom_HID.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/beanTasks.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/main.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/globalState.h</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/beanTasks.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/init.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/globalState.h</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/init.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Custom_HID.h</file>
         </group>
     </open-files>
 </project-private>

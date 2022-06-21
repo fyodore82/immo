@@ -38,7 +38,6 @@
  **********************************************************************/
 #include <p32xxxx.h>
 #include <stdlib.h>
-// #include <plib.h>
 #include <xc.h>
 
 
@@ -47,7 +46,7 @@
 #include "../../Include/USB/usb_function_hid.h"
 
 //#include "../../Include/BootLoader.h"
-#include "../../Custom_HID.h"
+#include "../../Include/Custom_HID.h"
 
 
 #define UsbTxBusy() 		(USBHandleBusy(USBInHandle))

@@ -1,5 +1,5 @@
 #include <xc.h>
-#include "..\Include\addressConvertion.h"
+#include "..\..\Include\USB\addressConvertion.h"
 
 // From old code
 unsigned int __attribute__((nomips16)) INTDisableInterrupts(void)

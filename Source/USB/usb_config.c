@@ -29,7 +29,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 // Created by the Microchip USBConfig Utility, Version 2.0.0.0, 11/18/2008, 8:08:56
 
-#include "GenericTypeDefs.h"
+#include "../../Include/USB/GenericTypeDefs.h"
 #include "../../Include/HardwareProfile/HardwareProfile.h"
 #include "../../Include/USB/usb.h"
 //#include "../../Include/USB/usb_host_msd.h"

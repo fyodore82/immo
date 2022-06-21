@@ -36,14 +36,14 @@
  * $Name: $
  *
  **********************************************************************/
-#include "..\Include\GenericTypeDefs.h"
-#include "..\Include\HardwareProfile\HardwareProfile.h"
-#include "..\Include\FrameWork\Framework.h"
 #include <stdlib.h>
 #include <xc.h>
-#include "..\Include\addressConvertion.h"
-#include "..\Include\init.h"
 #include <bean.h>
+
+#include "..\Include\GenericTypeDefs.h"
+#include "..\Include\HardwareProfile\HardwareProfile.h"
+#include "..\Include\USB\addressConvertion.h"
+#include "..\Include\init.h"
 #include "..\Include\globalState.h"
 #include "..\Include\beanTasks.h"
 
