@@ -26,9 +26,11 @@
       <itemPath>Include/Compiler.h</itemPath>
       <itemPath>Include/GenericTypeDefs.h</itemPath>
       <itemPath>Include/addressConvertion.h</itemPath>
-      <itemPath>Custom_HID.h</itemPath>
       <itemPath>Include/init.h</itemPath>
       <itemPath>../bean/bean.X/bean.h</itemPath>
+      <itemPath>Custom_HID.h</itemPath>
+      <itemPath>Include/globalState.h</itemPath>
+      <itemPath>Include/beanTasks.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -49,6 +51,8 @@
       <itemPath>Source/addressConvertion.c</itemPath>
       <itemPath>Custom_HID.c</itemPath>
       <itemPath>Source/init.c</itemPath>
+      <itemPath>Source/globalState.c</itemPath>
+      <itemPath>Source/beanTasks.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -68,7 +72,7 @@
         <targetDevice>PIC32MX220F032B</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.00</languageToolchainVersion>
         <platform>3</platform>
@@ -291,6 +295,7 @@
         <property key="UART2" value="true"/>
         <property key="USB" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>

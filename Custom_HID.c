@@ -2,20 +2,32 @@
 #include <string.h>
 #include <stdlib.h>
 #include <xc.h>
-
-unsigned char txData[64];
+#include ".\Include\globalState.h"
 
 void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
 {
   switch(UsbRxData[0])
   {
-    case 0x90: {
-      txData[0] = 0x01;
-      txData[1] = 0x90;
+    case USB_NO_CMD: {
+      state.usbCommand = USB_NO_CMD;
+      state.usbSubCommand = USB_NO_SUBCMD;
+      break;
+    }
+
+    // BEAN commands
+    case USB_BEAN_DEBUG: {
+      state.usbCommand = USB_BEAN_DEBUG;
+      state.usbSubCommand = UsbRxData[1];
+      break;
+    }
+
+    case USB_ECHO: {
+      state.usbTxData[0] = 0x01;
+      state.usbTxData[1] = USB_ECHO;
       break;
     }
     
-    case 0x80: {
+    case USB_START_BOOTLOADER: {
       // Do software reset
       SYSKEY = 0x00000000; //write invalid key to force lock
       SYSKEY = 0xAA996655; //write key1 to SYSKEY
@@ -36,11 +48,11 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
 unsigned char GetTransmitFrame(unsigned char* UsbTxData)
 {
   
-  if (txData[0]) 
+  if (state.usbTxData[0]) 
   {
-    unsigned char BuffLen = txData[0];
-    memcpy(UsbTxData, &txData[1], txData[0]);
-    txData[0] = 0;
+    unsigned char BuffLen = state.usbTxData[0];
+    memcpy(UsbTxData, &state.usbTxData[1], state.usbTxData[0]);
+    state.usbTxData[0] = 0;
     return BuffLen;
   }
   return 0;
