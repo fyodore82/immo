@@ -47,21 +47,47 @@ void init ()
   // 12.2.5 ANSELx. Set all ports to digital.
   ANSELA = 0x0;
   ANSELB = 0x0;
+
+  // pin 12
+  TRISAbits.TRISA4 = 0;
+  PORTAbits.RA4 = 1;
   
   // 12.3.3 Change notification
   // Enable for RPB9, BEAN_IN
+  // ToDo: remove weak pull downs
   CNCONBbits.ON = 1;
-  CNENBbits.CNIEB9 = 1;
-  unsigned char readPort = PORTBbits.RB9;
+  
+  CNENBbits.CNIEB0 = 1;
+  unsigned char readPort = PORTBbits.RB0;
+  CNPDBbits.CNPDB0 = 1;
+
+  // pin 11
+  CNENBbits.CNIEB4 = 1;
+  readPort = PORTBbits.RB4;
+  CNPUBbits.CNPUB4 = 1;
+
+  // pin 14
+  TRISBbits.TRISB5 = 0;
+  PORTBbits.RB5 = 1;
+
   // ToDo - remove after testing
   CNENBbits.CNIEB7 = 1;
   readPort = PORTBbits.RB7;
+
+  // BEAN_IN
   CNENBbits.CNIEB8 = 1;
   readPort = PORTBbits.RB8;
-  CNENBbits.CNIEB0 = 1;
-  readPort = PORTBbits.RB0;
-  CNENBbits.CNIEB5 = 1;
-  readPort = PORTBbits.RB5;
+  
+  // pin 18
+  TRISBbits.TRISB9 = 0;
+  PORTBbits.RB9 = 0;
+
+  // Set 24 pin (RPB13) to output. It is BEAN_OUT
+  TRISBbits.TRISB13 = 0;
+  
+  // pin 26
+  TRISBbits.TRISB15 = 0;
+  PORTBbits.RB15 = 0;
   
   IPC8bits.CNIP = 0x7;
   IPC8bits.CNIS = 0x3;
@@ -83,22 +109,7 @@ void init ()
   CFGCONbits.IOLOCK = 1;  // Disable rmapping
 
   SYSKEY = 0x00000000; //write invalid key to force lock
-  
-  // Weak pull ups/pull downs
-  // ToDo: remove weak pull downs
-  CNPDBbits.CNPDB0 = 1;
-  CNPDBbits.CNPDB4 = 1;
-  CNPDBbits.CNPDB5 = 1;
-  CNPDBbits.CNPDB14 = 1;
-  
-  // Set (RPB9) to input. It is BEAN_IN
-  //TRISBbits.TRISB9 = 1;
-  // Set 24 pin (RPB13) to output. It is BEAN_OUT
-  TRISBbits.TRISB13 = 0;
-  // Set pin 7 (RPB3) to output and drive low
-//  TRISBbits.TRISB3 = 0;
-//  PORTBbits.RB3 = 0;    // Always select slave
-  
+ 
   // --------- Timers ---------
   T2CON = T2CON_VALUE;
   TMR2 = 0x0;
@@ -127,15 +138,18 @@ void init ()
 //  IEC1bits.SPI1TXIE = 1;
   // SPI1BRG = 0; - zero on reset. Fsck = Fpb / (2 * (SPI1BRG + 1)) = 40 MHz / (2 * (0 + 1)) = 20 MHz
   SPI1STATbits.SPIROV = 0;
+  // bit 0-1: SRXISEL<1:0>: SPI Receive Buffer Full Interrupt Mode bits = 01 = buffer is not empty
   // bit 5: MSTEN = 1 - master
-  // bit 6 CKP: Clock Polarity Select bit = 1
-  // bit 9 SMP: SPI Data Input Sample Phase bit = 1
-  // bit 28 MSSEN: Master Mode Slave Select Enable bit = 1
+  // bit 6: CKP: Clock Polarity Select bit = 0 (low = idle)
+  // bit 8: CKE: SPI Clock Edge Select bit = 1
+  // bit 9: SMP: SPI Data Input Sample Phase bit = 1
   // bit 11-10 MODE<32,16> = 11 - 32bit
   // bit 15 ON: SPI Peripheral On bit = 0
-  // bit 16 ENHBUF: Enhanced Buffer Enable bit = 0
+  // bit 16 ENHBUF: Enhanced Buffer Enable bit = 1
+  // bit 28 MSSEN: Master Mode Slave Select Enable bit = 1
+
   //          |4th by||3rd by||2nd by||1st bt|
-  SPI1CON = 0b00010000000000000000111001100000;
+  SPI1CON = 0b00010000000000010000111100100001;
   // _SS is required on scheme, as it should be rised when transmittion finished
   
   INTRestoreInterrupts(int_status);

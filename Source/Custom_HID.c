@@ -27,10 +27,16 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
     
     case USB_SEND_BEAN_CMD: {
       state.usbCommand = USB_SEND_BEAN_CMD;
-      startSendBean(&UsbRxData[2]);
+      state.t3cnt = UsbRxData[2];
+      startSendBean(&UsbRxData[3]);
       //state.usbTxData[0] = 2;
       //state.usbTxData[1] = UsbRxData[2];
       //state.usbTxData[2] = UsbRxData[3];
+      break;
+    }
+    
+    case USB_LISTERN_BEAN: {
+      state.usbCommand = USB_LISTERN_BEAN;
       break;
     }
     

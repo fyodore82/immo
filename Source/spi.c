@@ -6,7 +6,7 @@ void txSPI(uint32_t spi) {
   uint32_t spiP = SPI1BUF;
   IFS1bits.SPI1RXIF = 0;
   SPI1CONbits.ON = 1;
-  SPI1BUF = spi;
+  SPI1BUF = 0x05000000;
  
 }
 

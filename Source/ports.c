@@ -25,7 +25,9 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_CHANGE_NOTICE
       state.usbTxData[1] = USB_POST_PORTS_STATE;
       getPorts(&state.usbTxData[2]);
     }
-    if (BEAN_IN_CNSTAT) processBeanInPortChange();
+    else {
+      if (BEAN_IN_CNSTAT) processBeanInPortChange();
+    }
     CNSTATB = 0;
   }
 }
