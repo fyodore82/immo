@@ -35,17 +35,13 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       break;
     }
     
-    case USB_LISTERN_BEAN: {
+    case USB_LISTERN_BEAN:
       state.usbCommand = USB_LISTERN_BEAN;
       break;
-    }
     
-    case USB_GET_PORTS_STATE: {
-      state.usbTxData[0] = 9;
-      state.usbTxData[1] = USB_POST_PORTS_STATE;
-      getPorts(&state.usbTxData[2]);
+    case USB_GET_PORTS_STATE:
+      getPorts();
       break;
-    }
     
     case USB_SPI_SEND_CMD: {
       state.usbCommand = USB_SPI_SEND_CMD;

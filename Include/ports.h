@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-void getPorts(unsigned char *out);
+void getPorts();
 
 
 #ifdef	__cplusplus

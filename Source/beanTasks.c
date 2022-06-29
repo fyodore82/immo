@@ -5,15 +5,15 @@
 #include <string.h>
 
 // Private to this file
-
-void sendToUSBReceivedBeanCmd(unsigned char idx) {
+void sendToUSBReceivedBeanCmd() {
+  // Do not check in recBufferFull as it may be error during transfer
   if (!state.usbTxData[0]) {
     unsigned char l = 17; // DATA 13 + ML + CRC + EOM + RSP
     state.usbTxData[0] = l + 2;
     state.usbTxData[1] = USB_GOT_BEAN_CMD;
     state.usbTxData[2] = state.t3cnt;
-    memcpy(&state.usbTxData[3], state.recBeanData.recBuffer[idx], l);
-    state.recBeanData.recBuffer[idx][0] = 0; // Clear sent buffer
+    memcpy(&state.usbTxData[3], state.recBeanData.buffer, l);
+    state.recBeanData.recBufferFull = 0;
   }
 }
 
@@ -29,26 +29,22 @@ void beanTasks() {
       break;
     }
     case USB_LISTERN_BEAN:
-      for (unsigned char idx = 0; idx <= 2; idx++) {
-        if (state.recBeanData.recBuffer[idx][0] && idx != state.recBeanData.currRecBufferIdx) {
-          sendToUSBReceivedBeanCmd(idx);
-          break;
-        }
-      }
+      if (state.recBeanData.recBufferFull) sendToUSBReceivedBeanCmd();
       break;
 
     case USB_SEND_BEAN_CMD:
     {
-      if (isTransferInProgress(&state.sendBeanData)) {
-        if (state.sendBeanData.cnt == 0) sendBean(&state.sendBeanData);
-      } else {
+//      if (isTransferInProgress(&state.sendBeanData)) {
+//        if (state.sendBeanData.cnt == 0) ;
+//      } else {
+      // Check if transfer is in progress as there may be errors during transfer
+      // and we still have to send reponse back
+      if (!isTransferInProgress(&state.sendBeanData)) {
+      // if (state.recBeanData.recBufferFull) {
         state.usbCommand = USB_NO_CMD;
-        BEAN_OUT = 0;
-        T2CONbits.ON = 0;
-        unsigned char idx = state.recBeanData.currRecBufferIdx;
-        if (idx == 0) idx = 2;
-        else idx--;
-        sendToUSBReceivedBeanCmd(idx);
+//        BEAN_OUT = 0;
+//        T2CONbits.ON = 0;
+        sendToUSBReceivedBeanCmd();
 //
 //        state.usbTxData[l + 1] = 0xFF;
 //        state.usbTxData[l + 2] = USB_SEND_BEAN_CMD;
@@ -70,14 +66,16 @@ void transfer1bit() {
   //  }  
   PR2 = PR2_VALUE * state.sendBeanData.cnt;
   // Reset cnt so on next call to beanTasks cnt will be recalculted
-  state.sendBeanData.cnt = 0;
-  T2CONbits.ON = 1;
+  // state.sendBeanData.cnt = 0;
+  T2CONbits.ON = state.sendBeanData.cnt > 0;
   BEAN_OUT = state.sendBeanData.bean;
+  // If cnt is zeor it means that transfer has been ended
+  if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
 }
 
 void startSendBean(unsigned char *buffToSend) {
-  state.usbTxData[10] = 0;
-  state.usbTxData[12] = 13;
+//  state.usbTxData[10] = 0;
+//  state.usbTxData[12] = 13;
   initSendBeanData(&state.sendBeanData, buffToSend);
   sendBean(&state.sendBeanData);
   transfer1bit();
@@ -92,7 +90,8 @@ void terminateBeanSendWithError() {
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_2_VECTOR))) _timer2Vector(void) {
 
   IFS0bits.T2IF = 0;
-  if (isTransferInProgress(&state.sendBeanData)) transfer1bit();
+  // It will stop timer if there is no to transfer
+  transfer1bit();
 }
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTOR))) _timer3Vector(void) {
