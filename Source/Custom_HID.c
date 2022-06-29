@@ -3,10 +3,14 @@
 #include <xc.h>
 #include "..\Include\globalState.h"
 #include "..\Include\Custom_HID.h"
+#include <bean.h>
+#include "..\Include\beanTasks.h"
+#include "..\Include\ports.h"
+#include "..\Include\spi.h"
 
 void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
 {
-  switch(UsbRxData[0])
+  switch((USBReqCommand)UsbRxData[0])
   {
     case USB_NO_CMD: {
       state.usbCommand = USB_NO_CMD;
@@ -18,6 +22,30 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
     case USB_BEAN_DEBUG: {
       state.usbCommand = USB_BEAN_DEBUG;
       state.usbSubCommand = UsbRxData[1];
+      break;
+    }
+    
+    case USB_SEND_BEAN_CMD: {
+      state.usbCommand = USB_SEND_BEAN_CMD;
+      startSendBean(&UsbRxData[2]);
+      //state.usbTxData[0] = 2;
+      //state.usbTxData[1] = UsbRxData[2];
+      //state.usbTxData[2] = UsbRxData[3];
+      break;
+    }
+    
+    case USB_GET_PORTS_STATE: {
+      state.usbTxData[0] = 9;
+      state.usbTxData[1] = USB_POST_PORTS_STATE;
+      getPorts(&state.usbTxData[2]);
+      break;
+    }
+    
+    case USB_SPI_SEND_CMD: {
+      state.usbCommand = USB_SPI_SEND_CMD;
+      uint32_t spi;
+      memcpy(&spi, &UsbRxData[2], 4);
+      txSPI(spi);
       break;
     }
 

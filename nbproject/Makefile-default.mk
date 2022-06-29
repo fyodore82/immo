@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=Source/USB/Usb_HID_tasks.c Source/USB/usb_config.c Source/USB/usb_descriptors.c Source/USB/usb_device.c Source/USB/usb_function_hid.c Source/main.c Source/init.c Source/globalState.c Source/beanTasks.c Source/USB/addressConvertion.c Source/Custom_HID.c
+SOURCEFILES_QUOTED_IF_SPACED=Source/USB/Usb_HID_tasks.c Source/USB/usb_config.c Source/USB/usb_descriptors.c Source/USB/usb_device.c Source/USB/usb_function_hid.c Source/USB/addressConvertion.c Source/main.c Source/init.c Source/globalState.c Source/beanTasks.c Source/Custom_HID.c Source/ports.c Source/spi.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Source/USB/Usb_HID_tasks.o ${OBJECTDIR}/Source/USB/usb_config.o ${OBJECTDIR}/Source/USB/usb_descriptors.o ${OBJECTDIR}/Source/USB/usb_device.o ${OBJECTDIR}/Source/USB/usb_function_hid.o ${OBJECTDIR}/Source/main.o ${OBJECTDIR}/Source/init.o ${OBJECTDIR}/Source/globalState.o ${OBJECTDIR}/Source/beanTasks.o ${OBJECTDIR}/Source/USB/addressConvertion.o ${OBJECTDIR}/Source/Custom_HID.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/Source/USB/Usb_HID_tasks.o.d ${OBJECTDIR}/Source/USB/usb_config.o.d ${OBJECTDIR}/Source/USB/usb_descriptors.o.d ${OBJECTDIR}/Source/USB/usb_device.o.d ${OBJECTDIR}/Source/USB/usb_function_hid.o.d ${OBJECTDIR}/Source/main.o.d ${OBJECTDIR}/Source/init.o.d ${OBJECTDIR}/Source/globalState.o.d ${OBJECTDIR}/Source/beanTasks.o.d ${OBJECTDIR}/Source/USB/addressConvertion.o.d ${OBJECTDIR}/Source/Custom_HID.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Source/USB/Usb_HID_tasks.o ${OBJECTDIR}/Source/USB/usb_config.o ${OBJECTDIR}/Source/USB/usb_descriptors.o ${OBJECTDIR}/Source/USB/usb_device.o ${OBJECTDIR}/Source/USB/usb_function_hid.o ${OBJECTDIR}/Source/USB/addressConvertion.o ${OBJECTDIR}/Source/main.o ${OBJECTDIR}/Source/init.o ${OBJECTDIR}/Source/globalState.o ${OBJECTDIR}/Source/beanTasks.o ${OBJECTDIR}/Source/Custom_HID.o ${OBJECTDIR}/Source/ports.o ${OBJECTDIR}/Source/spi.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/Source/USB/Usb_HID_tasks.o.d ${OBJECTDIR}/Source/USB/usb_config.o.d ${OBJECTDIR}/Source/USB/usb_descriptors.o.d ${OBJECTDIR}/Source/USB/usb_device.o.d ${OBJECTDIR}/Source/USB/usb_function_hid.o.d ${OBJECTDIR}/Source/USB/addressConvertion.o.d ${OBJECTDIR}/Source/main.o.d ${OBJECTDIR}/Source/init.o.d ${OBJECTDIR}/Source/globalState.o.d ${OBJECTDIR}/Source/beanTasks.o.d ${OBJECTDIR}/Source/Custom_HID.o.d ${OBJECTDIR}/Source/ports.o.d ${OBJECTDIR}/Source/spi.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Source/USB/Usb_HID_tasks.o ${OBJECTDIR}/Source/USB/usb_config.o ${OBJECTDIR}/Source/USB/usb_descriptors.o ${OBJECTDIR}/Source/USB/usb_device.o ${OBJECTDIR}/Source/USB/usb_function_hid.o ${OBJECTDIR}/Source/main.o ${OBJECTDIR}/Source/init.o ${OBJECTDIR}/Source/globalState.o ${OBJECTDIR}/Source/beanTasks.o ${OBJECTDIR}/Source/USB/addressConvertion.o ${OBJECTDIR}/Source/Custom_HID.o
+OBJECTFILES=${OBJECTDIR}/Source/USB/Usb_HID_tasks.o ${OBJECTDIR}/Source/USB/usb_config.o ${OBJECTDIR}/Source/USB/usb_descriptors.o ${OBJECTDIR}/Source/USB/usb_device.o ${OBJECTDIR}/Source/USB/usb_function_hid.o ${OBJECTDIR}/Source/USB/addressConvertion.o ${OBJECTDIR}/Source/main.o ${OBJECTDIR}/Source/init.o ${OBJECTDIR}/Source/globalState.o ${OBJECTDIR}/Source/beanTasks.o ${OBJECTDIR}/Source/Custom_HID.o ${OBJECTDIR}/Source/ports.o ${OBJECTDIR}/Source/spi.o
 
 # Source Files
-SOURCEFILES=Source/USB/Usb_HID_tasks.c Source/USB/usb_config.c Source/USB/usb_descriptors.c Source/USB/usb_device.c Source/USB/usb_function_hid.c Source/main.c Source/init.c Source/globalState.c Source/beanTasks.c Source/USB/addressConvertion.c Source/Custom_HID.c
+SOURCEFILES=Source/USB/Usb_HID_tasks.c Source/USB/usb_config.c Source/USB/usb_descriptors.c Source/USB/usb_device.c Source/USB/usb_function_hid.c Source/USB/addressConvertion.c Source/main.c Source/init.c Source/globalState.c Source/beanTasks.c Source/Custom_HID.c Source/ports.c Source/spi.c
 
 
 
@@ -137,6 +137,12 @@ ${OBJECTDIR}/Source/USB/usb_function_hid.o: Source/USB/usb_function_hid.c  .gene
 	@${RM} ${OBJECTDIR}/Source/USB/usb_function_hid.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/USB/usb_function_hid.o.d" -o ${OBJECTDIR}/Source/USB/usb_function_hid.o Source/USB/usb_function_hid.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
+${OBJECTDIR}/Source/USB/addressConvertion.o: Source/USB/addressConvertion.c  .generated_files/ee52be2a88672f4478d4355b2be54adcfd4639c0.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
+	@${MKDIR} "${OBJECTDIR}/Source/USB" 
+	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o.d 
+	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/USB/addressConvertion.o.d" -o ${OBJECTDIR}/Source/USB/addressConvertion.o Source/USB/addressConvertion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
+	
 ${OBJECTDIR}/Source/main.o: Source/main.c  .generated_files/3e4816499cc600d0a0aee26799c1a93b2bbcf3c5.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
 	@${MKDIR} "${OBJECTDIR}/Source" 
 	@${RM} ${OBJECTDIR}/Source/main.o.d 
@@ -161,17 +167,23 @@ ${OBJECTDIR}/Source/beanTasks.o: Source/beanTasks.c  .generated_files/c668c9b529
 	@${RM} ${OBJECTDIR}/Source/beanTasks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/beanTasks.o.d" -o ${OBJECTDIR}/Source/beanTasks.o Source/beanTasks.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
-${OBJECTDIR}/Source/USB/addressConvertion.o: Source/USB/addressConvertion.c  .generated_files/ee52be2a88672f4478d4355b2be54adcfd4639c0.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
-	@${MKDIR} "${OBJECTDIR}/Source/USB" 
-	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o.d 
-	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o 
-	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/USB/addressConvertion.o.d" -o ${OBJECTDIR}/Source/USB/addressConvertion.o Source/USB/addressConvertion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
-	
 ${OBJECTDIR}/Source/Custom_HID.o: Source/Custom_HID.c  .generated_files/c016f0f9f1710bc87975774f33cadc1a02508dea.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
 	@${MKDIR} "${OBJECTDIR}/Source" 
 	@${RM} ${OBJECTDIR}/Source/Custom_HID.o.d 
 	@${RM} ${OBJECTDIR}/Source/Custom_HID.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/Custom_HID.o.d" -o ${OBJECTDIR}/Source/Custom_HID.o Source/Custom_HID.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
+	
+${OBJECTDIR}/Source/ports.o: Source/ports.c  .generated_files/ec1fe5034fa17149978a64486520f4d9e1d3b7b5.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
+	@${MKDIR} "${OBJECTDIR}/Source" 
+	@${RM} ${OBJECTDIR}/Source/ports.o.d 
+	@${RM} ${OBJECTDIR}/Source/ports.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/ports.o.d" -o ${OBJECTDIR}/Source/ports.o Source/ports.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
+	
+${OBJECTDIR}/Source/spi.o: Source/spi.c  .generated_files/ab7693f01ce40513c120176f991657d320d8a1bc.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
+	@${MKDIR} "${OBJECTDIR}/Source" 
+	@${RM} ${OBJECTDIR}/Source/spi.o.d 
+	@${RM} ${OBJECTDIR}/Source/spi.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/spi.o.d" -o ${OBJECTDIR}/Source/spi.o Source/spi.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
 else
 ${OBJECTDIR}/Source/USB/Usb_HID_tasks.o: Source/USB/Usb_HID_tasks.c  .generated_files/7fc890ec5432043452583b39d15433adfb24335b.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
@@ -204,6 +216,12 @@ ${OBJECTDIR}/Source/USB/usb_function_hid.o: Source/USB/usb_function_hid.c  .gene
 	@${RM} ${OBJECTDIR}/Source/USB/usb_function_hid.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/USB/usb_function_hid.o.d" -o ${OBJECTDIR}/Source/USB/usb_function_hid.o Source/USB/usb_function_hid.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
+${OBJECTDIR}/Source/USB/addressConvertion.o: Source/USB/addressConvertion.c  .generated_files/cd04ca52304df2c8c137ae3179b6b4d91077591c.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
+	@${MKDIR} "${OBJECTDIR}/Source/USB" 
+	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o.d 
+	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/USB/addressConvertion.o.d" -o ${OBJECTDIR}/Source/USB/addressConvertion.o Source/USB/addressConvertion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
+	
 ${OBJECTDIR}/Source/main.o: Source/main.c  .generated_files/2d51955e6c3bad56e2c7a5a81cb7275faa295d90.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
 	@${MKDIR} "${OBJECTDIR}/Source" 
 	@${RM} ${OBJECTDIR}/Source/main.o.d 
@@ -228,17 +246,23 @@ ${OBJECTDIR}/Source/beanTasks.o: Source/beanTasks.c  .generated_files/33dbf05bb9
 	@${RM} ${OBJECTDIR}/Source/beanTasks.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/beanTasks.o.d" -o ${OBJECTDIR}/Source/beanTasks.o Source/beanTasks.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
-${OBJECTDIR}/Source/USB/addressConvertion.o: Source/USB/addressConvertion.c  .generated_files/cd04ca52304df2c8c137ae3179b6b4d91077591c.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
-	@${MKDIR} "${OBJECTDIR}/Source/USB" 
-	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o.d 
-	@${RM} ${OBJECTDIR}/Source/USB/addressConvertion.o 
-	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/USB/addressConvertion.o.d" -o ${OBJECTDIR}/Source/USB/addressConvertion.o Source/USB/addressConvertion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
-	
 ${OBJECTDIR}/Source/Custom_HID.o: Source/Custom_HID.c  .generated_files/7848bd6e01ffa90efb9c3ac5094f410ad25b6c72.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
 	@${MKDIR} "${OBJECTDIR}/Source" 
 	@${RM} ${OBJECTDIR}/Source/Custom_HID.o.d 
 	@${RM} ${OBJECTDIR}/Source/Custom_HID.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/Custom_HID.o.d" -o ${OBJECTDIR}/Source/Custom_HID.o Source/Custom_HID.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
+	
+${OBJECTDIR}/Source/ports.o: Source/ports.c  .generated_files/9f4d7d421fee29f36a827234c1ed8b271ba030d4.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
+	@${MKDIR} "${OBJECTDIR}/Source" 
+	@${RM} ${OBJECTDIR}/Source/ports.o.d 
+	@${RM} ${OBJECTDIR}/Source/ports.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/ports.o.d" -o ${OBJECTDIR}/Source/ports.o Source/ports.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
+	
+${OBJECTDIR}/Source/spi.o: Source/spi.c  .generated_files/9dbfe622fa2394b0c7ba53b206366a74950d1aa6.flag .generated_files/35b059e026b463500ba6e17fe172f881244224c5.flag
+	@${MKDIR} "${OBJECTDIR}/Source" 
+	@${RM} ${OBJECTDIR}/Source/spi.o.d 
+	@${RM} ${OBJECTDIR}/Source/spi.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -mips16 -mno-float -O2 -DTRANSPORT_LAYER_USB -I"../bean/bean.X" -MP -MMD -MF "${OBJECTDIR}/Source/spi.o.d" -o ${OBJECTDIR}/Source/spi.o Source/spi.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  
 	
 endif
 

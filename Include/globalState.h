@@ -17,11 +17,21 @@ extern "C" {
 typedef enum {
     USB_NO_CMD,
     USB_BEAN_DEBUG,
+    USB_SEND_BEAN_CMD,
+    USB_GET_PORTS_STATE,
+            
+    USB_SPI_SEND_CMD = 0x11,
     
     USB_START_BOOTLOADER = 0x80,            
 
     USB_ECHO = 0x90
-} USBCommand;
+} USBReqCommand;
+
+typedef enum {
+    USB_REC_BEAN = 2,
+    USB_POST_PORTS_STATE = 3,
+    USB_POST_SPI_RESP = 0x11,
+} USBRespCommand;
 
 typedef enum {
     USB_NO_SUBCMD,
@@ -31,7 +41,7 @@ typedef enum {
 
 
 typedef struct {
-    USBCommand usbCommand;
+    USBReqCommand usbCommand;
     USBSubCommand usbSubCommand;
     RecBeanData recBeanData;
     SendBeanData sendBeanData;

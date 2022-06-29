@@ -30,6 +30,8 @@
       <itemPath>../bean/bean.X/bean.h</itemPath>
       <itemPath>Include/globalState.h</itemPath>
       <itemPath>Include/beanTasks.h</itemPath>
+      <itemPath>Include/ports.h</itemPath>
+      <itemPath>Include/spi.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -39,6 +41,8 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f2" displayName="New Folder 2" projectFiles="true">
+      </logicalFolder>
       <logicalFolder name="f1" displayName="USB" projectFiles="true">
         <itemPath>Source/USB/Usb_HID_tasks.c</itemPath>
         <itemPath>Source/USB/usb_config.c</itemPath>
@@ -52,6 +56,8 @@
       <itemPath>Source/globalState.c</itemPath>
       <itemPath>Source/beanTasks.c</itemPath>
       <itemPath>Source/Custom_HID.c</itemPath>
+      <itemPath>Source/ports.c</itemPath>
+      <itemPath>Source/spi.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -294,7 +300,6 @@
         <property key="UART2" value="true"/>
         <property key="USB" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
-        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
@@ -309,7 +314,7 @@
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="1d000000-1d007fff"/>
-        <property key="poweroptions.powerenable" value="true"/>
+        <property key="poweroptions.powerenable" value="false"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>

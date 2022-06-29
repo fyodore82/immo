@@ -46,6 +46,7 @@
 #include "..\Include\init.h"
 #include "..\Include\globalState.h"
 #include "..\Include\beanTasks.h"
+#include "..\Include\spi.h"
 
 // From Bootloader.h
 #if defined(TRANSPORT_LAYER_USB)
@@ -129,6 +130,7 @@ INT main(void) {
   while (1) {
     TRANS_LAYER_Task(); // Run Transport layer tasks
     beanTasks();
+    spiTasks();
   }
   // Close trasnport layer.
   TRANS_LAYER_Close();
