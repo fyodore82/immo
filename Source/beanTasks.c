@@ -17,13 +17,36 @@ void sendToUSBReceivedBeanCmd() {
   }
 }
 
+void transfer1bit() {
+  T2CONbits.ON = 0;
+  BEAN_OUT = state.sendBeanData.bean;
+  PR2 = PR2_VALUE * state.sendBeanData.cnt;
+  T2CONbits.ON = state.sendBeanData.cnt > 0;
+  // If cnt is zero it means that transfer has been ended
+  if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
+}
+
 void beanTasks() {
+  if (canStartTransfer(state.sendBeanData.sendBeanState, state.recBeanData.recBeanState))
+  {
+    sendBean(&state.sendBeanData);
+    transfer1bit();
+  }
+  
+  if (state.readPos != state.writePos) {
+    recBean(&state.recBeanData, state.tempRecBean[state.readPos], state.tempRecBean[state.readPos + 1]);
+    state.readPos+=2;
+  } else if (state.recBeanData.recBufferFull) {
+    state.readPos = 0;
+    state.writePos = 0;
+  }
+  
   switch (state.usbCommand) {
     case USB_BEAN_DEBUG:
     {
       if (state.usbSubCommand == BEAN_DEBUG_SET_1) BEAN_OUT = 1;
       if (state.usbSubCommand == BEAN_DEBUG_SET_0) BEAN_OUT = 0;
-      // Pots will be chached in ports interrupt
+      // Ports will be chached in ports interrupt
 
       state.usbSubCommand = USB_NO_SUBCMD;
       break;
@@ -34,51 +57,15 @@ void beanTasks() {
 
     case USB_SEND_BEAN_CMD:
     {
-//      if (isTransferInProgress(&state.sendBeanData)) {
-//        if (state.sendBeanData.cnt == 0) ;
-//      } else {
       // Check if transfer is in progress as there may be errors during transfer
       // and we still have to send reponse back
       if (!isTransferInProgress(&state.sendBeanData)) {
-      // if (state.recBeanData.recBufferFull) {
         state.usbCommand = USB_NO_CMD;
-//        BEAN_OUT = 0;
-//        T2CONbits.ON = 0;
         sendToUSBReceivedBeanCmd();
-//
-//        state.usbTxData[l + 1] = 0xFF;
-//        state.usbTxData[l + 2] = USB_SEND_BEAN_CMD;
-//        state.usbTxData[l + 3] = state.recBeanData.recBeanState;
-//        state.usbTxData[l + 4] = 0xFF;
-//
-//        state.usbTxData[0] = l + 4 + state.usbTxData[12];
       }
       break;
     }
   }
-}
-
-void transfer1bit() {
-  T2CONbits.ON = 0;
-  //  if (state.usbTxData[12] < 63) {
-  //    state.usbTxData[state.usbTxData[12]] = (state.sendBeanData.bean) ? (0x80 | state.sendBeanData.cnt) : state.sendBeanData.cnt;
-  //    state.usbTxData[12]++;
-  //  }  
-  PR2 = PR2_VALUE * state.sendBeanData.cnt;
-  // Reset cnt so on next call to beanTasks cnt will be recalculted
-  // state.sendBeanData.cnt = 0;
-  T2CONbits.ON = state.sendBeanData.cnt > 0;
-  BEAN_OUT = state.sendBeanData.bean;
-  // If cnt is zeor it means that transfer has been ended
-  if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
-}
-
-void startSendBean(unsigned char *buffToSend) {
-//  state.usbTxData[10] = 0;
-//  state.usbTxData[12] = 13;
-  initSendBeanData(&state.sendBeanData, buffToSend);
-  sendBean(&state.sendBeanData);
-  transfer1bit();
 }
 
 void terminateBeanSendWithError() {
@@ -100,9 +87,9 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTO
   unsigned char beanIn = BEAN_IN;
   // Put arbitrary large cnt value. As if we're in timer interrupt, it means, that bean bus
   // was not changed for a while. And it is either error or no transfer state.
-  recBean(&state.recBeanData, beanIn, 10);
-  // We're always reveiving. But in case of USB_BEAN_DEBUG, received command should be sent to USB
-  //  if (state.usbCommand == USB_BEAN_DEBUG) sendToUSBReceivedBeanCmd();
+  // recBean(&state.recBeanData, beanIn, 10);
+  state.tempRecBean[state.writePos++] = !beanIn;
+  state.tempRecBean[state.writePos++] = 10;
 }
 
 void inline processBeanInPortChange() {
@@ -112,19 +99,17 @@ void inline processBeanInPortChange() {
   //    terminateBeanSendWithError();
   //  }
   // Always receive. In case of error, timer will be turned off in timer3 interrupt
-  uint32_t cnt = TMR3 / state.t3cnt;
+  uint32_t tm3 = TMR3;
+  unsigned char cnt = tm3 / ((uint32_t)(state.t3cnt));
   IFS0bits.T3IF = 0;
-
-  //  if (state.usbTxData[12] < 63) {
-  //    state.usbTxData[state.usbTxData[12]] = (!beanIn) ? (0x80 | (unsigned char) (TMR3 >> 8)) : (unsigned char) (TMR3 >> 8);
-  //    state.usbTxData[state.usbTxData[12] + 1] = (unsigned char) (TMR3);
-  //    state.usbTxData[12]+=2;
-  //  }  
   TMR3 = 0;
   T3CONbits.ON = 1;
   // reverse beanIn as we want to write to recBeanData already received bits
   // But interrupt is generated on each new bit we're starting to receive
-  recBean(&state.recBeanData, !beanIn, cnt);
+  //recBean(&state.recBeanData, !beanIn, cnt);
   // In case of bean bus error, timer will be turned off in timer interrupt
+  
+  state.tempRecBean[state.writePos++] = !beanIn;
+  state.tempRecBean[state.writePos++] = cnt;
 }
 

@@ -3,21 +3,24 @@
 #include <string.h>
 #include "..\Include\globalState.h"
 #include "..\Include\beanTasks.h"
+#include "..\Include\typeConvert.h"
 
 void getPorts() {
   if (!state.usbTxData[0]) {
     state.usbTxData[0] = 9;
     state.usbTxData[1] = USB_POST_PORTS_STATE;
     uint32_t port = PORTA;
-    state.usbTxData[2] = (uint8_t) (port >> 24);
-    state.usbTxData[3] = (uint8_t) (port >> 16);
-    state.usbTxData[4] = (uint8_t) (port >> 8);
-    state.usbTxData[5] = (uint8_t) port;
+    uint32ToByteArr(&state.usbTxData[2], port);
+//    state.usbTxData[2] = (uint8_t) (port >> 24);
+//    state.usbTxData[3] = (uint8_t) (port >> 16);
+//    state.usbTxData[4] = (uint8_t) (port >> 8);
+//    state.usbTxData[5] = (uint8_t) port;
     port = PORTB;
-    state.usbTxData[6] = (uint8_t) (port >> 24);
-    state.usbTxData[7] = (uint8_t) (port >> 16);
-    state.usbTxData[8] = (uint8_t) (port >> 8);
-    state.usbTxData[9] = (uint8_t) port;
+    uint32ToByteArr(&state.usbTxData[6], port);
+//    state.usbTxData[6] = (uint8_t) (port >> 24);
+//    state.usbTxData[7] = (uint8_t) (port >> 16);
+//    state.usbTxData[8] = (uint8_t) (port >> 8);
+//    state.usbTxData[9] = (uint8_t) port;
   }
 }
 

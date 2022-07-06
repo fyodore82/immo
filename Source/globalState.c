@@ -10,4 +10,7 @@ void initGlobalState () {
   resetRecBuffer(&state.recBeanData);
   resetSendBuffer(&state.sendBeanData);
   state.t3cnt = T3_CNT;
+  
+  state.readPos = 0;
+  state.writePos = 0;
 }

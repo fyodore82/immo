@@ -17,12 +17,13 @@ void init ()
 
   PMD1 = 0xFF;
   PMD2 = 0xFF;
+  PMD3 = 0xFF;
   
-  PMD3bits.OC1MD = 1;
-  PMD3bits.OC2MD = 1;
-  PMD3bits.OC3MD = 1;
-  PMD3bits.OC4MD = 1;
-  PMD3bits.OC5MD = 1;
+//  PMD3bits.OC1MD = 1;
+//  PMD3bits.OC2MD = 1;
+//  PMD3bits.OC3MD = 1;
+//  PMD3bits.OC4MD = 1;
+//  PMD3bits.OC5MD = 1;
   
   PMD5bits.I2C1MD = 1;
   PMD5bits.I2C2MD = 1;
@@ -48,15 +49,12 @@ void init ()
   ANSELA = 0x0;
   ANSELB = 0x0;
 
-  // pin 12
-  TRISAbits.TRISA4 = 0;
-  PORTAbits.RA4 = 1;
-  
   // 12.3.3 Change notification
   // Enable for RPB9, BEAN_IN
   // ToDo: remove weak pull downs
   CNCONBbits.ON = 1;
   
+  // V pin 4
   CNENBbits.CNIEB0 = 1;
   unsigned char readPort = PORTBbits.RB0;
   CNPDBbits.CNPDB0 = 1;
@@ -64,30 +62,33 @@ void init ()
   // pin 11
   CNENBbits.CNIEB4 = 1;
   readPort = PORTBbits.RB4;
-  CNPUBbits.CNPUB4 = 1;
+  CNPDBbits.CNPDB4 = 1;
+  
+  // V pin 12
+  TRISAbits.TRISA4 = 0;
+  PORTAbits.RA4 = 0;
 
-  // pin 14
+  // V pin 14
   TRISBbits.TRISB5 = 0;
-  PORTBbits.RB5 = 1;
+  PORTBbits.RB5 = 0;
 
   // ToDo - remove after testing
+  // V pin 16
   CNENBbits.CNIEB7 = 1;
   readPort = PORTBbits.RB7;
 
-  // BEAN_IN
+  // pin 17: BEAN_IN
   CNENBbits.CNIEB8 = 1;
   readPort = PORTBbits.RB8;
   
-  // pin 18
-  TRISBbits.TRISB9 = 0;
-  PORTBbits.RB9 = 0;
+  // X pin 18
+  CNPDBbits.CNPDB9 = 1;
 
-  // Set 24 pin (RPB13) to output. It is BEAN_OUT
+  // V Set 24 pin (RPB13) to output. It is BEAN_OUT
   TRISBbits.TRISB13 = 0;
   
-  // pin 26
-  TRISBbits.TRISB15 = 0;
-  PORTBbits.RB15 = 0;
+  // V pin 26
+  CNPDBbits.CNPDB15 = 1;
   
   IPC8bits.CNIP = 0x7;
   IPC8bits.CNIS = 0x3;
@@ -149,7 +150,7 @@ void init ()
   // bit 28 MSSEN: Master Mode Slave Select Enable bit = 1
 
   //          |4th by||3rd by||2nd by||1st bt|
-  SPI1CON = 0b00010000000000010000111100100001;
+  SPI1CON = 0b00010000000000011000111100100001;
   // _SS is required on scheme, as it should be rised when transmittion finished
   
   INTRestoreInterrupts(int_status);

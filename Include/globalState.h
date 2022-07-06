@@ -13,6 +13,7 @@ extern "C" {
 #endif
     
 #include <bean.h>
+#include <xc.h>
     
 typedef enum {
     USB_NO_CMD,
@@ -32,6 +33,7 @@ typedef enum {
 typedef enum {
     USB_POST_PORTS_STATE = 3,
     USB_POST_SPI_RESP = 0x11,
+            
     USB_GOT_BEAN_CMD = 0x21,
 
     // USB_ECHO = 0x90
@@ -49,9 +51,17 @@ typedef struct {
     USBSubCommand usbSubCommand;
     RecBeanData recBeanData;
     SendBeanData sendBeanData;
+    unsigned char tempRecBean[256];
+    unsigned char readPos;
+    unsigned char writePos;
     unsigned char usbTxData[64];
     // ToDo consder removing
     unsigned char t3cnt;
+    // SPI
+    uint32_t spiCmd[4];
+    // We're going to receive up to 4 spi cmd
+    uint32_t spiReceive[4];
+    unsigned char spiRecIdx;
 } GlobalState;
 
 extern GlobalState state;

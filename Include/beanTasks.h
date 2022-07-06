@@ -25,7 +25,7 @@ extern "C" {
 
 // Timer3 is used to receive BEAN
 #define T3CON_VALUE 0x00000050 // ON = 0, TCKPS = 32, T32 = 0, TSC = 0
-#define T3_CNT 0x0060       // 0x7D = 125 ticks for 10kbps.
+#define T3_CNT 0x7D         // 0x7D = 125 ticks for 10kbps.
                             // 0x60 - good, with some errors
                             // Is decreased so when dividing TimerValue to T3CNT we gen number of bits
                             // as sending freq can diviate

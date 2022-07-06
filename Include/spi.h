@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-void txSPI(uint32_t spi);
+void txSPI();
 void spiTasks();
 
 

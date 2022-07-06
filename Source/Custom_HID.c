@@ -7,6 +7,7 @@
 #include "..\Include\beanTasks.h"
 #include "..\Include\ports.h"
 #include "..\Include\spi.h"
+#include "..\Include\typeConvert.h"
 
 void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
 {
@@ -28,10 +29,7 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
     case USB_SEND_BEAN_CMD: {
       state.usbCommand = USB_SEND_BEAN_CMD;
       state.t3cnt = UsbRxData[2];
-      startSendBean(&UsbRxData[3]);
-      //state.usbTxData[0] = 2;
-      //state.usbTxData[1] = UsbRxData[2];
-      //state.usbTxData[2] = UsbRxData[3];
+      initSendBeanData(&state.sendBeanData, &UsbRxData[3]);
       break;
     }
     
@@ -42,14 +40,16 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
     case USB_GET_PORTS_STATE:
       getPorts();
       break;
-    
+      
     case USB_SPI_SEND_CMD: {
       state.usbCommand = USB_SPI_SEND_CMD;
-      uint32_t spi;
-      memcpy(&spi, &UsbRxData[2], 4);
-      txSPI(spi);
+      state.spiCmd[0] = byteArrToUint32(&UsbRxData[2]);
+      state.spiCmd[1] = byteArrToUint32(&UsbRxData[6]);
+//      memcpy(&state.spiCmd, &UsbRxData[2], 4);
+      txSPI();
       break;
     }
+    
 
     case USB_ECHO: {
       state.usbTxData[0] = 0x01;
