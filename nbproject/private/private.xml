@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/beanTasks.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/beanTasks.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/globalState.h</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/Custom_HID.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/beanTasks.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/ports.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/beanTasks.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/globalState.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/init.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/USB/usb_hal_pic32.h</file>
         </group>
     </open-files>
 </project-private>

@@ -377,7 +377,8 @@ typedef union _POINTER
     	#define USBEnableInterrupts() {\
             IEC1SET = USBIE;\
             IPC7CLR=0x00FF0000;\
-            IPC7SET=0x00100000;\
+            IPC7bits.USBIP=1;\
+            IPC7bits.USBIS=1;\
             INTEnableSystemMultiVectoredInt();\
             INTEnableInterrupts();\
         }
