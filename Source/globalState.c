@@ -9,8 +9,8 @@ void initGlobalState () {
   state.usbTxData[0] = 0;
   resetRecBuffer(&state.recBeanData);
   resetSendBuffer(&state.sendBeanData);
-  state.t3cnt = T3_CNT;
-  
-  state.readPos = 0;
-  state.writePos = 0;
+  state.prevBean = BEAN_IN;
+//  
+//  state.readPos = 0;
+//  state.writePos = 0;
 }

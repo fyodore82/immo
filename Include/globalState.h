@@ -51,12 +51,15 @@ typedef struct {
     USBSubCommand usbSubCommand;
     RecBeanData recBeanData;
     SendBeanData sendBeanData;
-    unsigned char tempRecBean[256];
-    unsigned char readPos;
-    unsigned char writePos;
+    unsigned char prevBean;
+    // Used to quickly sent bean data
+    unsigned char transBean[256];
+    unsigned char transPos;
+    unsigned char transLength;
     unsigned char usbTxData[64];
-    // ToDo consder removing
-    unsigned char t3cnt;
+    
+    unsigned char recBuff[256];
+    unsigned char recPos;
     // SPI
     uint32_t spiCmd[4];
     // We're going to receive up to 4 spi cmd
