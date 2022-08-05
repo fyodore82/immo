@@ -24,8 +24,8 @@ extern "C" {
 #define PR2_VALUE 0x007D   // = 125 ticks for 10kbps
 
 // Timer3 is used to receive BEAN
-#define T3CON_VALUE 0x00000060 // ON = 0, TCKPS = 64, T32 = 0, TSC = 0
-#define T3_CNT 0x3B         // 62,5 ticks for 10kbps (0x3B = 59)
+#define T3CON_VALUE 0x00000050 // ON = 0, TCKPS = 32, T32 = 0, TSC = 0
+#define T3_CNT 0x007D         // 125 ticks for 10kbps
                             // Is decreased so when dividing TimerValue to T3CNT we gen number of bits
                             // as sending freq can diviate
 #define PR3_VALUE T3_CNT * 10    // Is used to detect bean bus idle state

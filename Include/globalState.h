@@ -24,6 +24,8 @@ typedef enum {
             
     USB_SEND_BEAN_CMD = 0x21,
     USB_LISTERN_BEAN = 0x22,
+    USB_SEND_BEAN_CMD_REC_TICKS = 0x23, // Save ticks elapsed between NEAN IN port change
+    USB_LISTERN_BEAN_REC_TICKS = 0x24, // Save ticks elapsed between NEAN IN port change
     
     USB_START_BOOTLOADER = 0x80,            
 
@@ -35,6 +37,7 @@ typedef enum {
     USB_POST_SPI_RESP = 0x11,
             
     USB_GOT_BEAN_CMD = 0x21,
+    USB_GOT_REC_TICKS = 0x23,
 
     // USB_ECHO = 0x90
 } USBRespCommand;
@@ -53,11 +56,12 @@ typedef struct {
     SendBeanData sendBeanData;
     unsigned char prevBean;
     // Used to quickly sent bean data
-    unsigned char transBean[256];
-    unsigned char transPos;
-    unsigned char transLength;
+//    unsigned char transBean[256];
+//    unsigned char transPos;
+//    unsigned char transLength;
     unsigned char usbTxData[64];
     
+    // To count number of ticks between neigbor bean in port change
     unsigned char recBuff[256];
     unsigned char recPos;
     // SPI

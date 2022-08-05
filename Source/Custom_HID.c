@@ -26,15 +26,21 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       break;
     }
     
-    case USB_SEND_BEAN_CMD: {
-      state.usbCommand = USB_SEND_BEAN_CMD;
+    case USB_SEND_BEAN_CMD:
+    case USB_SEND_BEAN_CMD_REC_TICKS:
+      state.usbCommand = (USBReqCommand)UsbRxData[0];
       initSendBeanData(&state.sendBeanData, &UsbRxData[2]);
+      state.recBeanData.recBufferFull = 0;
+      state.recPos = 0;
       break;
-    }
     
     case USB_LISTERN_BEAN:
-      state.usbCommand = USB_LISTERN_BEAN;
+    case USB_LISTERN_BEAN_REC_TICKS:
+      state.usbCommand = (USBReqCommand)UsbRxData[0];
+      state.recPos = 0;
+      state.recBeanData.recBufferFull = 0;
       break;
+      
     
     case USB_GET_PORTS_STATE:
       getPorts();

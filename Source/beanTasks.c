@@ -19,30 +19,48 @@ void sendToUSBReceivedBeanCmd() {
   }
 }
 
+void sendToUSBReceivedRecBuff() {
+  // Do not check in recBufferFull as it may be error during transfer
+  if (!state.usbTxData[0]) {
+    state.usbTxData[0] = 63;
+    state.usbTxData[1] = USB_GOT_REC_TICKS;
+    memcpy(&state.usbTxData[2], state.recBuff, 61);
+    state.recPos = 0;
+    state.recBeanData.recBufferFull = 0;
+  }
+}
+
 void transfer1bit() {
   TMR2 = 0;
-  unsigned int bean = state.transBean[state.transPos] & 0x80;
-  PR2 = PR2_VALUE * (state.transBean[state.transPos] & 0x0F);
-  state.transPos++;
-  T2CONbits.ON = state.transPos < state.transLength;
+//  unsigned int bean = state.transBean[state.transPos] & 0x80;
+//  PR2 = PR2_VALUE * (state.transBean[state.transPos] & 0x0F);
+//  state.transPos++;
+//  T2CONbits.ON = state.transPos < state.transLength;
   // set BEAN_OUT last as it may trigger port change interrupt
-  BEAN_OUT = !!bean;
+//  BEAN_OUT = !!bean;
+  PR2 = PR2_VALUE * state.sendBeanData.cnt;
+  T2CONbits.ON = !!state.sendBeanData.cnt;
+  BEAN_OUT = state.sendBeanData.bean;
   // If cnt is zero it means that transfer has been ended
-//  if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
+  if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
 }
+
+// ----------- PUBLIC ----------------
 
 void beanTasks() {
   if (canStartTransfer(state.sendBeanData.sendBeanState, state.recBeanData.recBeanState)) {
-    state.transPos = 0;
-    state.transLength = 0;
-    do {
+//    state.transPos = 0;
+//    state.transLength = 0;
+//    do {
       sendBean(&state.sendBeanData);
-      state.transBean[state.transLength] = state.sendBeanData.bean ? (0x80 | state.sendBeanData.cnt) : state.sendBeanData.cnt;
-      state.transLength++;
-    } while(state.sendBeanData.cnt);
+//      state.transBean[state.transLength] = state.sendBeanData.bean ? (0x80 | state.sendBeanData.cnt) : state.sendBeanData.cnt;
+//      state.transLength++;
+//    } while(state.sendBeanData.cnt);
+      
 //    memcpy(&state.usbTxData[3], state.transBean, 62);
 //    state.usbTxData[0] = 65;
 //    state.usbTxData[1] = USB_SEND_BEAN_CMD;
+      
     state.recPos = 0;
     transfer1bit();
   }
@@ -59,30 +77,26 @@ void beanTasks() {
     }
     case USB_LISTERN_BEAN:
       if (state.recBeanData.recBufferFull) sendToUSBReceivedBeanCmd();
-//        memcpy(&state.usbTxData[3], state.recBuff, 61);
-//        state.usbTxData[0] = 63;
-//        state.usbTxData[1] = USB_SEND_BEAN_CMD;
-//        state.recBeanData.recBufferFull = 0;
-//        state.recPos = 0;
-//      }
+      break;
+    case USB_LISTERN_BEAN_REC_TICKS:
+      if (state.recBeanData.recBufferFull) sendToUSBReceivedRecBuff();
       break;
 
     case USB_SEND_BEAN_CMD:
-    {
       // Check if transfer is in progress as there may be errors during transfer
       // and we still have to send reponse back
       //if (!isTransferInProgress(&state.sendBeanData)) { // && !state.usbTxData[0]) {
       if (state.recBeanData.recBufferFull) {
         state.usbCommand = USB_NO_CMD;
-//        sendToUSBReceivedBeanCmd();
-        memcpy(&state.usbTxData[3], state.recBuff, 61);
-        state.usbTxData[0] = 63;
-        state.usbTxData[1] = USB_SEND_BEAN_CMD;
-        state.recBeanData.recBufferFull = 0;
-        state.recPos = 0;
+        sendToUSBReceivedBeanCmd();
       }
       break;
-    }
+    case USB_SEND_BEAN_CMD_REC_TICKS:
+      if (state.recBeanData.recBufferFull) {
+        state.usbCommand = USB_NO_CMD;
+        sendToUSBReceivedRecBuff();
+      }
+      break;
   }
 }
 
@@ -96,13 +110,6 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_2_VECTO
   T2CONbits.ON = 0;
   IFS0bits.T2IF = 0;
   transfer1bit();
-  
-//  if (state.writePos + 2 < 61) {
-//    uint32_t tm3 = TMR3;
-//    state.tempRecBean[state.writePos] = tm3;
-//    state.tempRecBean[state.writePos + 1] = state.sendBeanData.bean ? 0xee : 0xdb;
-//    state.writePos+=2;
-//  }
 }
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTOR))) _timer3Vector(void) {
@@ -123,22 +130,23 @@ void inline processBeanInPortChange() {
 
   // Always receive. In case of error, timer will be turned off in timer3 interrupt
   uint16_t tm3 = TMR3;
-  unsigned char cnt = tm3 / (uint16_t)T3_CNT;
+  unsigned char cnt = getCntFromTmr(tm3, T3_CNT);
   TMR3 = 0;
   T3CONbits.ON = 1;
   // reverse beanIn as we want to write to recBeanData already received bits
   // But interrupt is generated on each new bit we're starting to receive
   recBean(&state.recBeanData, !beanIn, cnt);
   // In case of bean bus error, timer will be turned off in timer interrupt
-
-//  if (state.recPos < 61) {
+  
+  // We'll save only remainder from division
+  if ((state.usbCommand == USB_LISTERN_BEAN_REC_TICKS || state.usbCommand == USB_SEND_BEAN_CMD_REC_TICKS)
+    && state.recPos < 61) {
+    unsigned char rem = tm3 - ((tm3 / T3_CNT) * T3_CNT);
+    state.recBuff[state.recPos] = (!beanIn) ? (0x80 | cnt) : cnt;
+    state.recBuff[state.recPos + 1] = rem;
 //    state.recBuff[state.recPos] = (!beanIn) ? (0x80 | (uint8_t)(tm3 >> 8)) : (uint8_t)(tm3 >> 8);
-//    state.recBuff[state.recPos + 1] = tm3; // (!beanIn) ? (0x80 | tm3) : tm3;
-//    state.recPos += 2;
-//  }
-//  if (state.recPos < 61) {
-//    state.recBuff[state.recPos] = (!beanIn) ? (0x80 | cnt) : cnt;
-//    state.recPos++;
-//  }
+//    state.recBuff[state.recPos + 1] = tm3;
+    state.recPos += 2;
+  }
 }
 
