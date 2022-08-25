@@ -49,18 +49,7 @@ void transfer1bit() {
 
 void beanTasks() {
   if (canStartTransfer(state.sendBeanData.sendBeanState, state.recBeanData.recBeanState)) {
-//    state.transPos = 0;
-//    state.transLength = 0;
-//    do {
-      sendBean(&state.sendBeanData);
-//      state.transBean[state.transLength] = state.sendBeanData.bean ? (0x80 | state.sendBeanData.cnt) : state.sendBeanData.cnt;
-//      state.transLength++;
-//    } while(state.sendBeanData.cnt);
-      
-//    memcpy(&state.usbTxData[3], state.transBean, 62);
-//    state.usbTxData[0] = 65;
-//    state.usbTxData[1] = USB_SEND_BEAN_CMD;
-      
+    sendBean(&state.sendBeanData);
     state.recPos = 0;
     transfer1bit();
   }
@@ -85,7 +74,6 @@ void beanTasks() {
     case USB_SEND_BEAN_CMD:
       // Check if transfer is in progress as there may be errors during transfer
       // and we still have to send reponse back
-      //if (!isTransferInProgress(&state.sendBeanData)) { // && !state.usbTxData[0]) {
       if (state.recBeanData.recBufferFull) {
         state.usbCommand = USB_NO_CMD;
         sendToUSBReceivedBeanCmd();
@@ -100,15 +88,17 @@ void beanTasks() {
   }
 }
 
-void terminateBeanSendWithError() {
-  T2CONbits.ON = 0;
-  resetSendBuffer(&state.sendBeanData);
-  state.sendBeanData.sendBeanState = BEAN_TR_ERR;
-}
+//void terminateBeanSendWithError() {
+//  T2CONbits.ON = 0;
+//  resetSendBuffer(&state.sendBeanData);
+//  state.sendBeanData.sendBeanState = ;
+//}
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_2_VECTOR))) _timer2Vector(void) {
   T2CONbits.ON = 0;
   IFS0bits.T2IF = 0;
+  // Check for send error condition and rest it to restart sending
+  if (resetSendError(&state.sendBeanData)) return;
   transfer1bit();
 }
 
@@ -124,11 +114,17 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTO
 void inline processBeanInPortChange() {
   T3CONbits.ON = 0;
   unsigned char beanIn = BEAN_IN;
-  //  if (isTransferInProgress(&state.sendBeanData) && (!beanIn) != (!state.sendBeanData.bean)) {
-  //    terminateBeanSendWithError();
-  //  }
-
-  // Always receive. In case of error, timer will be turned off in timer3 interrupt
+  unsigned char beanOut = BEAN_OUT;
+  if (isTransferInProgress(&state.sendBeanData) && beanIn != beanOut) {
+    // Just turn write error condition to beand send
+    // Timer 2 will be used to reset bean error condition to restart sending
+    // when bus will be ready
+    setSendError(&state.sendBeanData);
+    BEAN_OUT = 0;
+    // In case of bus error condition do not return.
+    // Always receive. In case of error, timer will be turned off in timer3 interrupt
+  }
+  
   uint16_t tm3 = TMR3;
   unsigned char cnt = getCntFromTmr(tm3, T3_CNT);
   TMR3 = 0;
@@ -144,8 +140,6 @@ void inline processBeanInPortChange() {
     unsigned char rem = tm3 - ((tm3 / T3_CNT) * T3_CNT);
     state.recBuff[state.recPos] = (!beanIn) ? (0x80 | cnt) : cnt;
     state.recBuff[state.recPos + 1] = rem;
-//    state.recBuff[state.recPos] = (!beanIn) ? (0x80 | (uint8_t)(tm3 >> 8)) : (uint8_t)(tm3 >> 8);
-//    state.recBuff[state.recPos + 1] = tm3;
     state.recPos += 2;
   }
 }
