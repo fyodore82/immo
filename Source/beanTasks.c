@@ -32,15 +32,12 @@ void sendToUSBReceivedRecBuff() {
 
 void transfer1bit() {
   TMR2 = 0;
-//  unsigned int bean = state.transBean[state.transPos] & 0x80;
-//  PR2 = PR2_VALUE * (state.transBean[state.transPos] & 0x0F);
-//  state.transPos++;
-//  T2CONbits.ON = state.transPos < state.transLength;
-  // set BEAN_OUT last as it may trigger port change interrupt
-//  BEAN_OUT = !!bean;
-  PR2 = PR2_VALUE * state.sendBeanData.cnt;
+  // Ajust send length to make it ideal
+  PR2 = (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0x0F : 0x0F);
   T2CONbits.ON = !!state.sendBeanData.cnt;
   BEAN_OUT = state.sendBeanData.bean;
+  // Is used to check if sent BEAN bit is equal to what is really on the BUS
+  state.prevBean = state.sendBeanData.bean;
   // If cnt is zero it means that transfer has been ended
   if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
 }
@@ -114,8 +111,8 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTO
 void inline processBeanInPortChange() {
   T3CONbits.ON = 0;
   unsigned char beanIn = BEAN_IN;
-  unsigned char beanOut = BEAN_OUT;
-  if (isTransferInProgress(&state.sendBeanData) && beanIn != beanOut) {
+//  unsigned char beanOut = BEAN_OUT;
+  if (isTransferInProgress(&state.sendBeanData) && beanIn != state.prevBean) {
     // Just turn write error condition to beand send
     // Timer 2 will be used to reset bean error condition to restart sending
     // when bus will be ready

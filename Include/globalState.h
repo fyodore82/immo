@@ -55,10 +55,7 @@ typedef struct {
     RecBeanData recBeanData;
     SendBeanData sendBeanData;
     unsigned char prevBean;
-    // Used to quickly sent bean data
-//    unsigned char transBean[256];
-//    unsigned char transPos;
-//    unsigned char transLength;
+
     unsigned char usbTxData[64];
     
     // To count number of ticks between neigbor bean in port change
