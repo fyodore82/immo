@@ -48,7 +48,7 @@ void __attribute__((nomips16))  INTRestoreInterrupts(unsigned int status)
  ********************************************************************/
 void __attribute__ ((nomips16)) INTEnableSystemMultiVectoredInt(void)
 {
-    _CP0_SET_EBASE(0x9D003000);
+    _CP0_SET_EBASE(0x9D002000);
     // _CP0_SET_INTCTL(0x01);
 
     unsigned int val;
