@@ -26,14 +26,10 @@ void getPorts() {
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_CHANGE_NOTICE_VECTOR))) _changeNoticeVector(void) {
   if (IFS1bits.CNBIF) {
-//    uint8_t port = PORTB;
-//    uint8_t beanIn = BEAN_IN;
     IFS1bits.CNBIF = 0;
     if (state.usbCommand == USB_BEAN_DEBUG) getPorts();
     else {
       if (BEAN_IN_CNSTAT) processBeanInPortChange();
-//        state.prevBean = beanIn;
-//      }
     }
     CNSTATB = 0;
   }

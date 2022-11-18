@@ -32,7 +32,7 @@ void sendToUSBReceivedRecBuff() {
 
 void transfer1bit() {
   TMR2 = 0;
-  // Ajust send length to make it ideal
+  // Adjust send length to make it ideal
   PR2 = (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0x0F : 0x0F);
   T2CONbits.ON = !!state.sendBeanData.cnt;
   BEAN_OUT = state.sendBeanData.bean;
@@ -72,29 +72,23 @@ void beanTasks() {
       // Check if transfer is in progress as there may be errors during transfer
       // and we still have to send reponse back
       if (state.recBeanData.recBufferFull) {
-        state.usbCommand = USB_NO_CMD;
+        state.usbCommand = USB_LISTERN_BEAN;
         sendToUSBReceivedBeanCmd();
       }
       break;
     case USB_SEND_BEAN_CMD_REC_TICKS:
       if (state.recBeanData.recBufferFull) {
-        state.usbCommand = USB_NO_CMD;
+        state.usbCommand = USB_LISTERN_BEAN_REC_TICKS;
         sendToUSBReceivedRecBuff();
       }
       break;
   }
 }
 
-//void terminateBeanSendWithError() {
-//  T2CONbits.ON = 0;
-//  resetSendBuffer(&state.sendBeanData);
-//  state.sendBeanData.sendBeanState = ;
-//}
-
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_2_VECTOR))) _timer2Vector(void) {
   T2CONbits.ON = 0;
   IFS0bits.T2IF = 0;
-  // Check for send error condition and rest it to restart sending
+  // Check for send error condition and reset it to restart sending
   if (resetSendError(&state.sendBeanData)) return;
   transfer1bit();
 }
@@ -105,15 +99,16 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTO
   unsigned char beanIn = BEAN_IN;
   // Put arbitrary large cnt value. As if we're in timer interrupt, it means, that bean bus
   // was not changed for a while. And it is either error or no transfer state.
-  recBean(&state.recBeanData, beanIn, 10);
+  // Sucn large cnt value will either end reception (if lat bit has been received)
+  // or set error condition in case bus error
+  recBean(&state.recBeanData, beanIn, BEAN_NO_TR_COND + 3);
 }
 
 void inline processBeanInPortChange() {
   T3CONbits.ON = 0;
   unsigned char beanIn = BEAN_IN;
-//  unsigned char beanOut = BEAN_OUT;
   if (isTransferInProgress(&state.sendBeanData) && beanIn != state.prevBean) {
-    // Just turn write error condition to beand send
+    // Just turn write error condition to bead send
     // Timer 2 will be used to reset bean error condition to restart sending
     // when bus will be ready
     setSendError(&state.sendBeanData);
