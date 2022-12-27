@@ -19,13 +19,21 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       break;
     }
 
-    // BEAN commands
-    case USB_BEAN_DEBUG: {
-      state.usbCommand = USB_BEAN_DEBUG;
-      state.usbSubCommand = UsbRxData[1];
+    // ---------------
+    // Port commands
+    // ---------------
+    case USB_GET_PORTS_STATE:
+      getPorts();
       break;
-    }
-    
+
+    case USB_SET_PORT_STATE0:
+    case USB_SET_PORT_STATE1:
+      setPorts((USBReqCommand)UsbRxData[0] == USB_SET_PORT_STATE1, &UsbRxData[2]);
+      break;
+     
+    // -------------
+    // BEAN commands
+    // -------------
     case USB_SEND_BEAN_CMD:
     case USB_SEND_BEAN_CMD_REC_TICKS:
       state.usbCommand = (USBReqCommand)UsbRxData[0];
@@ -42,10 +50,6 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       break;
       
     
-    case USB_GET_PORTS_STATE:
-      getPorts();
-      break;
-      
     case USB_SPI_SEND_CMD: {
       state.usbCommand = USB_SPI_SEND_CMD;
       state.spiCmd[0] = byteArrToUint32(&UsbRxData[2]);

@@ -13,6 +13,10 @@ extern "C" {
 #endif
 
 void getPorts();
+void setPorts(unsigned char, unsigned char*);
+
+#define BEEPER_CTRL_OUT PORTBbits.RB15
+#define IMMO_ON_OUT PORTAbits.RA4
 
 
 #ifdef	__cplusplus

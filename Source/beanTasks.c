@@ -52,15 +52,15 @@ void beanTasks() {
   }
 
   switch (state.usbCommand) {
-    case USB_BEAN_DEBUG:
-    {
-      if (state.usbSubCommand == BEAN_DEBUG_SET_1) BEAN_OUT = 1;
-      if (state.usbSubCommand == BEAN_DEBUG_SET_0) BEAN_OUT = 0;
-      // Ports will be chached in ports interrupt
-
-      state.usbSubCommand = USB_NO_SUBCMD;
-      break;
-    }
+//    case USB_BEAN_DEBUG:
+//    {
+//      if (state.usbSubCommand == BEAN_DEBUG_SET_1) BEAN_OUT = 1;
+//      if (state.usbSubCommand == BEAN_DEBUG_SET_0) BEAN_OUT = 0;
+//      // Ports will be chached in ports interrupt
+//
+//      state.usbSubCommand = USB_NO_SUBCMD;
+//      break;
+//    }
     case USB_LISTERN_BEAN:
       if (state.recBeanData.recBufferFull) sendToUSBReceivedBeanCmd();
       break;

@@ -11,26 +11,21 @@ void getPorts() {
     state.usbTxData[1] = USB_POST_PORTS_STATE;
     uint32_t port = PORTA;
     uint32ToByteArr(&state.usbTxData[2], port);
-//    state.usbTxData[2] = (uint8_t) (port >> 24);
-//    state.usbTxData[3] = (uint8_t) (port >> 16);
-//    state.usbTxData[4] = (uint8_t) (port >> 8);
-//    state.usbTxData[5] = (uint8_t) port;
     port = PORTB;
     uint32ToByteArr(&state.usbTxData[6], port);
-//    state.usbTxData[6] = (uint8_t) (port >> 24);
-//    state.usbTxData[7] = (uint8_t) (port >> 16);
-//    state.usbTxData[8] = (uint8_t) (port >> 8);
-//    state.usbTxData[9] = (uint8_t) port;
   }
+}
+
+void setPorts(unsigned char newState, unsigned char* ports) {
+    if (ports[3] & 0b10000) IMMO_ON_OUT = !!newState;
+    if (ports[6] & 0b10000000) BEEPER_CTRL_OUT = !!newState;
+    if (ports[6] & 0b100000) BEAN_OUT = !!newState;
 }
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_CHANGE_NOTICE_VECTOR))) _changeNoticeVector(void) {
   if (IFS1bits.CNBIF) {
     IFS1bits.CNBIF = 0;
-    if (state.usbCommand == USB_BEAN_DEBUG) getPorts();
-    else {
-      if (BEAN_IN_CNSTAT) processBeanInPortChange();
-    }
+    if (BEAN_IN_CNSTAT) processBeanInPortChange();
     CNSTATB = 0;
   }
 }
