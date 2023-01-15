@@ -26,12 +26,16 @@ void init ()
 //  PMD3bits.OC4MD = 1;
 //  PMD3bits.OC5MD = 1;
   
-  PMD5bits.I2C1MD = 1;
-  PMD5bits.I2C2MD = 1;
-//  PMD5bits.SPI1MD = 1;
-  PMD5bits.SPI2MD = 1;
+  PMD4bits.T1MD = 1;
+  PMD4bits.T4MD = 1;
+  PMD4bits.T5MD = 1;
+  
   PMD5bits.U1MD = 1;
   PMD5bits.U2MD = 1;
+//  PMD5bits.SPI1MD = 0; // Enabled
+  PMD5bits.SPI2MD = 1;
+  PMD5bits.I2C1MD = 1;
+  PMD5bits.I2C2MD = 1;
  
   PMD6 = 0xFF;
   CFGCONbits.PMDLOCK = 1; // Disable PMD

@@ -14,7 +14,7 @@ extern "C" {
     
 #include <xc.h>
 
-uint32_t byteArrToUint32 (unsigned char *byte);
+uint32_t byteArrToUint32ForSPI (unsigned char *byte);
 void uint32ToByteArr (unsigned char *byte, uint32_t uint);
 
 #ifdef	__cplusplus

@@ -16,8 +16,8 @@ void getPorts();
 void setPorts(unsigned char, unsigned char*);
 
 #define BEEPER_CTRL_OUT PORTBbits.RB15  // pin 26
-#define IMMO_ON_OUT PORTAbits.RA4   // pin 12
-#define BEAN_OUT PORTBbits.RB13     // pin 24
+#define IMMO_ON_OUT PORTAbits.RA4       // pin 12
+#define BEAN_OUT PORTBbits.RB13         // pin 24
 
 #define BUTTON_IN PORTBbits.RB0
 #define BUTTON_IN_CNSTAT CNSTATBbits.CNSTATB0

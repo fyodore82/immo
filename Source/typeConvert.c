@@ -1,8 +1,9 @@
 #include "..\Include\typeConvert.h"
 
 
-uint32_t byteArrToUint32(unsigned char *byte) {
-  return byte[0] + (byte[1] << 8) + (byte[2] << 16) + (byte[3] << 24);
+uint32_t byteArrToUint32ForSPI(unsigned char *byte) {
+  // Reverse byte order as most significant should go first
+  return byte[3] + (byte[2] << 8) + (byte[1] << 16) + (byte[0] << 24);
 }
 
 void uint32ToByteArr(unsigned char *byte, uint32_t uint) {

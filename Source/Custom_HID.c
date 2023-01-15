@@ -58,8 +58,8 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
     
     case USB_SPI_SEND_CMD: {
       state.usbCommand = USB_SPI_SEND_CMD;
-      state.spiCmd[0] = byteArrToUint32(&UsbRxData[2]);
-      state.spiCmd[1] = byteArrToUint32(&UsbRxData[6]);
+      state.spiCmd[0] = byteArrToUint32ForSPI(&UsbRxData[2]);
+      state.spiCmd[1] = byteArrToUint32ForSPI(&UsbRxData[6]);
 //      memcpy(&state.spiCmd, &UsbRxData[2], 4);
       txSPI();
       break;

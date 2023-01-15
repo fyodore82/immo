@@ -194,7 +194,7 @@ void UsbTasks(void)
     		while(UsbTxBusy()); // Wait for USB transmit completion.	
     		
     		// Send the packet (USB endpoint size is always 64 bytes)
-    		USBTxOnePacket(HID_EP, TxPtr, MaxUsbPacketSize);	
+    		USBInHandle = USBTxOnePacket(HID_EP, TxPtr, MaxUsbPacketSize);	
     		
     		if(TxLen > MaxUsbPacketSize)
     		{

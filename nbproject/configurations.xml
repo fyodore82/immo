@@ -42,8 +42,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f2" displayName="New Folder 2" projectFiles="true">
-      </logicalFolder>
       <logicalFolder name="f1" displayName="USB" projectFiles="true">
         <itemPath>Source/USB/Usb_HID_tasks.c</itemPath>
         <itemPath>Source/USB/usb_config.c</itemPath>
