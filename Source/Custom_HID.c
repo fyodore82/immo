@@ -26,9 +26,15 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       getPorts();
       break;
 
+    case USB_MONITOR_PORTS_STATE:
+      state.usbCommand = USB_MONITOR_PORTS_STATE;
+      state.usbSubCommand = USB_NO_SUBCMD;
+      break;
+      
     case USB_SET_PORT_STATE0:
     case USB_SET_PORT_STATE1:
       setPorts((USBReqCommand)UsbRxData[0] == USB_SET_PORT_STATE1, &UsbRxData[2]);
+      getPorts();
       break;
      
     // -------------

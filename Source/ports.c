@@ -23,9 +23,14 @@ void setPorts(unsigned char newState, unsigned char* ports) {
 }
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_CHANGE_NOTICE_VECTOR))) _changeNoticeVector(void) {
-  if (IFS1bits.CNBIF) {
+  if (IFS1bits.CNBIF || IFS1bits.CNAIF) {
     IFS1bits.CNBIF = 0;
-    if (BEAN_IN_CNSTAT) processBeanInPortChange();
-    CNSTATB = 0;
+    IFS1bits.CNAIF = 0;
+    if (state.usbCommand == USB_MONITOR_PORTS_STATE) getPorts();
+    else {
+      if (BEAN_IN_CNSTAT) processBeanInPortChange();
+    }
   }
+  CNSTATB = 0;
+  CNSTATA = 0;
 }

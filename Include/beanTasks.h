@@ -15,10 +15,7 @@ extern "C" {
 #include <xc.h>
 #include "bean.h"
 
-#define BEAN_OUT PORTBbits.RB13
-
-#define BEAN_IN PORTBbits.RB8
-#define BEAN_IN_CNSTAT CNSTATBbits.CNSTATB8
+// For ports config see ports.h
     
 // Timer2 is used to send BEAN
 #define T2CON_VALUE 0x00000050 // ON = 0, TCKPS = 32, T32 = 0, TSC = 0

@@ -33,7 +33,7 @@ void sendToUSBReceivedRecBuff() {
 void transfer1bit() {
   TMR2 = 0;
   // Adjust send length to make it ideal
-  PR2 = (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0x0F : 0x0F);
+  PR2 = (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0x18 : 0x18);
   T2CONbits.ON = !!state.sendBeanData.cnt;
   BEAN_OUT = state.sendBeanData.bean;
   // Is used to check if sent BEAN bit is equal to what is really on the BUS

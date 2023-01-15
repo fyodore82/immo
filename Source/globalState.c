@@ -1,6 +1,7 @@
 #include "..\Include\globalState.h"
 #include "..\Include\beanTasks.h"
 #include <bean.h>
+#include "..\Include\ports.h"
 
 GlobalState state;
 

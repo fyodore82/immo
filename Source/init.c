@@ -2,6 +2,7 @@
 #include <xc.h>
 #include <proc/p32mx220f032b.h>
 #include "..\Include\beanTasks.h"
+#include "..\Include\ports.h"
 
 void init ()
 {
@@ -51,44 +52,42 @@ void init ()
 
   // 12.3.3 Change notification
   // Enable for RPB9, BEAN_IN
-  // ToDo: remove weak pull downs
   CNCONBbits.ON = 1;
   
-  // V pin 4
+  // V pin 4 BUTTON_IN
   CNENBbits.CNIEB0 = 1;
-  unsigned char readPort = PORTBbits.RB0;
-  CNPDBbits.CNPDB0 = 1;
+  unsigned char readPort = BUTTON_IN;
 
-  // pin 11
+  // pin 11 CAPOT_IN
   CNENBbits.CNIEB4 = 1;
-  readPort = PORTBbits.RB4;
-  CNPDBbits.CNPDB4 = 1;
+  readPort = CAPOT_IN;
   
-  // V pin 12
+  // V pin 12 IMMO_ON_OUT
   TRISAbits.TRISA4 = 0;
-  PORTAbits.RA4 = 0;
+  IMMO_ON_OUT = 0;
 
-  // V pin 14
-  TRISBbits.TRISB5 = 0;
-  PORTBbits.RB5 = 0;
+  // V pin 14 IMMO_SENCE_IN
+  CNENBbits.CNIEB5 = 1;
+  readPort = IMMO_SENCE_IN;
 
-  // ToDo - remove after testing
-  // V pin 16
+  // V pin 16 ASR12V_IN
   CNENBbits.CNIEB7 = 1;
-  readPort = PORTBbits.RB7;
+  readPort = ASR12V_IN;
 
   // pin 17: BEAN_IN
   CNENBbits.CNIEB8 = 1;
-  readPort = PORTBbits.RB8;
+  readPort = BEAN_IN;
   
   // X pin 18
-  CNPDBbits.CNPDB9 = 1;
+  // Not used. IN by default
 
-  // V Set 24 pin (RPB13) to output. It is BEAN_OUT
+  // V Set 24 BEAN_OUT
   TRISBbits.TRISB13 = 0;
+  BEAN_OUT = 0;
   
-  // V pin 26
-  CNPDBbits.CNPDB15 = 1;
+  // V pin 26 BEEPER_CTRL_OUT
+  TRISBbits.TRISB15 = 0;
+  BEEPER_CTRL_OUT = 0;
   
   IPC8bits.CNIP = 0x7;
   IPC8bits.CNIS = 0x3;
