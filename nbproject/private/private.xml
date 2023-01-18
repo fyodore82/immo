@@ -3,15 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/spi.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/USB/Usb_HID_tasks.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/main.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/USB/usb_device.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/USB/usb_device.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/USB/usb_function_hid.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/init.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/sounds.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/ports.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/beanTasks.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/globalState.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/typeConvert.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/Custom_HID.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/init.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/sounds.c</file>
         </group>
     </open-files>
 </project-private>

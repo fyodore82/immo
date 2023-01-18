@@ -8,6 +8,7 @@
 #include "..\Include\ports.h"
 #include "..\Include\spi.h"
 #include "..\Include\typeConvert.h"
+#include "..\Include\sounds.h"
 
 void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
 {
@@ -65,6 +66,9 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       break;
     }
     
+    case USB_PLAY_BEEP_SOUND:
+      playSound(nokiaRingtoneSound);
+      break;
 
     case USB_ECHO: {
       state.usbTxData[0] = 0x01;

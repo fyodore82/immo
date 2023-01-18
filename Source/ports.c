@@ -18,6 +18,7 @@ void getPorts() {
 
 void setPorts(unsigned char newState, unsigned char* ports) {
     if (ports[3] & 0b10000) IMMO_ON_OUT = !!newState;
+    if (ports[6] & 0b10) PORTBbits.RB9 = !!newState;  // For testing only
     if (ports[6] & 0b10000000) BEEPER_CTRL_OUT = !!newState;
     if (ports[6] & 0b100000) BEAN_OUT = !!newState;
 }

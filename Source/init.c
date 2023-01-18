@@ -3,6 +3,7 @@
 #include <proc/p32mx220f032b.h>
 #include "..\Include\beanTasks.h"
 #include "..\Include\ports.h"
+#include "..\Include\sounds.h"
 
 void init ()
 {
@@ -27,7 +28,6 @@ void init ()
 //  PMD3bits.OC5MD = 1;
   
   PMD4bits.T1MD = 1;
-  PMD4bits.T4MD = 1;
   PMD4bits.T5MD = 1;
   
   PMD5bits.U1MD = 1;
@@ -84,6 +84,8 @@ void init ()
   
   // X pin 18
   // Not used. IN by default
+  TRISBbits.TRISB9 = 0;
+  PORTBbits.RB9 = 0;
 
   // V Set 24 BEAN_OUT
   TRISBbits.TRISB13 = 0;
@@ -130,6 +132,14 @@ void init ()
   IPC3bits.T3IP = 1;
   IPC3bits.T3IS = 1;
   IEC0bits.T3IE = 1;
+  
+  T4CON = T4CON_VALUE;
+  TMR4 = 0x0;
+  PR4 = 0x0;   
+  IFS0bits.T4IF = 0;
+  IPC4bits.T4IP = 1;
+  IPC4bits.T4IS = 1;
+  IEC0bits.T4IE = 1;
   
   // ----------------- SPI -------------------
   // Config REFOCON 

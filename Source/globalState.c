@@ -11,6 +11,7 @@ void initGlobalState () {
   resetRecBuffer(&state.recBeanData);
   resetSendBuffer(&state.sendBeanData);
   state.prevBean = BEAN_IN;
+  state.soundPlaying = 0;
 //  
 //  state.readPos = 0;
 //  state.writePos = 0;
