@@ -10,19 +10,16 @@
 #include "..\Include\typeConvert.h"
 #include "..\Include\sounds.h"
 
-void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
-{
-  switch((USBReqCommand)UsbRxData[0])
-  {
-    case USB_NO_CMD: {
-      state.usbCommand = USB_NO_CMD;
-      state.usbSubCommand = USB_NO_SUBCMD;
+void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
+  state.usbCommand = USB_NO_CMD;
+  state.usbSubCommand = USB_NO_SUBCMD;
+  switch ((USBReqCommand) UsbRxData[0]) {
+    case USB_NO_CMD:
       break;
-    }
 
-    // ---------------
-    // Port commands
-    // ---------------
+      // ---------------
+      // Port commands
+      // ---------------
     case USB_GET_PORTS_STATE:
       getPorts();
       break;
@@ -31,52 +28,55 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       state.usbCommand = USB_MONITOR_PORTS_STATE;
       state.usbSubCommand = USB_NO_SUBCMD;
       break;
-      
+
     case USB_SET_PORT_STATE0:
     case USB_SET_PORT_STATE1:
-      setPorts((USBReqCommand)UsbRxData[0] == USB_SET_PORT_STATE1, &UsbRxData[2]);
+      setPorts((USBReqCommand) UsbRxData[0] == USB_SET_PORT_STATE1, &UsbRxData[2]);
       getPorts();
       break;
-     
-    // -------------
-    // BEAN commands
-    // -------------
+
+      // -------------
+      // BEAN commands
+      // -------------
     case USB_SEND_BEAN_CMD:
     case USB_SEND_BEAN_CMD_REC_TICKS:
-      state.usbCommand = (USBReqCommand)UsbRxData[0];
+      state.usbCommand = (USBReqCommand) UsbRxData[0];
       initSendBeanData(&state.sendBeanData, &UsbRxData[2]);
       state.recBeanData.recBufferFull = 0;
       state.recPos = 0;
       break;
-    
+
     case USB_LISTERN_BEAN:
     case USB_LISTERN_BEAN_REC_TICKS:
-      state.usbCommand = (USBReqCommand)UsbRxData[0];
+      state.usbCommand = (USBReqCommand) UsbRxData[0];
       state.recPos = 0;
       state.recBeanData.recBufferFull = 0;
       break;
-      
-    
-    case USB_SPI_SEND_CMD: {
+
+
+    case USB_SPI_SEND_CMD:
+    {
       state.usbCommand = USB_SPI_SEND_CMD;
       state.spiCmd[0] = byteArrToUint32ForSPI(&UsbRxData[2]);
       state.spiCmd[1] = byteArrToUint32ForSPI(&UsbRxData[6]);
-//      memcpy(&state.spiCmd, &UsbRxData[2], 4);
+      //      memcpy(&state.spiCmd, &UsbRxData[2], 4);
       txSPI();
       break;
     }
-    
+
     case USB_PLAY_BEEP_SOUND:
       playSound(nokiaRingtoneSound);
       break;
 
-    case USB_ECHO: {
+    case USB_ECHO:
+    {
       state.usbTxData[0] = 0x01;
       state.usbTxData[1] = USB_ECHO;
       break;
     }
-    
-    case USB_START_BOOTLOADER: {
+
+    case USB_START_BOOTLOADER:
+    {
       // Do software reset
       SYSKEY = 0x00000000; //write invalid key to force lock
       SYSKEY = 0xAA996655; //write key1 to SYSKEY
@@ -88,17 +88,15 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len)
       unsigned int dummy;
       dummy = RSWRST;
       /* prevent any unwanted code execution until reset occurs*/
-      while(1);
+      while (1);
       break;
-	  }
+    }
   }
 }
 
-unsigned char GetTransmitFrame(unsigned char* UsbTxData)
-{
-  
-  if (state.usbTxData[0]) 
-  {
+unsigned char GetTransmitFrame(unsigned char* UsbTxData) {
+
+  if (state.usbTxData[0]) {
     unsigned char BuffLen = state.usbTxData[0];
     memcpy(UsbTxData, &state.usbTxData[1], state.usbTxData[0]);
     state.usbTxData[0] = 0;

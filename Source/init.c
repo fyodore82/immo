@@ -10,6 +10,9 @@ void init ()
   unsigned int int_status;
   int_status = INTDisableInterrupts();
   
+  CFGCONbits.TDOEN = 0;
+  CFGCONbits.JTAGEN = 0;
+  
   // PMD tested using USB module disable
   SYSKEY = 0x00000000; //write invalid key to force lock
   SYSKEY = 0xAA996655; //write key1 to SYSKEY
