@@ -31,7 +31,6 @@ void init ()
 //  PMD3bits.OC5MD = 1;
   
   PMD4bits.T1MD = 1;
-  PMD4bits.T5MD = 1;
   
   PMD5bits.U1MD = 1;
   PMD5bits.U2MD = 1;
@@ -135,7 +134,7 @@ void init ()
   IPC3bits.T3IP = 1;
   IPC3bits.T3IS = 1;
   IEC0bits.T3IE = 1;
-  
+  // Sound timer
   T4CON = T4CON_VALUE;
   TMR4 = 0x0;
   PR4 = 0x0;   
@@ -143,6 +142,14 @@ void init ()
   IPC4bits.T4IP = 1;
   IPC4bits.T4IS = 1;
   IEC0bits.T4IE = 1;
+  // Port state detection timer
+  TMR5 = 0x0;
+  PR5 = 0x0;   
+  IFS0bits.T5IF = 0;
+  IPC5bits.T5IP = 1;
+  IPC5bits.T5IS = 1;
+  IEC0bits.T5IE = 1;
+  T5CON = T5CON_VALUE;
   
   // ----------------- SPI -------------------
   // Config REFOCON 
@@ -156,6 +163,7 @@ void init ()
   // SPI1BRG = 0; - zero on reset. Fsck = Fpb / (2 * (SPI1BRG + 1)) = 40 MHz / (2 * (0 + 1)) = 20 MHz
   SPI1STATbits.SPIROV = 0;
   // bit 0-1: SRXISEL<1:0>: SPI Receive Buffer Full Interrupt Mode bits = 01 = buffer is not empty
+  // bit 2-3: STXISEL<1:0>: SPI Transmit Buffer Empty Interrupt Mode bits = 00 - SPIxTXIF is set when the last transfer is shifted out of SPISR and transmit operations are complete
   // bit 5: MSTEN = 1 - master
   // bit 6: CKP: Clock Polarity Select bit = 0 (low = idle)
   // bit 8: CKE: SPI Clock Edge Select bit = 1

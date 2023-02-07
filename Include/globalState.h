@@ -14,6 +14,7 @@ extern "C" {
     
 #include <bean.h>
 #include <xc.h>
+#include "spi.h"
     
 typedef enum {
     USB_NO_CMD,
@@ -31,6 +32,9 @@ typedef enum {
     USB_LISTERN_BEAN_REC_TICKS = 0x24, // Save ticks elapsed between NEAN IN port change
             
     USB_PLAY_BEEP_SOUND = 0x31,
+            
+    USB_GET_REGISTERS_STATE = 0x41,
+    USB_MONITOR_REGISTERS_STATE = 0x42,
     
     USB_START_BOOTLOADER = 0x80,            
 
@@ -43,6 +47,8 @@ typedef enum {
             
     USB_GOT_BEAN_CMD = 0x21,
     USB_GOT_REC_TICKS = 0x23,
+            
+    USB_GOT_REGS = 0x41,
 
     // USB_ECHO = 0x90
 } USBRespCommand;
@@ -53,29 +59,49 @@ typedef enum {
     BEAN_DEBUG_SET_0
 } USBSubCommand;
 
-
 typedef struct {
     USBReqCommand usbCommand;
     USBSubCommand usbSubCommand;
+    unsigned char usbTxData[64];
+    
+    // INIT
+    unsigned char initialTasks;
+    
+    // BEAN
     RecBeanData recBeanData;
     SendBeanData sendBeanData;
     unsigned char prevBean;
-
-    unsigned char usbTxData[64];
     
     // To count number of ticks between neigbor bean in port change
     unsigned char recBuff[256];
     unsigned char recPos;
-    // SPI
-    uint32_t spiCmd[4];
-    // We're going to receive up to 4 spi cmd
-    uint32_t spiReceive[4];
-    unsigned char spiRecIdx;
     
+    // SPI
+    uint32_t spiReceive[4];  // We're going to receive up to 4 spi cmd
+    unsigned char spiRecIdx;
+    uint32_t spiSend[SPI_SEND_BUFF]; // 0 - addr, 1 - data, 2 - addr, 1 - data
+    unsigned char spiSendIdx;
+
+    SPITask spiTask;
+    uint32_t spiAddr;   // Current SPI address to write log to
+    
+    // Sounds
     uint16_t* soundPlaying;
     unsigned char soundIndex;
     uint16_t soundLength; // length of the sound in TMR4 expirations
                           // Depending on the playing freq, TMR4 may expire earlier of later
+    struct {
+        unsigned char buttonIn: 1;
+        unsigned char capotIn: 1;
+        unsigned char immoSenceIn: 1;
+        unsigned char asr12vIn: 1;
+        
+        unsigned char buttonInTest;
+        unsigned char capotInTest;
+        unsigned char immoSenceInTest;
+        unsigned char asr12vInTest;
+    };
+    
 } GlobalState;
 
 extern GlobalState state;

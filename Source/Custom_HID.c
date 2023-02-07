@@ -34,6 +34,18 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
       setPorts((USBReqCommand) UsbRxData[0] == USB_SET_PORT_STATE1, &UsbRxData[2]);
       getPorts();
       break;
+      
+      // -------------
+      // Regs: global state
+      // -------------
+    case USB_GET_REGISTERS_STATE:
+      if (state.usbTxData[0]) break;
+      state.usbTxData[0] = 7;
+      state.usbTxData[1] = USB_GOT_REGS;
+      uint32ToByteArr(&state.usbTxData[2], state.spiAddr);
+      state.usbTxData[6] = state.spiTask;
+      state.usbTxData[7] = state.initialTasks;
+      break;
 
       // -------------
       // BEAN commands
@@ -56,11 +68,10 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
 
     case USB_SPI_SEND_CMD:
     {
-      state.usbCommand = USB_SPI_SEND_CMD;
-      state.spiCmd[0] = byteArrToUint32ForSPI(&UsbRxData[2]);
-      state.spiCmd[1] = byteArrToUint32ForSPI(&UsbRxData[6]);
+//      state.usbCommand = USB_SPI_SEND_CMD;
+      state.spiTask = SPI_EXEC_USB_CMD;
       //      memcpy(&state.spiCmd, &UsbRxData[2], 4);
-      txSPI();
+      txSPI(byteArrToUint32ForSPI(&UsbRxData[2]), byteArrToUint32ForSPI(&UsbRxData[6]));
       break;
     }
 

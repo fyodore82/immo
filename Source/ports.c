@@ -35,3 +35,18 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_CHANGE_NOTICE
   CNSTATB = 0;
   CNSTATA = 0;
 }
+
+void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_5_VECTOR))) _timer5Vector(void) {
+  IFS0bits.T5IF = 0;
+  if (state.buttonInTest < BUTTON_TEST_STATE_ONE && BUTTON_IN) state.buttonInTest++;
+  if (state.buttonInTest > BUTTON_TEST_STATE_ZERO && !BUTTON_IN) state.buttonInTest--;
+
+  if (state.capotInTest < BUTTON_TEST_STATE_ONE && CAPOT_IN) state.capotInTest++;
+  if (state.capotInTest > BUTTON_TEST_STATE_ZERO && !CAPOT_IN) state.capotInTest--;
+
+  if (state.immoSenceInTest < BUTTON_TEST_STATE_ONE && IMMO_SENCE_IN) state.immoSenceInTest++;
+  if (state.immoSenceInTest > BUTTON_TEST_STATE_ZERO && !IMMO_SENCE_IN) state.immoSenceInTest--;
+
+  if (state.asr12vInTest < BUTTON_TEST_STATE_ONE && ASR12V_IN) state.asr12vInTest++;
+  if (state.asr12vInTest > BUTTON_TEST_STATE_ZERO && !ASR12V_IN) state.asr12vInTest--;
+}

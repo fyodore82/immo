@@ -34,6 +34,13 @@ void setPorts(unsigned char, unsigned char*);
 #define BEAN_IN PORTBbits.RB8
 #define BEAN_IN_CNSTAT CNSTATBbits.CNSTATB8
 
+#define T5CON_VALUE 0x00008070 // ON = 1, TCKPS = 256, T32 = 0, TSC = 0
+#define PR5_VALUE 0x061A       // = ~10ms
+
+#define BUTTON_TEST_STATE_MID 0x10   // Middle, neither 0 or 1
+#define BUTTON_TEST_STATE_ONE 0x13   // One State
+#define BUTTON_TEST_STATE_ZERO 0x0D   // Zero State
+
 #ifdef	__cplusplus
 }
 #endif

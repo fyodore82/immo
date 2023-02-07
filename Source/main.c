@@ -1,41 +1,3 @@
-/*********************************************************************
- *
- *                  PIC32 Boot Loader
- *
- *********************************************************************
- * FileName:        Bootloader.c
- * Dependencies:
- * Processor:       PIC32
- *
- * Compiler:        MPLAB C32
- *                  MPLAB IDE
- * Company:         Microchip Technology, Inc.
- *
- * Software License Agreement
- *
- * The software supplied herewith by Microchip Technology Incorporated
- * (the �Company�) for its PIC32 Microcontroller is intended
- * and supplied to you, the Company�s customer, for use solely and
- * exclusively on Microchip PIC32 Microcontroller products.
- * The software is owned by the Company and/or its supplier, and is
- * protected under applicable copyright laws. All rights are reserved.
- * Any use in violation of the foregoing restrictions may subject the
- * user to criminal sanctions under applicable laws, as well as to
- * civil liability for the breach of the terms and conditions of this
- * license.
- *
- * THIS SOFTWARE IS PROVIDED IN AN �AS IS� CONDITION. NO WARRANTIES,
- * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
- * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- *
- * $Id:  $
- * $Name: $
- *
- **********************************************************************/
 #include <stdlib.h>
 #include <xc.h>
 #include <bean.h>
@@ -47,6 +9,7 @@
 #include "..\Include\globalState.h"
 #include "..\Include\beanTasks.h"
 #include "..\Include\spi.h"
+#include "..\Include\initialTasks.h"
 
 // From Bootloader.h
 #if defined(TRANSPORT_LAYER_USB)
@@ -91,25 +54,6 @@
 #pragma config IOL1WAY = ON
 #pragma config PMDL1WAY = ON
 
-
-/********************************************************************
- * Function: 	main()
- *
- * Precondition: 
- *
- * Input: 		None.
- *
- * Output:		None.
- *
- * Side Effects:	None.
- *
- * Overview: 	Main entry function. If there is a trigger or 
- *				if there is no valid application, the device 
- *				stays in firmware upgrade mode.
- *
- *			
- * Note:		 	None.
- ********************************************************************/
 INT main(void) {
   initGlobalState(&state);
   
@@ -122,7 +66,9 @@ INT main(void) {
   
   // Initialize the transport layer - UART/USB/Ethernet
   TRANS_LAYER_Init(pbClk);
+  
   while (1) {
+    initialTasks();
     TRANS_LAYER_Task(); // Run Transport layer tasks
     beanTasks();
     spiTasks();
