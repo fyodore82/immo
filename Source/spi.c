@@ -38,7 +38,7 @@ void spiTasks() {
       if (!IFS1bits.SPI1RXIF) break;
       IFS1bits.SPI1RXIF = 0;
       uint32_t data = SPI1BUF;  // This is bus state when address has been sent
-      data = SPI1BUF; // Second read yeilds data
+      data = SPI1BUF; // Second read yeild data
       // 0xFFFFFFFF means that bytes are erased
       if (data == 0xFFFFFFFF) {
         state.spiTask = SPI_NO_TASK;
@@ -79,6 +79,8 @@ void writeLog(uint32_t data) {
   }
   state.spiTask = SPI_SEND_DATA;
   state.spiSendIdx = 0;
+  // If data is written to the log, send it by USB
+  sendGlobalState();
 }
 
   //void __attribute__((nomips16)) __attribute__((interrupt(), vector(_SPI_1_VECTOR))) _spiVector(void) {

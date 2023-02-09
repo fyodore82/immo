@@ -24,11 +24,6 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
       getPorts();
       break;
 
-    case USB_MONITOR_PORTS_STATE:
-      state.usbCommand = USB_MONITOR_PORTS_STATE;
-      state.usbSubCommand = USB_NO_SUBCMD;
-      break;
-
     case USB_SET_PORT_STATE0:
     case USB_SET_PORT_STATE1:
       setPorts((USBReqCommand) UsbRxData[0] == USB_SET_PORT_STATE1, &UsbRxData[2]);
@@ -38,13 +33,10 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
       // -------------
       // Regs: global state
       // -------------
-    case USB_GET_REGISTERS_STATE:
-      if (state.usbTxData[0]) break;
-      state.usbTxData[0] = 7;
-      state.usbTxData[1] = USB_GOT_REGS;
-      uint32ToByteArr(&state.usbTxData[2], state.spiAddr);
-      state.usbTxData[6] = state.spiTask;
-      state.usbTxData[7] = state.initialTasks;
+    case USB_GET_GLOBAL_STATE:
+    case USB_MONITOR_GLOBAL_STATE:
+      state.usbCommand = (USBReqCommand) UsbRxData[0];
+      sendGlobalState();
       break;
 
       // -------------

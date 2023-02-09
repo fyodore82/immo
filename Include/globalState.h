@@ -22,7 +22,7 @@ typedef enum {
     USB_GET_PORTS_STATE = 2,
     USB_SET_PORT_STATE0 = 3,  // Data[0] = port number
     USB_SET_PORT_STATE1 = 4,  // Data[0] = port number
-    USB_MONITOR_PORTS_STATE = 5,
+//    USB_MONITOR_PORTS_STATE = 5, // Cannot monitor as CN int has higher priority than USB and will freeze device
             
     USB_SPI_SEND_CMD = 0x11,
             
@@ -33,8 +33,8 @@ typedef enum {
             
     USB_PLAY_BEEP_SOUND = 0x31,
             
-    USB_GET_REGISTERS_STATE = 0x41,
-    USB_MONITOR_REGISTERS_STATE = 0x42,
+    USB_GET_GLOBAL_STATE = 0x41,
+    USB_MONITOR_GLOBAL_STATE = 0x42,
     
     USB_START_BOOTLOADER = 0x80,            
 
@@ -48,7 +48,7 @@ typedef enum {
     USB_GOT_BEAN_CMD = 0x21,
     USB_GOT_REC_TICKS = 0x23,
             
-    USB_GOT_REGS = 0x41,
+    USB_GOT_GLOBAL_STATE = 0x41,
 
     // USB_ECHO = 0x90
 } USBRespCommand;
@@ -90,23 +90,16 @@ typedef struct {
     unsigned char soundIndex;
     uint16_t soundLength; // length of the sound in TMR4 expirations
                           // Depending on the playing freq, TMR4 may expire earlier of later
-    struct {
-        unsigned char buttonIn: 1;
-        unsigned char capotIn: 1;
-        unsigned char immoSenceIn: 1;
-        unsigned char asr12vIn: 1;
-        
-        unsigned char buttonInTest;
-        unsigned char capotInTest;
-        unsigned char immoSenceInTest;
-        unsigned char asr12vInTest;
-    };
+    unsigned char portsState[4];
+    unsigned char portsTest[4];
     
 } GlobalState;
 
 extern GlobalState state;
 
 void initGlobalState ();
+void sendGlobalState ();
+void processGlobalStateChange();
 
 
 #ifdef	__cplusplus

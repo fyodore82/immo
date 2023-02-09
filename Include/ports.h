@@ -14,6 +14,7 @@ extern "C" {
 
 void getPorts();
 void setPorts(unsigned char, unsigned char*);
+unsigned char getPortStateByIdx(uint8_t idx);
 
 #define BEEPER_CTRL_OUT PORTBbits.RB15  // pin 26
 #define IMMO_ON_OUT PORTAbits.RA4       // pin 12
@@ -21,15 +22,19 @@ void setPorts(unsigned char, unsigned char*);
 
 #define BUTTON_IN PORTBbits.RB0
 #define BUTTON_IN_CNSTAT CNSTATBbits.CNSTATB0
+#define BUTTON_IN_IDX 0
 
 #define CAPOT_IN PORTBbits.RB4
 #define CAPOT_IN_CNSTAT CNSTATBbits.CNSTATB4
+#define CAPOT_IN_IDX 1
 
 #define IMMO_SENCE_IN PORTBbits.RB5
 #define IMMO_SENCE_IN_CNSTAT CNSTATBbits.CNSTATB5
+#define IMMO_SENCE_IDX 2
 
 #define ASR12V_IN PORTBbits.RB7
 #define ASR12V_IN_CNSTAT CNSTATBbits.CNSTATB7
+#define ASR12V_IN_IDX 3
 
 #define BEAN_IN PORTBbits.RB8
 #define BEAN_IN_CNSTAT CNSTATBbits.CNSTATB8

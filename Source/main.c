@@ -10,6 +10,7 @@
 #include "..\Include\beanTasks.h"
 #include "..\Include\spi.h"
 #include "..\Include\initialTasks.h"
+#include "..\Include\ports.h"
 
 // From Bootloader.h
 #if defined(TRANSPORT_LAYER_USB)
@@ -69,6 +70,7 @@ INT main(void) {
   
   while (1) {
     initialTasks();
+    processGlobalStateChange();
     TRANS_LAYER_Task(); // Run Transport layer tasks
     beanTasks();
     spiTasks();

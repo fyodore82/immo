@@ -16,11 +16,12 @@ extern "C" {
 
 typedef enum {
     LOG_ENTRY_RESET,    // When device has been reset
-    LOG_ENTRY_IG,
-    LOG_ENTRY_ASR12V,
-    LOG_ENTRY_TURN_OFF_REQ, // When immo turned off his contact. It means that label removed from immo
-    LOG_ENTRY_NO_RESP_FROM_RELAY,   // No resp from relay
-    LOG_ENTRY_RESP_FROM_RELAY,      // Got resp from relay
+    LOG_ENTRY_STATE_CHANGE,
+//    LOG_ENTRY_IG,
+//    LOG_ENTRY_ASR12V,
+//    LOG_ENTRY_TURN_OFF_REQ, // When immo turned off his contact. It means that label removed from immo
+//    LOG_ENTRY_NO_RESP_FROM_RELAY,   // No resp from relay
+//    LOG_ENTRY_RESP_FROM_RELAY,      // Got resp from relay
 } SPILogEntryType;
 
 typedef enum {

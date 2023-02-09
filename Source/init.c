@@ -58,14 +58,17 @@ void init ()
 
   // 12.3.3 Change notification
   // Enable for RPB9, BEAN_IN
+  // !!!!!!!! IMPORTANT !!!!!!!!!
+  // Change notification should only be enabled for BEAN_IN
+  // Otherwise it will freeze device as CN interrupts are high priority
   CNCONBbits.ON = 1;
   
   // V pin 4 BUTTON_IN
-  CNENBbits.CNIEB0 = 1;
+//  CNENBbits.CNIEB0 = 1;
   unsigned char readPort = BUTTON_IN;
 
   // pin 11 CAPOT_IN
-  CNENBbits.CNIEB4 = 1;
+//  CNENBbits.CNIEB4 = 1;
   readPort = CAPOT_IN;
   
   // V pin 12 IMMO_ON_OUT
@@ -73,11 +76,11 @@ void init ()
   IMMO_ON_OUT = 0;
 
   // V pin 14 IMMO_SENCE_IN
-  CNENBbits.CNIEB5 = 1;
+//  CNENBbits.CNIEB5 = 1;
   readPort = IMMO_SENCE_IN;
 
   // V pin 16 ASR12V_IN
-  CNENBbits.CNIEB7 = 1;
+//  CNENBbits.CNIEB7 = 1;
   readPort = ASR12V_IN;
 
   // pin 17: BEAN_IN
@@ -144,7 +147,7 @@ void init ()
   IEC0bits.T4IE = 1;
   // Port state detection timer
   TMR5 = 0x0;
-  PR5 = 0x0;   
+  PR5 = PR5_VALUE;   
   IFS0bits.T5IF = 0;
   IPC5bits.T5IP = 1;
   IPC5bits.T5IS = 1;
