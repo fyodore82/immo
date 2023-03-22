@@ -12,11 +12,12 @@
             <asminc-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects>
-                <make-dep-project>../bean/bean.X</make-dep-project>
+                <make-dep-project>../../bean/bean.X</make-dep-project>
             </make-dep-projects>
             <sourceRootList>
                 <sourceRootElem>.</sourceRootElem>
                 <sourceRootElem>../bean/bean.X</sourceRootElem>
+                <sourceRootElem>../../bean/bean.X</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

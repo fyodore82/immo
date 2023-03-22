@@ -15,6 +15,7 @@ extern "C" {
 void getPorts();
 void setPorts(unsigned char, unsigned char*);
 unsigned char getPortStateByIdx(uint8_t idx);
+void processPortsChange();
 
 #define BEEPER_CTRL_OUT PORTBbits.RB15  // pin 26
 #define IMMO_ON_OUT PORTAbits.RA4       // pin 12

@@ -70,7 +70,7 @@ INT main(void) {
   
   while (1) {
     initialTasks();
-    processGlobalStateChange();
+    processPortsChange();
     TRANS_LAYER_Task(); // Run Transport layer tasks
     beanTasks();
     spiTasks();

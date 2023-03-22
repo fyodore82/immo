@@ -50,3 +50,20 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_5_VECTO
     if (state.portsTest[idx] > BUTTON_TEST_STATE_ZERO && !portIn) state.portsTest[idx]--;
   }
 }
+
+void processPortsChange() {
+  uint8_t portChanged = 0;
+  for (uint8_t idx = 0; idx < 4; idx++) {
+    if (state.portsTest[idx] == BUTTON_TEST_STATE_ONE && !state.portsState[idx]) {
+      state.portsState[idx] = 1;
+      portChanged = 1;
+    }
+    if (state.portsTest[idx] == BUTTON_TEST_STATE_ZERO && state.portsState[idx]) {
+      state.portsState[idx] = 0;
+      portChanged = 1;
+    }
+  }
+  if (portChanged) {
+    writeLog(((uint8_t)LOG_ENTRY_STATE_CHANGE << 24) | (0 << 16) | (state.portsState[BUTTON_IN_IDX]) | (state.portsState[CAPOT_IN_IDX] << 1) | (state.portsState[IMMO_SENCE_IDX] << 2) | (state.portsState[ASR12V_IN_IDX] << 3));
+  }
+}

@@ -19,6 +19,7 @@ void initGlobalState() {
   state.spiAddr = 0;
   state.spiSendIdx = 0;
   state.initialTasks = SPI_FIND_STOP_ADDR | SPI_WRITE_RESET_REASON;
+  state.sec = 0;
 
   state.portsState[0] = 0;
   state.portsState[1] = 1;
@@ -47,21 +48,4 @@ void sendGlobalState() {
   state.usbTxData[10] = state.portsTest[CAPOT_IN_IDX];
   state.usbTxData[11] = state.portsTest[IMMO_SENCE_IDX];
   state.usbTxData[12] = state.portsTest[ASR12V_IN_IDX];
-}
-
-void processGlobalStateChange() {
-  uint8_t portChanged = 0;
-  for (uint8_t idx = 0; idx < 4; idx++) {
-    if (state.portsTest[idx] == BUTTON_TEST_STATE_ONE && !state.portsState[idx]) {
-      state.portsState[idx] = 1;
-      portChanged = 1;
-    }
-    if (state.portsTest[idx] == BUTTON_TEST_STATE_ZERO && state.portsState[idx]) {
-      state.portsState[idx] = 0;
-      portChanged = 1;
-    }
-  }
-  if (portChanged) {
-    writeLog(((uint8_t)LOG_ENTRY_STATE_CHANGE << 24) | (0 << 16) | (state.portsState[BUTTON_IN_IDX]) | (state.portsState[CAPOT_IN_IDX] << 1) | (state.portsState[IMMO_SENCE_IDX] << 2) | (state.portsState[ASR12V_IN_IDX] << 3));
-  }
 }

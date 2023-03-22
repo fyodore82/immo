@@ -64,6 +64,9 @@ typedef struct {
     USBSubCommand usbSubCommand;
     unsigned char usbTxData[64];
     
+    // Time
+    unsigned char sec;
+    
     // INIT
     unsigned char initialTasks;
     
@@ -99,8 +102,6 @@ extern GlobalState state;
 
 void initGlobalState ();
 void sendGlobalState ();
-void processGlobalStateChange();
-
 
 #ifdef	__cplusplus
 }
