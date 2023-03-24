@@ -60,6 +60,9 @@ void spiTasks() {
       if (state.spiSendIdx >= SPI_SEND_BUFF || state.spiSend[state.spiSendIdx] == 0) {
         state.spiTask = SPI_NO_TASK;
         state.spiSendIdx = 0;
+        for (uint8_t i = 0; i < SPI_SEND_BUFF; i++) {
+          state.spiSend[i] = 0;
+        }
       }
       break;
   }
@@ -70,17 +73,20 @@ void writeLog(uint32_t data) {
   state.spiSend[0] = 0x06000000;  // Write enable
   state.spiSend[1] = 0;
   state.spiSend[2] = 0x02000000 | state.spiAddr;
-  state.spiSend[3] = data; // Write data
+  state.spiSend[3] = (state.hour << 24) | (state.min << 16) | state.ms10;
+  state.spiAddr += 4;
+  state.spiSend[4] = 0x06000000;  // Write enable
+  state.spiSend[5] = 0;
+  state.spiSend[6] = 0x02000000 | state.spiAddr;
+  state.spiSend[7] = data; // Write data
   state.spiAddr += 4;
   if (state.spiAddr >= SPI_MAX_ADDR) state.spiAddr = 0; // Roll over to the start
   if (!(state.spiAddr & SPI_SMALL_SECTOR)) {
-    state.spiSend[4] = 0xd7000000 | state.spiAddr; // Erase next sector
-    state.spiSend[5] = 0;
+    state.spiSend[8] = 0xd7000000 | state.spiAddr; // Erase next sector
+    state.spiSend[9] = 0;
   }
   state.spiTask = SPI_SEND_DATA;
   state.spiSendIdx = 0;
-  // If data is written to the log, send it by USB
-  sendGlobalState();
 }
 
   //void __attribute__((nomips16)) __attribute__((interrupt(), vector(_SPI_1_VECTOR))) _spiVector(void) {

@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   StateControl.h
  * Author: fedor
  *

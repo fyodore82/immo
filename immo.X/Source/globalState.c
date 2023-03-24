@@ -19,26 +19,34 @@ void initGlobalState() {
   state.spiAddr = 0;
   state.spiSendIdx = 0;
   state.initialTasks = SPI_FIND_STOP_ADDR | SPI_WRITE_RESET_REASON;
-  state.sec = 0;
+  
+  state.secTasks = 0;
+
+  state.ms10 = 0;
+  state.min = 0;
+  state.hour = 0;
 
   state.portsState[0] = 0;
-  state.portsState[1] = 1;
+  state.portsState[1] = 0;
   state.portsState[2] = 0;
   state.portsState[3] = 0;
-  
+
   state.portsTest[0] = BUTTON_TEST_STATE_MID;
   state.portsTest[1] = BUTTON_TEST_STATE_MID;
   state.portsTest[2] = BUTTON_TEST_STATE_MID;
   state.portsTest[3] = BUTTON_TEST_STATE_MID;
+
+  state.immoState = IMMO_UNKNOWN;
+  state.immoStateChangeNotified = 0;
 }
 
 void sendGlobalState() {
   if (state.usbCommand != USB_MONITOR_GLOBAL_STATE && state.usbCommand != USB_GET_GLOBAL_STATE) return;
   if (state.usbTxData[0]) return;
-  
+
   if (state.usbCommand == USB_GET_GLOBAL_STATE) state.usbCommand = USB_NO_CMD;
- 
-  state.usbTxData[0] = 12;
+
+  state.usbTxData[0] = 16;
   state.usbTxData[1] = USB_GOT_GLOBAL_STATE;
   uint32ToByteArr(&state.usbTxData[2], state.spiAddr);
   state.usbTxData[6] = state.spiTask;
@@ -48,4 +56,20 @@ void sendGlobalState() {
   state.usbTxData[10] = state.portsTest[CAPOT_IN_IDX];
   state.usbTxData[11] = state.portsTest[IMMO_SENCE_IDX];
   state.usbTxData[12] = state.portsTest[ASR12V_IN_IDX];
+  state.usbTxData[13] = state.ms10;
+  state.usbTxData[14] = state.ms10 >> 8;
+  state.usbTxData[15] = state.min;
+  state.usbTxData[16] = state.hour;
+}
+
+void globalStateTasks () {
+  if (state.ms10 % 100 == 0) {
+    if (!(state.secTasks & SEC_TASK_SEND_GLOBAL_STATE)) {
+      sendGlobalState();
+      state.secTasks |= SEC_TASK_SEND_GLOBAL_STATE;
+    }
+  }
+  else {
+    state.secTasks &= ~SEC_TASK_SEND_GLOBAL_STATE;
+  } 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   ports.h
  * Author: fedor
  *
@@ -25,23 +25,23 @@ void processPortsChange();
 #define BUTTON_IN_CNSTAT CNSTATBbits.CNSTATB0
 #define BUTTON_IN_IDX 0
 
-#define CAPOT_IN PORTBbits.RB4
-#define CAPOT_IN_CNSTAT CNSTATBbits.CNSTATB4
+#define CAPOT_IN PORTBbits.RB7
+#define CAPOT_IN_CNSTAT CNSTATBbits.CNSTATB7
 #define CAPOT_IN_IDX 1
 
 #define IMMO_SENCE_IN PORTBbits.RB5
 #define IMMO_SENCE_IN_CNSTAT CNSTATBbits.CNSTATB5
 #define IMMO_SENCE_IDX 2
 
-#define ASR12V_IN PORTBbits.RB7
-#define ASR12V_IN_CNSTAT CNSTATBbits.CNSTATB7
+#define ASR12V_IN PORTBbits.RB4
+#define ASR12V_IN_CNSTAT CNSTATBbits.CNSTATB4
 #define ASR12V_IN_IDX 3
 
 #define BEAN_IN PORTBbits.RB8
 #define BEAN_IN_CNSTAT CNSTATBbits.CNSTATB8
 
-#define T5CON_VALUE 0x00008070 // ON = 1, TCKPS = 256, T32 = 0, TSC = 0
-#define PR5_VALUE 0x061A       // = ~10ms
+#define T5CON_VALUE 0x00008060 // ON = 1, TCKPS = 64, T32 = 0, TSC = 0
+#define PR5_VALUE 0x0186A       // = =10ms
 
 #define BUTTON_TEST_STATE_MID 0x10   // Middle, neither 0 or 1
 #define BUTTON_TEST_STATE_ONE 0x13   // One State

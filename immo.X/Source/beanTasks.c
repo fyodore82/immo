@@ -15,7 +15,6 @@ void sendToUSBReceivedBeanCmd() {
     state.usbTxData[0] = l + 2;
     state.usbTxData[1] = USB_GOT_BEAN_CMD;
     memcpy(&state.usbTxData[2], state.recBeanData.buffer, l);
-    state.recBeanData.recBufferFull = 0;
   }
 }
 
@@ -26,7 +25,6 @@ void sendToUSBReceivedRecBuff() {
     state.usbTxData[1] = USB_GOT_REC_TICKS;
     memcpy(&state.usbTxData[2], state.recBuff, 61);
     state.recPos = 0;
-    state.recBeanData.recBufferFull = 0;
   }
 }
 
@@ -50,38 +48,36 @@ void beanTasks() {
     state.recPos = 0;
     transfer1bit();
   }
+  if (state.recBeanData.recBufferFull) {
+    state.recBeanData.recBufferFull = 0;
+    switch (state.usbCommand) {
+        //    case USB_BEAN_DEBUG:
+        //    {
+        //      if (state.usbSubCommand == BEAN_DEBUG_SET_1) BEAN_OUT = 1;
+        //      if (state.usbSubCommand == BEAN_DEBUG_SET_0) BEAN_OUT = 0;
+        //      // Ports will be chached in ports interrupt
+        //
+        //      state.usbSubCommand = USB_NO_SUBCMD;
+        //      break;
+        //    }
+      case USB_LISTERN_BEAN:
+        sendToUSBReceivedBeanCmd();
+        break;
+      case USB_LISTERN_BEAN_REC_TICKS:
+        sendToUSBReceivedRecBuff();
+        break;
 
-  switch (state.usbCommand) {
-//    case USB_BEAN_DEBUG:
-//    {
-//      if (state.usbSubCommand == BEAN_DEBUG_SET_1) BEAN_OUT = 1;
-//      if (state.usbSubCommand == BEAN_DEBUG_SET_0) BEAN_OUT = 0;
-//      // Ports will be chached in ports interrupt
-//
-//      state.usbSubCommand = USB_NO_SUBCMD;
-//      break;
-//    }
-    case USB_LISTERN_BEAN:
-      if (state.recBeanData.recBufferFull) sendToUSBReceivedBeanCmd();
-      break;
-    case USB_LISTERN_BEAN_REC_TICKS:
-      if (state.recBeanData.recBufferFull) sendToUSBReceivedRecBuff();
-      break;
-
-    case USB_SEND_BEAN_CMD:
-      // Check if transfer is in progress as there may be errors during transfer
-      // and we still have to send reponse back
-      if (state.recBeanData.recBufferFull) {
+      case USB_SEND_BEAN_CMD:
+        // Check if transfer is in progress as there may be errors during transfer
+        // and we still have to send reponse back
         state.usbCommand = USB_LISTERN_BEAN;
         sendToUSBReceivedBeanCmd();
-      }
-      break;
-    case USB_SEND_BEAN_CMD_REC_TICKS:
-      if (state.recBeanData.recBufferFull) {
+        break;
+      case USB_SEND_BEAN_CMD_REC_TICKS:
         state.usbCommand = USB_LISTERN_BEAN_REC_TICKS;
         sendToUSBReceivedRecBuff();
-      }
-      break;
+        break;
+    }
   }
 }
 
@@ -116,7 +112,7 @@ void inline processBeanInPortChange() {
     // In case of bus error condition do not return.
     // Always receive. In case of error, timer will be turned off in timer3 interrupt
   }
-  
+
   uint16_t tm3 = TMR3;
   unsigned char cnt = getCntFromTmr(tm3, T3_CNT);
   TMR3 = 0;
@@ -125,10 +121,10 @@ void inline processBeanInPortChange() {
   // But interrupt is generated on each new bit we're starting to receive
   recBean(&state.recBeanData, !beanIn, cnt);
   // In case of bean bus error, timer will be turned off in timer interrupt
-  
+
   // We'll save only remainder from division
   if ((state.usbCommand == USB_LISTERN_BEAN_REC_TICKS || state.usbCommand == USB_SEND_BEAN_CMD_REC_TICKS)
-    && state.recPos < 61) {
+          && state.recPos < 61) {
     unsigned char rem = tm3 - ((tm3 / T3_CNT) * T3_CNT);
     state.recBuff[state.recPos] = (!beanIn) ? (0x80 | cnt) : cnt;
     state.recBuff[state.recPos + 1] = rem;

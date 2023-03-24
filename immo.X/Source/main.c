@@ -74,6 +74,7 @@ INT main(void) {
     TRANS_LAYER_Task(); // Run Transport layer tasks
     beanTasks();
     spiTasks();
+    globalStateTasks();
   }
   // Close trasnport layer.
   TRANS_LAYER_Close();

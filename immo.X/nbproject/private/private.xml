@@ -3,13 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/spi.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/ports.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/beanTasks.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/beanTasks.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Include/globalState.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/Custom_HID.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/Source/ports.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/beanTasks.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/stateControl.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/init.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/ports.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/init.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/StateControl.h</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/beanTasks.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/globalState.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/ports.c</file>
         </group>
     </open-files>
 </project-private>

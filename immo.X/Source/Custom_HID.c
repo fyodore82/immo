@@ -46,23 +46,21 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
     case USB_SEND_BEAN_CMD_REC_TICKS:
       state.usbCommand = (USBReqCommand) UsbRxData[0];
       initSendBeanData(&state.sendBeanData, &UsbRxData[2]);
-      state.recBeanData.recBufferFull = 0;
-      state.recPos = 0;
+//      state.recBeanData.recBufferFull = 0;
+      state.recPos = 0; // Is used only to rec ticks
       break;
 
     case USB_LISTERN_BEAN:
     case USB_LISTERN_BEAN_REC_TICKS:
       state.usbCommand = (USBReqCommand) UsbRxData[0];
-      state.recPos = 0;
-      state.recBeanData.recBufferFull = 0;
+      state.recPos = 0; // Is used only to rec ticks
+//      state.recBeanData.recBufferFull = 0;
       break;
 
 
     case USB_SPI_SEND_CMD:
     {
-//      state.usbCommand = USB_SPI_SEND_CMD;
       state.spiTask = SPI_EXEC_USB_CMD;
-      //      memcpy(&state.spiCmd, &UsbRxData[2], 4);
       txSPI(byteArrToUint32ForSPI(&UsbRxData[2]), byteArrToUint32ForSPI(&UsbRxData[6]));
       break;
     }

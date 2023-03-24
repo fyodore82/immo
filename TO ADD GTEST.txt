@@ -1,1 +1,4 @@
 git submodule add -b release-1.8.0-2064-g703bd9ca https://github.com/google/googletest.git
+
+Instruction
+https://stackoverflow.com/questions/62910867/how-to-run-tests-and-debug-google-test-project-in-vs-code

@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   globalState.h
  * Author: fedor
  *
@@ -11,11 +11,11 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    
+
 #include <bean.h>
 #include <xc.h>
 #include "spi.h"
-    
+
 typedef enum {
     USB_NO_CMD,
 //    USB_BEAN_DEBUG,
@@ -23,20 +23,20 @@ typedef enum {
     USB_SET_PORT_STATE0 = 3,  // Data[0] = port number
     USB_SET_PORT_STATE1 = 4,  // Data[0] = port number
 //    USB_MONITOR_PORTS_STATE = 5, // Cannot monitor as CN int has higher priority than USB and will freeze device
-            
+
     USB_SPI_SEND_CMD = 0x11,
-            
+
     USB_SEND_BEAN_CMD = 0x21,
     USB_LISTERN_BEAN = 0x22,
     USB_SEND_BEAN_CMD_REC_TICKS = 0x23, // Save ticks elapsed between NEAN IN port change
     USB_LISTERN_BEAN_REC_TICKS = 0x24, // Save ticks elapsed between NEAN IN port change
-            
+
     USB_PLAY_BEEP_SOUND = 0x31,
-            
+
     USB_GET_GLOBAL_STATE = 0x41,
     USB_MONITOR_GLOBAL_STATE = 0x42,
-    
-    USB_START_BOOTLOADER = 0x80,            
+
+    USB_START_BOOTLOADER = 0x80,
 
     USB_ECHO = 0x90
 } USBReqCommand;
@@ -44,10 +44,10 @@ typedef enum {
 typedef enum {
     USB_POST_PORTS_STATE = 3,
     USB_POST_SPI_RESP = 0x11,
-            
+
     USB_GOT_BEAN_CMD = 0x21,
     USB_GOT_REC_TICKS = 0x23,
-            
+
     USB_GOT_GLOBAL_STATE = 0x41,
 
     // USB_ECHO = 0x90
@@ -59,26 +59,42 @@ typedef enum {
     BEAN_DEBUG_SET_0
 } USBSubCommand;
 
+typedef enum {
+  IMMO_UNKNOWN,
+  IMMO_OK,
+  IMMO_ALERT,
+} ImmoState;
+
+#define SEC_TASK_SEND_GLOBAL_STATE 0b00000001
+
 typedef struct {
     USBReqCommand usbCommand;
     USBSubCommand usbSubCommand;
     unsigned char usbTxData[64];
+
+    ImmoState immoState;
+    // Means that we have already sent notification using BEAN
+    unsigned char immoStateChangeNotified;
+
+    // Time. Counts 10ms intervals
+    uint16_t ms10;
+    uint8_t min;
+    uint8_t hour;
     
-    // Time
-    unsigned char sec;
-    
+    unsigned char secTasks; // Flags to note which task has been executed each sec
+
     // INIT
     unsigned char initialTasks;
-    
+
     // BEAN
     RecBeanData recBeanData;
     SendBeanData sendBeanData;
     unsigned char prevBean;
-    
+
     // To count number of ticks between neigbor bean in port change
     unsigned char recBuff[256];
     unsigned char recPos;
-    
+
     // SPI
     uint32_t spiReceive[4];  // We're going to receive up to 4 spi cmd
     unsigned char spiRecIdx;
@@ -87,7 +103,7 @@ typedef struct {
 
     SPITask spiTask;
     uint32_t spiAddr;   // Current SPI address to write log to
-    
+
     // Sounds
     uint16_t* soundPlaying;
     unsigned char soundIndex;
@@ -95,13 +111,14 @@ typedef struct {
                           // Depending on the playing freq, TMR4 may expire earlier of later
     unsigned char portsState[4];
     unsigned char portsTest[4];
-    
+
 } GlobalState;
 
 extern GlobalState state;
 
 void initGlobalState ();
 void sendGlobalState ();
+void globalStateTasks ();
 
 #ifdef	__cplusplus
 }

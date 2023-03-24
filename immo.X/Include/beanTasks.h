@@ -27,7 +27,7 @@ extern "C" {
                                // Is decreased so when dividing TimerValue to T3CNT we gen number of bits
                                // as sending freq can diviate
 #define PR3_VALUE T3_CNT * (BEAN_NO_TR_COND + 3)  // Is used to detect bean bus idle state
-    
+
 void beanTasks ();
 void startSendBean(unsigned char *buffToSend);
 void processBeanInPortChange();

@@ -44,6 +44,15 @@ unsigned char getPortStateByIdx(uint8_t idx) {
 
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_5_VECTOR))) _timer5Vector(void) {
   IFS0bits.T5IF = 0;
+  state.ms10++;
+  if (state.ms10 == 6000) {
+    state.ms10 = 0;
+    state.min++;
+  }
+  if (state.min == 60) {
+    state.hour++;
+    state.min = 0;
+  }
   for (uint8_t idx = 0; idx < 4; idx++) {
     uint8_t portIn = getPortStateByIdx(idx);
     if (state.portsTest[idx] < BUTTON_TEST_STATE_ONE && portIn) state.portsTest[idx]++;
@@ -53,13 +62,17 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_5_VECTO
 
 void processPortsChange() {
   uint8_t portChanged = 0;
+  // Ports state is reversed.
+  // CAPOT and ASR connected thru opto-decoupler and 0 = 1
+  // Button is 1 when not pushed
+  // Immo Sence is 1 when not turned on
   for (uint8_t idx = 0; idx < 4; idx++) {
-    if (state.portsTest[idx] == BUTTON_TEST_STATE_ONE && !state.portsState[idx]) {
-      state.portsState[idx] = 1;
+    if (state.portsTest[idx] == BUTTON_TEST_STATE_ONE && state.portsState[idx]) {
+      state.portsState[idx] = 0;
       portChanged = 1;
     }
-    if (state.portsTest[idx] == BUTTON_TEST_STATE_ZERO && state.portsState[idx]) {
-      state.portsState[idx] = 0;
+    if (state.portsTest[idx] == BUTTON_TEST_STATE_ZERO && !state.portsState[idx]) {
+      state.portsState[idx] = 1;
       portChanged = 1;
     }
   }
