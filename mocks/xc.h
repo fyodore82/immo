@@ -27,6 +27,29 @@ struct {
   unsigned int CNSTATB15;
 } CNSTATBbits;
 
-void __delay_ms(int value) {}
+void __delay_ms(int value);
+
+class SPI1BUFType {
+public:
+  uint32_t l[10];
+  uint32_t idx;
+  SPI1BUFType() {
+    idx = 0;
+  }
+  uint32_t operator=(const uint32_t other)
+  {
+    l[idx] = other;
+    return l[idx++];
+  }
+
+  operator uint32_t() const {
+    return idx > 0 ? l[idx - 1] : 0;
+  }
+} SPI1BUF;
+
+struct {
+  unsigned int SPI1RXIF;
+  unsigned int SPI1TXIF;
+} IFS1bits;
 
 #endif

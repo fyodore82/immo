@@ -6,7 +6,7 @@ add_subdirectory(googletest/googletest) # add googletest subdirectory
 
 include_directories(../bean/bean.X googletest/googletest/include googletest/googlemock/include mocks) # this is so we can #include <gtest/gtest.h>
 
-add_executable(immo.test stateControl.test.cpp) # add this executable
+add_executable(immo.test main.test.cpp) # add this executable
 
 target_link_libraries(immo.test PRIVATE gtest) # link google test to this executable
 

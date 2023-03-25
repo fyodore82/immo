@@ -19,7 +19,8 @@ void initGlobalState() {
   state.spiAddr = 0;
   state.spiSendIdx = 0;
   state.initialTasks = SPI_FIND_STOP_ADDR | SPI_WRITE_RESET_REASON;
-  
+  state.lstSpiSendCmd = 0xFFFF;
+
   state.secTasks = 0;
 
   state.ms10 = 0;
@@ -38,6 +39,9 @@ void initGlobalState() {
 
   state.immoState = IMMO_UNKNOWN;
   state.immoStateChangeNotified = 0;
+  state.btnPressSt = 0xFFFF;
+  state.shortPressProcessed = 0;
+  state.longPressProcessed = 0;
 }
 
 void sendGlobalState() {
@@ -71,5 +75,5 @@ void globalStateTasks () {
   }
   else {
     state.secTasks &= ~SEC_TASK_SEND_GLOBAL_STATE;
-  } 
+  }
 }

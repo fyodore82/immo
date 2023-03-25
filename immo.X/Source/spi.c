@@ -18,6 +18,12 @@ void txSPI(uint32_t addr, uint32_t data) {
 }
 
 void spiTasks() {
+  uint32_t data = SPI1BUF;  // This is bus state when address has been sent
+  data = SPI1BUF; // Second read yeild data
+  uint16_t delay = state.lstSpiSendCmd <= state.ms10
+    ? state.ms10 - state.lstSpiSendCmd
+    : 6000 - state.lstSpiSendCmd + state.ms10;
+
   switch (state.spiTask) {
     case SPI_EXEC_USB_CMD:
       if (IFS1bits.SPI1RXIF) {
@@ -37,8 +43,7 @@ void spiTasks() {
     case SPI_FIND_STOP:
       if (!IFS1bits.SPI1RXIF) break;
       IFS1bits.SPI1RXIF = 0;
-      uint32_t data = SPI1BUF;  // This is bus state when address has been sent
-      data = SPI1BUF; // Second read yeild data
+
       // 0xFFFFFFFF means that bytes are erased
       if (data == 0xFFFFFFFF) {
         state.spiTask = SPI_NO_TASK;
@@ -55,14 +60,19 @@ void spiTasks() {
     case SPI_SEND_DATA:
       if (!IFS1bits.SPI1TXIF) break;
       IFS1bits.SPI1RXIF = 0;
+      // Minimum 20ms has not been elapsed between concurrent SPI commands
+      if (state.lstSpiSendCmd != 0xFFFF && delay < 2) break;
+      state.lstSpiSendCmd = state.ms10;
+
       txSPI(state.spiSend[state.spiSendIdx], state.spiSend[state.spiSendIdx + 1]);
       state.spiSendIdx += 2;
       if (state.spiSendIdx >= SPI_SEND_BUFF || state.spiSend[state.spiSendIdx] == 0) {
         state.spiTask = SPI_NO_TASK;
+        state.lstSpiSendCmd = 0xFFFF;
         state.spiSendIdx = 0;
-        for (uint8_t i = 0; i < SPI_SEND_BUFF; i++) {
-          state.spiSend[i] = 0;
-        }
+//        for (uint8_t i = 0; i < SPI_SEND_BUFF; i++) {
+//          state.spiSend[i] = 0;
+//        }
       }
       break;
   }

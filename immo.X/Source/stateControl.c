@@ -37,4 +37,30 @@ void processStateChange() {
     // Prepare for next 4 seconds interval
     state.immoStateChangeNotified = 0;
   }
+
+  // Check if this is btn long press
+  if (state.portsState[BUTTON_IN_IDX] && !state.longPressProcessed) {
+    if (state.btnPressSt == 0xFFFF) state.btnPressSt = state.ms10;
+    else {
+      uint16_t btnPressDel = state.btnPressSt <= state.ms10
+        ? state.ms10 - state.btnPressSt
+        : 6000 - state.btnPressSt + state.ms10;
+      // Button has been pressed for more than 1 sec
+      if (btnPressDel > 100) {
+        state.immoState = state.immoState == IMMO_BTN_PRESSED ? IMMO_UNKNOWN : IMMO_BTN_PRESSED;
+        state.longPressProcessed = 1;
+      }
+    }
+  }
+
+  if (state.portsState[BUTTON_IN_IDX] && !state.shortPressProcessed && state.immoState == IMMO_BTN_PRESSED) {
+    state.shortPressProcessed = 1;
+    IMMO_ON_OUT = !IMMO_ON_OUT;
+  }
+
+  if (!state.portsState[BUTTON_IN_IDX]) {
+    state.btnPressSt = 0xFFFF;
+    state.longPressProcessed = 0;
+    state.shortPressProcessed = 0;
+  }
 }

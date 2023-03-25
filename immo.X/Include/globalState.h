@@ -63,6 +63,8 @@ typedef enum {
   IMMO_UNKNOWN,
   IMMO_OK,
   IMMO_ALERT,
+  // Button was pressed.
+  IMMO_BTN_PRESSED,
 } ImmoState;
 
 #define SEC_TASK_SEND_GLOBAL_STATE 0b00000001
@@ -75,12 +77,15 @@ typedef struct {
     ImmoState immoState;
     // Means that we have already sent notification using BEAN
     unsigned char immoStateChangeNotified;
+    uint16_t btnPressSt;
+    unsigned char shortPressProcessed;
+    unsigned char longPressProcessed;
 
     // Time. Counts 10ms intervals
     uint16_t ms10;
     uint8_t min;
     uint8_t hour;
-    
+
     unsigned char secTasks; // Flags to note which task has been executed each sec
 
     // INIT
@@ -100,6 +105,8 @@ typedef struct {
     unsigned char spiRecIdx;
     uint32_t spiSend[SPI_SEND_BUFF]; // 0 - addr, 1 - data, 2 - addr, 1 - data
     unsigned char spiSendIdx;
+    uint16_t lstSpiSendCmd; // ms, when last SPI write cmd has been sent
+                            // Is used to introduce delay between concurrent SPI writes
 
     SPITask spiTask;
     uint32_t spiAddr;   // Current SPI address to write log to
