@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   spi.h
  * Author: fedor
  *
@@ -11,7 +11,7 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    
+
 #include <xc.h>
 
 typedef enum {
@@ -45,7 +45,7 @@ typedef union {
 #define SPI_MAX_ADDR 0x7FFFF
 #define SPI_SMALL_SECTOR 0xFFF
 
-#define SPI_SEND_BUFF 10     // 4 bytes: hh, mm, msss
+#define SPI_SEND_BUFF 8     // 4 bytes: hh, mm, msss
                             // 4 bytes: data
 
 void txSPI(uint32_t addr, uint32_t data);

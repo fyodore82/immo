@@ -7,10 +7,12 @@ class StateControlTestClass : public ::testing::Test
 {
   virtual void SetUp()
   {
+    initGlobalState();
   }
 };
 
-TEST_F(StateControlTestClass, Should_FirstText)
+TEST_F(StateControlTestClass, Should_Turn_On_Immo)
 {
-  EXPECT_EQ(0, 0);
+  processStateChange();
+  EXPECT_EQ(IMMO_ON_OUT, 1);
 }

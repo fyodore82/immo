@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #define __32MX220F032B__
 
-#include "mocks/bean.c"
+#include "mocks/bean.cpp"
 #include "immo.X/Source/typeConvert.c"
 #include "immo.X/Source/globalState.c"
 #include <xc.h>

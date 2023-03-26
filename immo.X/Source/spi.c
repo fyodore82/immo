@@ -18,8 +18,7 @@ void txSPI(uint32_t addr, uint32_t data) {
 }
 
 void spiTasks() {
-  uint32_t data = SPI1BUF;  // This is bus state when address has been sent
-  data = SPI1BUF; // Second read yeild data
+
   uint16_t delay = state.lstSpiSendCmd <= state.ms10
     ? state.ms10 - state.lstSpiSendCmd
     : 6000 - state.lstSpiSendCmd + state.ms10;
@@ -43,12 +42,14 @@ void spiTasks() {
     case SPI_FIND_STOP:
       if (!IFS1bits.SPI1RXIF) break;
       IFS1bits.SPI1RXIF = 0;
-
+      uint32_t data = SPI1BUF;  // This is bus state when address has been sent
+      data = SPI1BUF; // Second read yeild data
       // 0xFFFFFFFF means that bytes are erased
       if (data == 0xFFFFFFFF) {
         state.spiTask = SPI_NO_TASK;
       } else {
-        state.spiAddr += 4;
+        // Move by 8 bytes. 4 bytes - time, 4 bytes - data
+        state.spiAddr += 8;
         if (state.spiAddr >= SPI_MAX_ADDR) {
           state.spiAddr = 0;
           state.spiTask = SPI_NO_TASK;
@@ -62,18 +63,22 @@ void spiTasks() {
       IFS1bits.SPI1RXIF = 0;
       // Minimum 20ms has not been elapsed between concurrent SPI commands
       if (state.lstSpiSendCmd != 0xFFFF && delay < 2) break;
+        // On last iteration check if address poining on the nex sector and erase it
+        if (state.spiSendIdx >= SPI_SEND_BUFF) {
+        // Small sector erase should occur only on first call to tsSpi
+          if (!(state.spiAddr & SPI_SMALL_SECTOR)) {
+            txSPI(0xd7000000, 0);
+          }
+          state.spiTask = SPI_NO_TASK;
+          state.lstSpiSendCmd = 0xFFFF;
+          state.spiSendIdx = 0;
+          break;
+        }
+
       state.lstSpiSendCmd = state.ms10;
 
       txSPI(state.spiSend[state.spiSendIdx], state.spiSend[state.spiSendIdx + 1]);
       state.spiSendIdx += 2;
-      if (state.spiSendIdx >= SPI_SEND_BUFF || state.spiSend[state.spiSendIdx] == 0) {
-        state.spiTask = SPI_NO_TASK;
-        state.lstSpiSendCmd = 0xFFFF;
-        state.spiSendIdx = 0;
-//        for (uint8_t i = 0; i < SPI_SEND_BUFF; i++) {
-//          state.spiSend[i] = 0;
-//        }
-      }
       break;
   }
 }
@@ -91,10 +96,7 @@ void writeLog(uint32_t data) {
   state.spiSend[7] = data; // Write data
   state.spiAddr += 4;
   if (state.spiAddr >= SPI_MAX_ADDR) state.spiAddr = 0; // Roll over to the start
-  if (!(state.spiAddr & SPI_SMALL_SECTOR)) {
-    state.spiSend[8] = 0xd7000000 | state.spiAddr; // Erase next sector
-    state.spiSend[9] = 0;
-  }
+
   state.spiTask = SPI_SEND_DATA;
   state.spiSendIdx = 0;
 }
