@@ -7,6 +7,7 @@
 #include "..\Include\USB\addressConvertion.h"
 #include "..\Include\init.h"
 #include "..\Include\globalState.h"
+#include "..\Include\stateControl.h"
 #include "..\Include\beanTasks.h"
 #include "..\Include\spi.h"
 #include "..\Include\initialTasks.h"
@@ -75,6 +76,7 @@ INT main(void) {
     beanTasks();
     spiTasks();
     globalStateTasks();
+    processStateChange();
   }
   // Close trasnport layer.
   TRANS_LAYER_Close();

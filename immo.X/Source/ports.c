@@ -17,8 +17,8 @@ void getPorts() {
 }
 
 void setPorts(unsigned char newState, unsigned char* ports) {
-  if (ports[3] & 0b10000) IMMO_ON_OUT = !!newState;
-  // if (ports[6] & 0b10) PORTBbits.RB9 = !!newState; // For testing only
+//  if (ports[3] & 0b10000) PortAbits.RA4 = !!newState;
+  if (ports[6] & 0b10) IMMO_ON_OUT = !!newState;
   if (ports[6] & 0b10000000) BEEPER_CTRL_OUT = !!newState;
   if (ports[6] & 0b100000) BEAN_OUT = !!newState;
 }
@@ -77,6 +77,6 @@ void processPortsChange() {
     }
   }
   if (portChanged) {
-    writeLog(((uint8_t)LOG_ENTRY_STATE_CHANGE << 24) | (0 << 16) | (state.portsState[BUTTON_IN_IDX]) | (state.portsState[CAPOT_IN_IDX] << 1) | (state.portsState[IMMO_SENCE_IDX] << 2) | (state.portsState[ASR12V_IN_IDX] << 3));
+    writeLog(LOG_ENTRY_STATE_CHANGE);
   }
 }

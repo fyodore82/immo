@@ -52,7 +52,7 @@ void sendGlobalState() {
 
   if (state.usbCommand == USB_GET_GLOBAL_STATE) state.usbCommand = USB_NO_CMD;
 
-  state.usbTxData[0] = 16;
+  state.usbTxData[0] = 17;
   state.usbTxData[1] = USB_GOT_GLOBAL_STATE;
   uint32ToByteArr(&state.usbTxData[2], state.spiAddr);
   state.usbTxData[6] = state.spiTask;
@@ -66,6 +66,9 @@ void sendGlobalState() {
   state.usbTxData[14] = state.ms10 >> 8;
   state.usbTxData[15] = state.min;
   state.usbTxData[16] = state.hour;
+
+  state.usbTxData[17] = state.immoState;
+
 }
 
 void globalStateTasks () {

@@ -28,6 +28,8 @@ struct {
   unsigned int CNSTATB15;
 } CNSTATBbits;
 
+uint16_t RCON;
+
 void __delay_ms(int value);
 
 class SPI1BUFType {

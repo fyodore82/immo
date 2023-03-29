@@ -52,10 +52,10 @@ TEST_F(StateControlTestClass, Should_Send_immoOutOkCmd_when_IMMO_SENCE_is_1)
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
   EXPECT_EQ(initSendBeanDataBuff.size(), 1);
-  EXPECT_EQ(state.immoState, IMMO_OK);
+  EXPECT_EQ(state.immoState, IMMO_OK_IMMO);
   auto arg = initSendBeanDataBuff.back();
   std::vector<uint8_t> immoOk;
-  immoOk.assign(immoOutOkCmd, immoOutOkCmd + ((immoOutOkCmd[0] & 0x0F) + 2));
+  immoOk.assign(immoOutOkImmoCmd, immoOutOkImmoCmd + ((immoOutOkImmoCmd[0] & 0x0F) + 2));
   EXPECT_EQ(arg, immoOk);
 }
 
@@ -64,7 +64,7 @@ TEST_F(StateControlTestClass, Should_Send_bean_cmd_every_4_ms)
   state.ms10 = 9;
 
   IMMO_ON_OUT = 1;
-  state.immoState = IMMO_OK;
+  state.immoState = IMMO_OK_IMMO;
   state.portsState[IMMO_SENCE_IDX] = 1;
   processStateChange();
 
@@ -73,10 +73,10 @@ TEST_F(StateControlTestClass, Should_Send_bean_cmd_every_4_ms)
 
   EXPECT_EQ(IMMO_ON_OUT, 1);
   EXPECT_EQ(initSendBeanDataBuff.size(), 1);
-  EXPECT_EQ(state.immoState, IMMO_OK);
+  EXPECT_EQ(state.immoState, IMMO_OK_IMMO);
   auto arg = initSendBeanDataBuff.back();
   std::vector<uint8_t> immoOk;
-  immoOk.assign(immoOutOkCmd, immoOutOkCmd + ((immoOutOkCmd[0] & 0x0F) + 2));
+  immoOk.assign(immoOutOkImmoCmd, immoOutOkImmoCmd + ((immoOutOkImmoCmd[0] & 0x0F) + 2));
   EXPECT_EQ(arg, immoOk);
 }
 
@@ -90,7 +90,7 @@ TEST_F(StateControlTestClass, Should_Switch_to_Alert_when_IMMO_SENCE_is_0)
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
   EXPECT_EQ(initSendBeanDataBuff.size(), 1);
-  EXPECT_EQ(state.immoState, IMMO_OK);
+  EXPECT_EQ(state.immoState, IMMO_OK_IMMO);
 
   state.portsState[IMMO_SENCE_IDX] = 0;
 
@@ -105,6 +105,31 @@ TEST_F(StateControlTestClass, Should_Switch_to_Alert_when_IMMO_SENCE_is_0)
   EXPECT_EQ(arg, immoAlert);
 }
 
+TEST_F(StateControlTestClass, Should_Switch_to_Ok_when_IMMO_SENCE_become_1)
+{
+  state.ms10 = 9;
+
+  IMMO_ON_OUT = 1;
+  state.portsState[IMMO_SENCE_IDX] = 0;
+
+  processStateChange();
+  EXPECT_EQ(IMMO_ON_OUT, 1);
+  EXPECT_EQ(initSendBeanDataBuff.size(), 1);
+  EXPECT_EQ(state.immoState, IMMO_ALERT);
+
+  state.portsState[IMMO_SENCE_IDX] = 1;
+
+  processStateChange();
+  EXPECT_EQ(IMMO_ON_OUT, 1);
+  EXPECT_EQ(initSendBeanDataBuff.size(), 2);
+  EXPECT_EQ(state.immoState, IMMO_OK_IMMO);
+
+  auto arg = initSendBeanDataBuff.back();
+  std::vector<uint8_t> immoOk;
+  immoOk.assign(immoOutOkImmoCmd, immoOutOkImmoCmd + ((immoOutOkImmoCmd[0] & 0x0F) + 2));
+  EXPECT_EQ(arg, immoOk);
+}
+
 TEST_F(StateControlTestClass, When_ASR12V_is_1_immo_is_turned_off_and_state_is_IMMO_OK)
 {
   state.ms10 = 9;
@@ -114,13 +139,17 @@ TEST_F(StateControlTestClass, When_ASR12V_is_1_immo_is_turned_off_and_state_is_I
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 0);
   EXPECT_EQ(initSendBeanDataBuff.size(), 1);
-  EXPECT_EQ(state.immoState, IMMO_OK);
+  EXPECT_EQ(state.immoState, IMMO_OK_ASR12V);
 
   auto arg = initSendBeanDataBuff.back();
   std::vector<uint8_t> immoOk;
-  immoOk.assign(immoOutOkCmd, immoOutOkCmd + ((immoOutOkCmd[0] & 0x0F) + 2));
+  immoOk.assign(immoOutOkAsrCmd, immoOutOkAsrCmd + ((immoOutOkAsrCmd[0] & 0x0F) + 2));
   EXPECT_EQ(arg, immoOk);
 }
+
+// --------------------
+// Btn press tests
+// --------------------
 
 TEST_F(StateControlTestClass, Btn_Short_press_should_do_nothing_if_not_preceeded_by_long_press)
 {

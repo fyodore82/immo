@@ -61,7 +61,8 @@ typedef enum {
 
 typedef enum {
   IMMO_UNKNOWN,
-  IMMO_OK,
+  IMMO_OK_IMMO,
+  IMMO_OK_ASR12V,
   IMMO_ALERT,
 } ImmoState;
 

@@ -1,5 +1,6 @@
 #include <bean.h>
 #include <gtest/gtest.h>
+// #include "..\immo.X\Include\spi.h
 #include <list>
 // #include <gmock/gmock.h>  // Brings in gMock.
 
@@ -39,6 +40,9 @@ void resetSendBuffer(SendBeanData *pBeanData) {
   // ASSERT_NE(CBeanFunctionsMock::instance, nullptr);
   // CBeanFunctionsMock::instance->resetSendBuffer(pBeanData);
 }
+// void writeLog(SPILogEntryType logType) {
+
+// }
 unsigned char initSendBeanData(SendBeanData *pBeanData, unsigned char *buff) {
   std::vector<unsigned char> v;
   v.assign(buff, buff + ((buff[0] & 0x0F) + 2));
