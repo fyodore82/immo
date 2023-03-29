@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.12) # version can be different
 
 project(immo_Tests) #name of your project
 
-add_subdirectory(googletest/googletest googletest/googlemock) # add googletest subdirectory
+add_subdirectory(googletest) # add googletest subdirectory
 
 include_directories(../bean/bean.X googletest/googletest/include googletest/googlemock/include mocks) # this is so we can #include <gtest/gtest.h>
 
 add_executable(immo.test main.test.cpp) # add this executable
 
-target_link_libraries(immo.test PRIVATE gmock_main) # link google test to this executable
+target_link_libraries(immo.test gtest) # link google test to this executable
 
 # line below is not working
 # to make project buildable:

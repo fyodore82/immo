@@ -63,8 +63,6 @@ typedef enum {
   IMMO_UNKNOWN,
   IMMO_OK,
   IMMO_ALERT,
-  // Button was pressed.
-  IMMO_BTN_PRESSED,
 } ImmoState;
 
 #define SEC_TASK_SEND_GLOBAL_STATE 0b00000001
@@ -75,11 +73,16 @@ typedef struct {
     unsigned char usbTxData[64];
 
     ImmoState immoState;
+    // When button has been long pressed and each subsequint btn press
+    // will switch IMMO_ON 1/0
+    unsigned char btnLongPressed;
     // Means that we have already sent notification using BEAN
     unsigned char immoStateChangeNotified;
     uint16_t btnPressSt;
     unsigned char shortPressProcessed;
     unsigned char longPressProcessed;
+    // Time when IMMO_ON has been changed.
+    uint16_t immoOnOffms;
 
     // Time. Counts 10ms intervals
     uint16_t ms10;

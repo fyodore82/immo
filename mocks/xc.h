@@ -9,13 +9,14 @@ struct {
   unsigned int RB5;
   unsigned int RB7;
   unsigned int RB8;
+  unsigned int RB9;
   unsigned int RB13;
   unsigned int RB15;
 } PORTBbits;
 
-struct {
-  unsigned int RA4;
-} PORTAbits;
+// struct {
+//   unsigned int RA4;
+// } PORTAbits;
 
 struct {
   unsigned int CNSTATB0;

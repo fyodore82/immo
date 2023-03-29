@@ -18,7 +18,7 @@ void txSPI(uint32_t addr, uint32_t data) {
 }
 
 void spiTasks() {
-
+  uint32_t data; // Is only used in SPI_FIND_STOP
   uint16_t delay = state.lstSpiSendCmd <= state.ms10
     ? state.ms10 - state.lstSpiSendCmd
     : 6000 - state.lstSpiSendCmd + state.ms10;
@@ -42,7 +42,7 @@ void spiTasks() {
     case SPI_FIND_STOP:
       if (!IFS1bits.SPI1RXIF) break;
       IFS1bits.SPI1RXIF = 0;
-      uint32_t data = SPI1BUF;  // This is bus state when address has been sent
+      data = SPI1BUF;  // This is bus state when address has been sent
       data = SPI1BUF; // Second read yeild data
       // 0xFFFFFFFF means that bytes are erased
       if (data == 0xFFFFFFFF) {
