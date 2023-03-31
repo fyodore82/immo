@@ -87,6 +87,9 @@ typedef struct {
     unsigned char longPressProcessed;
     // Time when IMMO_ON has been changed.
     uint16_t immoOnOffms;
+    // Seems that PIC does not like when try to read output port
+    // So store it value in temp var
+    unsigned char immoOn;
 
     // Time. Counts 10ms intervals
     uint16_t ms10;

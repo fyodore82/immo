@@ -13,14 +13,16 @@ void processStateChange() {
   if (!state.btnLongPressed) {
     // Code below relates only to normal immo operation,
     // i.e. when button is not pressed
-    if (!IMMO_ON_OUT && !state.portsState[ASR12V_IN_IDX]) {
+    if (!state.immoOn && !state.portsState[ASR12V_IN_IDX]) {
       state.immoOnOffms = state.ms10;
+      state.immoOn = 1;
       IMMO_ON_OUT = 1;
       state.logType = LOG_ENTRY_STATE_CHANGE;
     }
     // If immo is turned OFF, it can happen only by ASR12V is 1
     // Immedeately process change, as we don't need to wait for IMMO_SENCE
-    if (IMMO_ON_OUT && state.portsState[ASR12V_IN_IDX]) {
+    if (state.immoOn && state.portsState[ASR12V_IN_IDX]) {
+      state.immoOn = 0;
       IMMO_ON_OUT = 0;
       state.logType = LOG_ENTRY_STATE_CHANGE;
     }
@@ -98,7 +100,8 @@ void processStateChange() {
 
   if (state.portsState[BUTTON_IN_IDX] && !state.shortPressProcessed && state.btnLongPressed) {
     state.shortPressProcessed = 1;
-    IMMO_ON_OUT = !IMMO_ON_OUT;
+    state.immoOn = !state.immoOn;
+    IMMO_ON_OUT = state.immoOn;
     state.logType = LOG_ENTRY_STATE_CHANGE;
   }
 

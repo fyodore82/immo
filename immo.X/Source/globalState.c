@@ -46,6 +46,7 @@ void initGlobalState() {
   state.longPressProcessed = 0;
   state.immoOnOffms = 0xFFFF;
   state.btnLongPressed = 0;
+  state.immoOn = 0;
 }
 
 void sendGlobalState() {

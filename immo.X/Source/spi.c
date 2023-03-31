@@ -95,7 +95,7 @@ void writeLog() {
   state.spiSend[5] = 0;
   state.spiSend[6] = 0x02000000 | state.spiAddr;
   state.spiSend[7] = ((uint8_t)state.logType << 24)
-    | (IMMO_ON_OUT << 4)
+    | (state.immoOn << 4)
     | (state.portsState[BUTTON_IN_IDX])
     | (state.portsState[CAPOT_IN_IDX] << 1)
     | (state.portsState[IMMO_SENCE_IDX] << 2)
