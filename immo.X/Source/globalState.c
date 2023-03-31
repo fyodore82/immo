@@ -14,6 +14,8 @@ void initGlobalState() {
   resetRecBuffer(&state.recBeanData);
   resetSendBuffer(&state.sendBeanData);
   state.prevBean = BEAN_IN;
+  state.disableImmoBeanSend = 0;
+  
   state.soundPlaying = 0;
   state.spiTask = SPI_NO_TASK;
   state.spiAddr = 0;

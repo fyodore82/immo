@@ -84,8 +84,8 @@ void spiTasks() {
   }
 }
 
-void writeLog(SPILogEntryType logType) {
-  if (state.spiTask != SPI_NO_TASK) return;
+void writeLog() {
+  if (state.spiTask != SPI_NO_TASK || state.logType == DONT_LOG) return;
   state.spiSend[0] = 0x06000000;  // Write enable
   state.spiSend[1] = 0;
   state.spiSend[2] = 0x02000000 | state.spiAddr;
@@ -94,13 +94,13 @@ void writeLog(SPILogEntryType logType) {
   state.spiSend[4] = 0x06000000;  // Write enable
   state.spiSend[5] = 0;
   state.spiSend[6] = 0x02000000 | state.spiAddr;
-  state.spiSend[7] = ((uint8_t)logType << 24)
+  state.spiSend[7] = ((uint8_t)state.logType << 24)
     | (IMMO_ON_OUT << 4)
     | (state.portsState[BUTTON_IN_IDX])
     | (state.portsState[CAPOT_IN_IDX] << 1)
     | (state.portsState[IMMO_SENCE_IDX] << 2)
     | (state.portsState[ASR12V_IN_IDX] << 3);
-  if (logType == LOG_ENTRY_STATE_CHANGE) {
+  if (state.logType == LOG_ENTRY_STATE_CHANGE) {
     state.spiSend[7] |= (state.immoState << 16) | (state.btnLongPressed << 8); // Write data
   } else {
     state.spiSend[7] |= ((uint16_t)RCON << 8);
@@ -108,7 +108,7 @@ void writeLog(SPILogEntryType logType) {
   
   state.spiAddr += 4;
   if (state.spiAddr >= SPI_MAX_ADDR) state.spiAddr = 0; // Roll over to the start
-
+  state.logType = DONT_LOG;
   state.spiTask = SPI_SEND_DATA;
   state.spiSendIdx = 0;
 }

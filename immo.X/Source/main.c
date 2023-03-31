@@ -77,6 +77,7 @@ INT main(void) {
     spiTasks();
     globalStateTasks();
     processStateChange();
+    writeLog();
   }
   // Close trasnport layer.
   TRANS_LAYER_Close();

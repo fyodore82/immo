@@ -35,6 +35,9 @@ typedef enum {
 
     USB_GET_GLOBAL_STATE = 0x41,
     USB_MONITOR_GLOBAL_STATE = 0x42,
+            
+    USB_DISABLE_PERIODIC_IMMO_BEAN_CMD = 0x51,
+    USB_ENABLE_PERIODIC_IMMO_BEAN_CMD = 0x52,
 
     USB_START_BOOTLOADER = 0x80,
 
@@ -99,6 +102,8 @@ typedef struct {
     RecBeanData recBeanData;
     SendBeanData sendBeanData;
     unsigned char prevBean;
+    // To disable periodic immo state commands sent using BEAN
+    unsigned char disableImmoBeanSend;
 
     // To count number of ticks between neigbor bean in port change
     unsigned char recBuff[256];
@@ -111,6 +116,9 @@ typedef struct {
     unsigned char spiSendIdx;
     uint16_t lstSpiSendCmd; // ms, when last SPI write cmd has been sent
                             // Is used to introduce delay between concurrent SPI writes
+    // Logging is done only once in a cycle
+    // So when it is required to log, code will set this var and writeLog routine will do logging
+    SPILogEntryType logType;
 
     SPITask spiTask;
     uint32_t spiAddr;   // Current SPI address to write log to

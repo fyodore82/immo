@@ -15,6 +15,7 @@ extern "C" {
 #include <xc.h>
 
 typedef enum {
+    DONT_LOG,
     LOG_ENTRY_RESET,    // When device has been reset
     LOG_ENTRY_STATE_CHANGE,
 } SPILogEntryType;
@@ -45,7 +46,7 @@ typedef union {
 
 void txSPI(uint32_t addr, uint32_t data);
 void spiTasks();
-void writeLog(SPILogEntryType logType);
+void writeLog();
 
 #ifdef	__cplusplus
 }

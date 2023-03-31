@@ -68,6 +68,11 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
     case USB_PLAY_BEEP_SOUND:
       playSound(nokiaRingtoneSound);
       break;
+      
+    case USB_DISABLE_PERIODIC_IMMO_BEAN_CMD:
+    case USB_ENABLE_PERIODIC_IMMO_BEAN_CMD:
+      state.disableImmoBeanSend = (UsbRxData[0] == USB_DISABLE_PERIODIC_IMMO_BEAN_CMD);
+      break;
 
     case USB_ECHO:
     {
@@ -75,7 +80,7 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
       state.usbTxData[1] = USB_ECHO;
       break;
     }
-
+    
     case USB_START_BOOTLOADER:
     {
       // Do software reset

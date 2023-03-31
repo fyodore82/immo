@@ -77,6 +77,6 @@ void processPortsChange() {
     }
   }
   if (portChanged) {
-    writeLog(LOG_ENTRY_STATE_CHANGE);
+    state.logType = LOG_ENTRY_STATE_CHANGE;
   }
 }

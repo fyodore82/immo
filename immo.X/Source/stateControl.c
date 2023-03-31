@@ -5,9 +5,9 @@
 #include <bean.h>
 #include "..\Include\spi.h"
 
-uint8_t immoOutOkAsrCmd[] = {0x12, 0x11, 0x10, 0x09, 0x08};
-uint8_t immoOutOkImmoCmd[] = {0x12, 0x11, 0x11, 0x09, 0x08};
-uint8_t immoOutAlertCmd[] = {0x12, 0x11, 0x12, 0x09, 0x08};
+uint8_t immoOutOkAsrCmd[] = {0x13, 0x33, 0x44,0x11, 0x62};
+uint8_t immoOutOkImmoCmd[] = {0x13, 0x33, 0x44, 0x12, 0x57};
+uint8_t immoOutAlertCmd[] = {0x13, 0x33, 0x44, 0x21, 0x01};
 
 void processStateChange() {
   if (!state.btnLongPressed) {
@@ -16,13 +16,13 @@ void processStateChange() {
     if (!IMMO_ON_OUT && !state.portsState[ASR12V_IN_IDX]) {
       state.immoOnOffms = state.ms10;
       IMMO_ON_OUT = 1;
-      writeLog(LOG_ENTRY_STATE_CHANGE);
+      state.logType = LOG_ENTRY_STATE_CHANGE;
     }
     // If immo is turned OFF, it can happen only by ASR12V is 1
     // Immedeately process change, as we don't need to wait for IMMO_SENCE
     if (IMMO_ON_OUT && state.portsState[ASR12V_IN_IDX]) {
       IMMO_ON_OUT = 0;
-      writeLog(LOG_ENTRY_STATE_CHANGE);
+      state.logType = LOG_ENTRY_STATE_CHANGE;
     }
   }
 
@@ -38,29 +38,35 @@ void processStateChange() {
     // Immo in OK state - immediately notify
     if (state.portsState[ASR12V_IN_IDX]) {
       if (state.immoState != IMMO_OK_ASR12V) {
-        initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
+        if (!state.disableImmoBeanSend) {
+          initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
+        }
         state.immoState = IMMO_OK_ASR12V;
-        writeLog(LOG_ENTRY_STATE_CHANGE);
+        state.logType = LOG_ENTRY_STATE_CHANGE;
       }
     }
     else if (state.portsState[IMMO_SENCE_IDX] && state.immoState != IMMO_OK_IMMO) {
-      initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
+      if (!state.disableImmoBeanSend) {
+        initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
+      }
       state.immoState = IMMO_OK_IMMO;
-      writeLog(LOG_ENTRY_STATE_CHANGE);
+      state.logType = LOG_ENTRY_STATE_CHANGE;
     }
 
     // Immo alert = immedeately notify
     if (!state.portsState[IMMO_SENCE_IDX]
         && !state.portsState[ASR12V_IN_IDX]
         && state.immoState != IMMO_ALERT) {
-      initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
+      if (!state.disableImmoBeanSend) {
+        initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
+      }
       state.immoState = IMMO_ALERT;
-      writeLog(LOG_ENTRY_STATE_CHANGE);
+      state.logType = LOG_ENTRY_STATE_CHANGE;
     }
 
     // Send immoOutCmd every 4 seconds
     if (state.ms10 % 400 == 0) {
-      if (!state.immoStateChangeNotified) {
+      if (!state.immoStateChangeNotified && !state.disableImmoBeanSend) {
         state.immoStateChangeNotified = 1;
         if (state.immoState == IMMO_OK_ASR12V) initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
         if (state.immoState == IMMO_OK_IMMO) initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
@@ -85,7 +91,7 @@ void processStateChange() {
         state.btnLongPressed = !state.btnLongPressed;
         // state.immoState = state.immoState == IMMO_BTN_PRESSED ? IMMO_UNKNOWN : IMMO_BTN_PRESSED;
         state.longPressProcessed = 1;
-        writeLog(LOG_ENTRY_STATE_CHANGE);
+        state.logType = LOG_ENTRY_STATE_CHANGE;
       }
     }
   }
@@ -93,7 +99,7 @@ void processStateChange() {
   if (state.portsState[BUTTON_IN_IDX] && !state.shortPressProcessed && state.btnLongPressed) {
     state.shortPressProcessed = 1;
     IMMO_ON_OUT = !IMMO_ON_OUT;
-    writeLog(LOG_ENTRY_STATE_CHANGE);
+    state.logType = LOG_ENTRY_STATE_CHANGE;
   }
 
   if (!state.portsState[BUTTON_IN_IDX]) {
