@@ -43,13 +43,13 @@ void spiTasks() {
     case SPI_FIND_STOP:
       if (!IFS1bits.SPI1RXIF) break;
       IFS1bits.SPI1RXIF = 0;
-      data = SPI1BUF;  // This is bus state when address has been sent
-      data = SPI1BUF; // Second read yeild data
+      data = SPI1BUF; // This is bus state when address has been sent
+      data = SPI1BUF; // Second read yield data
       // 0xFFFFFFFF means that bytes are erased
       if (data == 0xFFFFFFFF) {
         state.spiTask = SPI_NO_TASK;
       } else {
-        // Move by 8 bytes. 4 bytes - time, 4 bytes - data
+        // Move by 8 bytes. In first 4 bytes - time, than 4 bytes for data
         state.spiAddr += 8;
         if (state.spiAddr >= SPI_MAX_ADDR) {
           state.spiAddr = 0;
@@ -100,10 +100,17 @@ void writeLog() {
     | (state.portsState[CAPOT_IN_IDX] << 1)
     | (state.portsState[IMMO_SENCE_IDX] << 2)
     | (state.portsState[ASR12V_IN_IDX] << 3);
-  if (state.logType == LOG_ENTRY_STATE_CHANGE) {
-    state.spiSend[7] |= (state.immoState << 16) | (state.btnLongPressed << 8); // Write data
-  } else {
-    state.spiSend[7] |= ((uint16_t)RCON << 8);
+  switch (state.logType) {
+    case LOG_ENTRY_STATE_CHANGE:
+      state.spiSend[7] |= (state.immoInState << 20) | (state.immoState << 16) | (state.btnLongPressed << 8); // Write data
+      break;
+    case LOG_ENTRY_IMMO_IN_5S_DELAY:
+      state.immoIn5msDelaySpiCmdSend = 1;
+      state.spiSend[7] |= ((uint16_t)state.immoInLastCmdms << 8);
+      break;
+    case LOG_ENTRY_RESET:
+      state.spiSend[7] |= ((uint16_t)RCON << 8);
+      break;
   }
   
   state.spiAddr += 4;

@@ -2,6 +2,8 @@
 #include "..\Include\globalState.h"
 #include <xc.h>
 #include "..\Include\ports.h"
+#include "..\Include\typeConvert.h"
+#include "..\Include\stateControl.h"
 #include <string.h>
 
 // Private to this file
@@ -48,18 +50,36 @@ void beanTasks() {
     state.recPos = 0;
     transfer1bit();
   }
+  
+  uint16_t delay = calcDelay(state.immoInLastCmdms);
+  if (delay == 500 && !state.immoIn5msDelaySpiCmdSend) state.logType = LOG_ENTRY_IMMO_IN_5S_DELAY;
+  if (delay >= 1000 && state.immoInState != IMMO_IN_UNKNOWN) {
+    state.immoInState = IMMO_IN_UNKNOWN;
+    state.logType = LOG_ENTRY_STATE_CHANGE;
+    state.immoInLastCmdms = 0xFFFF;
+  }
+
   if (state.recBeanData.recBufferFull) {
     state.recBeanData.recBufferFull = 0;
+    
+    if (!memcmp(state.recBeanData.buffer, immoInOkCmd, (immoInOkCmd[0] & 0x0F) + 2)) {
+      state.immoInLastCmdms = state.ms10;
+      if (state.immoInState != IMMO_IN_OK) {
+        state.immoInState = IMMO_IN_OK;
+        state.logType = LOG_ENTRY_STATE_CHANGE;
+        state.immoIn5msDelaySpiCmdSend = 0;
+      }
+    }
+    if (!memcmp(state.recBeanData.buffer, immoInAlertCmd, (immoInAlertCmd[0] & 0x0F) + 2)) {
+      state.immoInLastCmdms = state.ms10;
+      if (state.immoInState != IMMO_IN_ALERT) {
+        state.immoInState = IMMO_IN_ALERT;
+        state.logType = LOG_ENTRY_STATE_CHANGE;
+        state.immoIn5msDelaySpiCmdSend = 0;
+      }
+    }
+    
     switch (state.usbCommand) {
-        //    case USB_BEAN_DEBUG:
-        //    {
-        //      if (state.usbSubCommand == BEAN_DEBUG_SET_1) BEAN_OUT = 1;
-        //      if (state.usbSubCommand == BEAN_DEBUG_SET_0) BEAN_OUT = 0;
-        //      // Ports will be chached in ports interrupt
-        //
-        //      state.usbSubCommand = USB_NO_SUBCMD;
-        //      break;
-        //    }
       case USB_LISTERN_BEAN:
         sendToUSBReceivedBeanCmd();
         break;

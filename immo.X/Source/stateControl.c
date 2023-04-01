@@ -2,12 +2,16 @@
 #include "..\Include\StateControl.h"
 #include "..\Include\ports.h"
 #include "..\Include\globalState.h"
+#include "..\Include\typeConvert.h"
 #include <bean.h>
 #include "..\Include\spi.h"
 
 uint8_t immoOutOkAsrCmd[] = {0x13, 0x33, 0x44,0x11, 0x62};
 uint8_t immoOutOkImmoCmd[] = {0x13, 0x33, 0x44, 0x12, 0x57};
 uint8_t immoOutAlertCmd[] = {0x13, 0x33, 0x44, 0x21, 0x01};
+
+uint8_t immoInOkCmd[] = {0x13, 0x44, 0x33, 0x11, 0x94};
+uint8_t immoInAlertCmd[] = {0x13, 0x44, 0x33, 0x22, 0xC4};
 
 void processStateChange() {
   if (!state.btnLongPressed) {
@@ -28,9 +32,7 @@ void processStateChange() {
     }
   }
 
-  uint16_t immoStChangeDelay = state.immoOnOffms <= state.ms10
-    ? state.ms10 - state.immoOnOffms
-    : 6000 - state.immoOnOffms + state.ms10;
+  uint16_t immoStChangeDelay = calcDelay(state.immoOnOffms);
 
   // At least 100 ms should pass after IMMO state chenge to chenge state
   // Or we have already processed IMMO_ON_OUT change
@@ -84,9 +86,7 @@ void processStateChange() {
   if (state.portsState[BUTTON_IN_IDX] && !state.longPressProcessed) {
     if (state.btnPressSt == 0xFFFF) state.btnPressSt = state.ms10;
     else {
-      uint16_t btnPressDel = state.btnPressSt <= state.ms10
-        ? state.ms10 - state.btnPressSt
-        : 6000 - state.btnPressSt + state.ms10;
+      uint16_t btnPressDel = calcDelay(state.btnPressSt);
       // Button has been pressed for more than 1 sec
       if (btnPressDel >= 100) {
         state.btnPressSt = 0xFFFF;

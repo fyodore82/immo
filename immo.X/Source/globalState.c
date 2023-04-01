@@ -47,6 +47,9 @@ void initGlobalState() {
   state.immoOnOffms = 0xFFFF;
   state.btnLongPressed = 0;
   state.immoOn = 0;
+  state.immoInState = IMMO_IN_UNKNOWN;
+  state.immoInLastCmdms = 0;
+  state.immoIn5msDelaySpiCmdSend = 0;
 }
 
 void sendGlobalState() {
@@ -55,7 +58,7 @@ void sendGlobalState() {
 
   if (state.usbCommand == USB_GET_GLOBAL_STATE) state.usbCommand = USB_NO_CMD;
 
-  state.usbTxData[0] = 17;
+  state.usbTxData[0] = 18;
   state.usbTxData[1] = USB_GOT_GLOBAL_STATE;
   uint32ToByteArr(&state.usbTxData[2], state.spiAddr);
   state.usbTxData[6] = state.spiTask;
@@ -71,7 +74,7 @@ void sendGlobalState() {
   state.usbTxData[16] = state.hour;
 
   state.usbTxData[17] = state.immoState;
-
+  state.usbTxData[18] = state.immoInState;
 }
 
 void globalStateTasks () {

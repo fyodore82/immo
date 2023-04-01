@@ -14,6 +14,8 @@ extern "C" {
 
 void processStateChange();
 
+extern uint8_t immoInOkCmd[];
+extern uint8_t immoInAlertCmd[];
 
 #ifdef	__cplusplus
 }

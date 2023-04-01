@@ -1,4 +1,5 @@
 #include "..\Include\typeConvert.h"
+#include "..\Include\globalState.h"
 
 
 uint32_t byteArrToUint32ForSPI(unsigned char *byte) {
@@ -11,5 +12,12 @@ void uint32ToByteArr(unsigned char *byte, uint32_t uint) {
   byte[1] = (uint8_t) (uint >> 16);
   byte[2] = (uint8_t) (uint >> 8);
   byte[3] = (uint8_t) uint;
+}
+
+uint16_t calcDelay(uint16_t tms) {
+  if (tms == 0xFFFF) return tms;
+  return tms <= state.ms10
+    ? state.ms10 - tms
+    : 6000 - tms + state.ms10;
 }
 

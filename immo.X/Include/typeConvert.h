@@ -16,6 +16,7 @@ extern "C" {
 
 uint32_t byteArrToUint32ForSPI (unsigned char *byte);
 void uint32ToByteArr (unsigned char *byte, uint32_t uint);
+uint16_t calcDelay(uint16_t tms);
 
 #ifdef	__cplusplus
 }

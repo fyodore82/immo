@@ -18,6 +18,8 @@ typedef enum {
     DONT_LOG,
     LOG_ENTRY_RESET,    // When device has been reset
     LOG_ENTRY_STATE_CHANGE,
+    // When no IMMO_IN have come for last 5secs or more (lost 2 transmitions)
+    LOG_ENTRY_IMMO_IN_5S_DELAY,
 } SPILogEntryType;
 
 typedef enum {

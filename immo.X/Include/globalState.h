@@ -69,6 +69,12 @@ typedef enum {
   IMMO_ALERT,
 } ImmoState;
 
+typedef enum {
+  IMMO_IN_UNKNOWN,
+  IMMO_IN_OK,
+  IMMO_IN_ALERT,
+} ImmoInState;
+
 #define SEC_TASK_SEND_GLOBAL_STATE 0b00000001
 
 typedef struct {
@@ -90,6 +96,12 @@ typedef struct {
     // Seems that PIC does not like when try to read output port
     // So store it value in temp var
     unsigned char immoOn;
+    // Response received from remote relay
+    ImmoInState immoInState;
+    // Time, when last cmd was received
+    uint16_t immoInLastCmdms;
+    // Command LOG_ENTRY_IMMO_IN_5S_DELAY has been sent using SPI
+    unsigned char immoIn5msDelaySpiCmdSend;
 
     // Time. Counts 10ms intervals
     uint16_t ms10;

@@ -10,10 +10,9 @@ void initialTasks() {
     txSPI(0x03000000 | state.spiAddr, 0);
     state.spiTask = SPI_FIND_STOP;
   }
-  else if ((state.initialTasks & SPI_WRITE_RESET_REASON) && state.spiTask == SPI_NO_TASK) {
+  if ((state.initialTasks & SPI_WRITE_RESET_REASON) && state.spiTask == SPI_NO_TASK) {
     state.initialTasks ^= SPI_WRITE_RESET_REASON;
-//    uint32_t data = ((uint8_t)LOG_ENTRY_RESET << 24) + ((uint16_t)RCON << 8) + 0x25;
     state.logType = LOG_ENTRY_RESET;
-    RCON = 0;
+//    RCON = 0;
   }
 }
