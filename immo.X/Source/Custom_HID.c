@@ -59,11 +59,14 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
 
 
     case USB_SPI_SEND_CMD:
-    {
       state.spiTask = SPI_EXEC_USB_CMD;
       txSPI(byteArrToUint32ForSPI(&UsbRxData[2]), byteArrToUint32ForSPI(&UsbRxData[6]));
       break;
-    }
+      
+    case USB_SPI_GET_REGS:
+      state.spiTask = USB_SPI_GET_REGS;
+      txSPI(0x05000000, 0);
+      break;
 
     case USB_PLAY_BEEP_SOUND:
       playSound(nokiaRingtoneSound);

@@ -25,6 +25,7 @@ typedef enum {
 //    USB_MONITOR_PORTS_STATE = 5, // Cannot monitor as CN int has higher priority than USB and will freeze device
 
     USB_SPI_SEND_CMD = 0x11,
+    USB_SPI_GET_REGS = 0x12,
 
     USB_SEND_BEAN_CMD = 0x21,
     USB_LISTERN_BEAN = 0x22,
@@ -46,7 +47,9 @@ typedef enum {
 
 typedef enum {
     USB_POST_PORTS_STATE = 3,
+    
     USB_POST_SPI_RESP = 0x11,
+    USB_POST_SPI_REGS = 0x12,
 
     USB_GOT_BEAN_CMD = 0x21,
     USB_GOT_REC_TICKS = 0x23,
@@ -125,7 +128,7 @@ typedef struct {
     unsigned char recPos;
 
     // SPI
-    uint32_t spiReceive[4];  // We're going to receive up to 4 spi cmd
+    uint32_t spiReceive[SPI_REC_BUFF];  // We're going to receive up to 4 spi cmd
     unsigned char spiRecIdx;
     uint32_t spiSend[SPI_SEND_BUFF]; // 0 - addr, 1 - data, 2 - addr, 1 - data
     unsigned char spiSendIdx;

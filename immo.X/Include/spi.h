@@ -45,6 +45,7 @@ typedef union {
 
 #define SPI_SEND_BUFF 8     // 4 bytes: hh, mm, msss
                             // 4 bytes: data
+#define SPI_REC_BUFF 4
 
 void txSPI(uint32_t addr, uint32_t data);
 void spiTasks();

@@ -5,13 +5,12 @@
         <group>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/typeConvert.h</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/stateControl.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/init.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/spi.c</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/app_32MX220F032B.ld</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/StateControl.h</file>
-            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/nbproject/Makefile-default.mk</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/beanTasks.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/typeConvert.c</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Source/globalState.c</file>
+            <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/globalState.h</file>
             <file>file:/C:/Users/fedor/source/repos/_PIC/immo/immo.X/Include/spi.h</file>
         </group>
     </open-files>

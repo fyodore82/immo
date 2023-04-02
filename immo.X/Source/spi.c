@@ -4,6 +4,7 @@
 #include "..\Include\typeConvert.h"
 #include "..\Include\spi.h"
 #include "..\Include\ports.h"
+#include <string.h>
 
 void txSPI(uint32_t addr, uint32_t data) {
   // Read all enhanced FIFO buffer
@@ -12,41 +13,45 @@ void txSPI(uint32_t addr, uint32_t data) {
   spiP = SPI1BUF;
   spiP = SPI1BUF;
   state.spiRecIdx = 0;
-  IFS1bits.SPI1RXIF = 0;
-  //  SPI1CONbits.ON = 1;
+  memset(state.spiReceive, 4 * 4, 0);
+  // IFS1bits.SPI1RXIF = 0;
   SPI1BUF = addr; // Addr
   SPI1BUF = data; // Data
 }
 
 void spiTasks() {
-  uint32_t data; // Is only used in SPI_FIND_STOP
-  uint16_t delay = state.lstSpiSendCmd <= state.ms10
-    ? state.ms10 - state.lstSpiSendCmd
-    : 6000 - state.lstSpiSendCmd + state.ms10;
+//  uint32_t data; // Is only used in SPI_FIND_STOP
+  uint16_t delay = calcDelay(state.lstSpiSendCmd);
+  
+  if (state.spiRecIdx >= SPI_REC_BUFF) state.spiRecIdx = 0;
 
   switch (state.spiTask) {
     case SPI_EXEC_USB_CMD:
-      if (IFS1bits.SPI1RXIF) {
-        state.spiReceive[state.spiRecIdx++] = SPI1BUF;
-        IFS1bits.SPI1RXIF = 0;
-      }
+    case USB_SPI_GET_REGS:
+      if (!IFS1bits.SPI1RXIF) return;
+      state.spiReceive[state.spiRecIdx++] = SPI1BUF;
+      // IFS1bits.SPI1RXIF = 0;
       if (state.spiRecIdx == 2) {
         if (state.usbTxData[0]) return;
         state.usbCommand = USB_NO_CMD;
         state.usbTxData[0] = 9;
-        state.usbTxData[1] = USB_POST_SPI_RESP;
+        state.usbTxData[1] = state.spiTask == SPI_EXEC_USB_CMD
+          ? USB_POST_SPI_RESP
+          : USB_POST_SPI_REGS;
         uint32ToByteArr(&state.usbTxData[2], state.spiReceive[0]);
         uint32ToByteArr(&state.usbTxData[6], state.spiReceive[1]);
         state.spiTask = SPI_NO_TASK;
       }
       break;
     case SPI_FIND_STOP:
-      if (!IFS1bits.SPI1RXIF) break;
-      IFS1bits.SPI1RXIF = 0;
-      data = SPI1BUF; // This is bus state when address has been sent
-      data = SPI1BUF; // Second read yield data
+      if (!IFS1bits.SPI1RXIF) return;
+      state.spiReceive[state.spiRecIdx++] = SPI1BUF;
+      if (state.spiRecIdx < 2) return;
+//      IFS1bits.SPI1RXIF = 0;
+//      data = SPI1BUF; // This is bus state when address has been sent
+//      data = SPI1BUF; // Second read yield data
       // 0xFFFFFFFF means that bytes are erased
-      if (data == 0xFFFFFFFF) {
+      if (state.spiReceive[1] == 0xFFFFFFFF) {
         state.spiTask = SPI_NO_TASK;
       } else {
         // Move by 8 bytes. In first 4 bytes - time, than 4 bytes for data
@@ -60,8 +65,8 @@ void spiTasks() {
       }
       break;
     case SPI_SEND_DATA:
-      if (!IFS1bits.SPI1TXIF) break;
-      IFS1bits.SPI1RXIF = 0;
+      if (!IFS1bits.SPI1RXIF) return;
+//    IFS1bits.SPI1RXIF = 0;
       // Minimum 20ms has not been elapsed between concurrent SPI commands
       if (state.lstSpiSendCmd != 0xFFFF && delay < 2) break;
         // On last iteration check if address poining on the nex sector and erase it
