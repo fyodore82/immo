@@ -61,13 +61,13 @@ INT main(void) {
   
   init();
   
-  UINT pbClk;
+//  UINT pbClk;
 
   // Setup configuration
-  pbClk = SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
+//  pbClk = SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
   
   // Initialize the transport layer - UART/USB/Ethernet
-  TRANS_LAYER_Init(pbClk);
+  TRANS_LAYER_Init(0);
   
   while (1) {
     initialTasks();

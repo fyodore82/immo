@@ -23,7 +23,6 @@ void playSound(uint16_t sound[]) {
 
   state.soundLength = (WHOLE_NOTE / sound[state.soundIndex + 1]) * sound[state.soundIndex] / 1000;
   BEEPER_CTRL_OUT = 0;
-  PORTBbits.RB9 = 0;
   T4CONbits.ON = 1;
 }
 
@@ -31,8 +30,7 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_4_VECTO
   T4CONbits.ON = 0;
   IFS0bits.T4IF = 0;
   TMR4 = 0;
-  //  if (!BEEPER_CTRL_OUT) {
-  if (!PORTBbits.RB9) {
+  if (!state.beeper_ctrl_out) {
     if (state.soundLength) state.soundLength--;
     else {
       state.soundIndex += 2;
@@ -40,14 +38,16 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_4_VECTO
         state.soundPlaying = 0;
         state.soundIndex = 0;
         state.soundLength = 0;
+        BEEPER_CTRL_OUT = 0;
+        state.beeper_ctrl_out = 0;
         return;
       }
       PR4 = T4_2TICKS_FREQ / state.soundPlaying[state.soundIndex];
       state.soundLength = (WHOLE_NOTE / state.soundPlaying[state.soundIndex + 1]) * state.soundPlaying[state.soundIndex] / 1000;
     }
   }
-    BEEPER_CTRL_OUT = !BEEPER_CTRL_OUT;
-  PORTBbits.RB9 = !(PORTBbits.RB9);
+  state.beeper_ctrl_out = !state.beeper_ctrl_out;
+  BEEPER_CTRL_OUT = state.beeper_ctrl_out;
   T4CONbits.ON = 1;
 }
 

@@ -5,6 +5,7 @@
 #include "..\Include\typeConvert.h"
 #include <bean.h>
 #include "..\Include\spi.h"
+#include "..\Include\sounds.h"
 
 uint8_t immoOutOkAsrCmd[] = {0x13, 0x33, 0x44,0x11, 0x62};
 uint8_t immoOutOkImmoCmd[] = {0x13, 0x33, 0x44, 0x12, 0x57};
@@ -14,10 +15,12 @@ uint8_t immoInOkCmd[] = {0x13, 0x44, 0x33, 0x11, 0x94};
 uint8_t immoInAlertCmd[] = {0x13, 0x44, 0x33, 0x22, 0xC4};
 
 void processStateChange() {
+  // ASR12V - ON when normal IG is ON
+  // ASR12V is OFF when ASR is controlling IG
   if (!state.btnLongPressed) {
     // Code below relates only to normal immo operation,
     // i.e. when button is not pressed
-    if (!state.immoOn && !state.portsState[ASR12V_IN_IDX]) {
+    if (!state.immoOn && state.portsState[ASR12V_IN_IDX]) {
       state.immoOnOffms = state.ms10;
       state.immoOn = 1;
       IMMO_ON_OUT = 1;
@@ -25,7 +28,7 @@ void processStateChange() {
     }
     // If immo is turned OFF, it can happen only by ASR12V is 1
     // Immedeately process change, as we don't need to wait for IMMO_SENCE
-    if (state.immoOn && state.portsState[ASR12V_IN_IDX]) {
+    if (state.immoOn && !state.portsState[ASR12V_IN_IDX]) {
       state.immoOn = 0;
       IMMO_ON_OUT = 0;
       state.logType = LOG_ENTRY_STATE_CHANGE;
@@ -40,7 +43,7 @@ void processStateChange() {
     state.immoOnOffms = 0xFFFF;
 
     // Immo in OK state - immediately notify
-    if (state.portsState[ASR12V_IN_IDX]) {
+    if (!state.portsState[ASR12V_IN_IDX]) {
       if (state.immoState != IMMO_OK_ASR12V) {
         if (!state.disableImmoBeanSend) {
           initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
@@ -59,7 +62,7 @@ void processStateChange() {
 
     // Immo alert = immedeately notify
     if (!state.portsState[IMMO_SENCE_IDX]
-        && !state.portsState[ASR12V_IN_IDX]
+        && state.portsState[ASR12V_IN_IDX]
         && state.immoState != IMMO_ALERT) {
       if (!state.disableImmoBeanSend) {
         initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
@@ -94,6 +97,9 @@ void processStateChange() {
         // state.immoState = state.immoState == IMMO_BTN_PRESSED ? IMMO_UNKNOWN : IMMO_BTN_PRESSED;
         state.longPressProcessed = 1;
         state.logType = LOG_ENTRY_STATE_CHANGE;
+        if (state.btnLongPressed) {
+          playSound(nokiaRingtoneSound);
+        }
       }
     }
   }

@@ -146,6 +146,8 @@ typedef struct {
     unsigned char soundIndex;
     uint16_t soundLength; // length of the sound in TMR4 expirations
                           // Depending on the playing freq, TMR4 may expire earlier of later
+    unsigned char beeper_ctrl_out; // PIC does not like when reading from output port
+    
     unsigned char portsState[4];
     unsigned char portsTest[4];
 

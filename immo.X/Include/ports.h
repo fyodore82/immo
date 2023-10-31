@@ -40,7 +40,7 @@ void processPortsChange();
 #define BEAN_IN PORTBbits.RB8
 #define BEAN_IN_CNSTAT CNSTATBbits.CNSTATB8
 
-#define T5CON_VALUE 0x00008060 // ON = 1, TCKPS = 64, T32 = 0, TSC = 0
+#define T5CON_VALUE 0x00008050 // ON = 1, TCKPS = 32 (Tpbclk = 20000000), T32 = 0, TSC = 0
 #define PR5_VALUE 0x0186A       // = =10ms
 
 #define BUTTON_TEST_STATE_MID 0x10   // Middle, neither 0 or 1

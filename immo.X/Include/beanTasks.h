@@ -18,11 +18,11 @@ extern "C" {
 // For ports config see ports.h
     
 // Timer2 is used to send BEAN
-#define T2CON_VALUE 0x00000050 // ON = 0, TCKPS = 32, T32 = 0, TSC = 0
+#define T2CON_VALUE 0x00000040 // ON = 0, TCKPS = 16 (Tpbclk = 20MHz), T32 = 0, TSC = 0
 #define PR2_VALUE 0x007D       // = 125 ticks for 10kbps
 
 // Timer3 is used to receive BEAN
-#define T3CON_VALUE 0x00000050 // ON = 0, TCKPS = 32, T32 = 0, TSC = 0
+#define T3CON_VALUE 0x00000040 // ON = 0, TCKPS = 16 (Tpbclk = 20MHz), T32 = 0, TSC = 0
 #define T3_CNT 0x007D          // 125 ticks for 10kbps
                                // Is decreased so when dividing TimerValue to T3CNT we gen number of bits
                                // as sending freq can diviate

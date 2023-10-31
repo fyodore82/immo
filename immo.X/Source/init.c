@@ -158,12 +158,12 @@ void init ()
   // ----------------- SPI -------------------
   // Config REFOCON
   SPI1BUF = 0;
-//  IFS1 = 0;
-//  IPC7bits.SPI1IP = 1;
-//  IPC7bits.SPI1IS = 1;
-//  IEC1bits.SPI1EIE = 1; - no need for SPI error interrupts
+  // IFS1 = 0;
+  // IPC7bits.SPI1IP = 1;
+  // IPC7bits.SPI1IS = 1;
+  // IEC1bits.SPI1EIE = 1; - no need for SPI error interrupts
   // IEC1bits.SPI1RXIE = 1;
-//  IEC1bits.SPI1TXIE = 1;
+  // IEC1bits.SPI1TXIE = 1;
   // SPI1BRG = 0; - zero on reset. Fsck = Fpb / (2 * (SPI1BRG + 1)) = 40 MHz / (2 * (0 + 1)) = 20 MHz
   SPI1STATbits.SPIROV = 0;
   // bit 0-1: SRXISEL<1:0>: SPI Receive Buffer Full Interrupt Mode bits = 01 = buffer is not empty
