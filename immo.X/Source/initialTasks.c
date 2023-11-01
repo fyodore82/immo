@@ -16,8 +16,8 @@ void initialTasks() {
     state.logType = LOG_ENTRY_RESET;
   }
   // Welcome Sound should be played last
-  if ((state.initialTasks == PLAY_WELCOME_SOUND) && state.spiTask == SPI_NO_TASK) {
+  if ((state.initialTasks == PLAY_WELCOME_SOUND) && state.ms10 >= 100 && state.spiTask == SPI_NO_TASK) {
     state.initialTasks ^= PLAY_WELCOME_SOUND;
-    playSound(nokiaRingtoneSound);
+    playSound(startSound);
   }
 }

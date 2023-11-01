@@ -16,6 +16,7 @@ extern "C" {
 
     // { freq, lenght in ms }
     extern uint16_t nokiaRingtoneSound[];
+    extern uint16_t startSound[];
 
     void playSound(uint16_t sound[]);
     
@@ -71,7 +72,7 @@ extern "C" {
 #define NOTE_FS4 370
 #define NOTE_G4  392
 #define NOTE_GS4 415
-#define NOTE_A4  440
+#define NOTE_A4  440    // Fn+1 = Fn * root(2, 12)
 #define NOTE_AS4 466
 #define NOTE_B4  494
 #define NOTE_C5  523
@@ -83,7 +84,7 @@ extern "C" {
 #define NOTE_FS5 740
 #define NOTE_G5  784
 #define NOTE_GS5 831
-#define NOTE_A5  880
+#define NOTE_A5  880    // Next octave
 #define NOTE_AS5 932
 #define NOTE_B5  988
 #define NOTE_C6  1047

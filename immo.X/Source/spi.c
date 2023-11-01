@@ -69,17 +69,17 @@ void spiTasks() {
 //    IFS1bits.SPI1RXIF = 0;
       // Minimum 20ms has not been elapsed between concurrent SPI commands
       if (state.lstSpiSendCmd != 0xFFFF && delay < 2) break;
-        // On last iteration check if address poining on the nex sector and erase it
-        if (state.spiSendIdx >= SPI_SEND_BUFF) {
+      // On last iteration check if address poining on the nex sector and erase it
+      if (state.spiSendIdx >= SPI_SEND_BUFF) {
         // Small sector erase should occur only on first call to tsSpi
-          if (!(state.spiAddr & SPI_SMALL_SECTOR)) {
-            txSPI(0xd7000000, 0);
-          }
-          state.spiTask = SPI_NO_TASK;
-          state.lstSpiSendCmd = 0xFFFF;
-          state.spiSendIdx = 0;
-          break;
+        if (!(state.spiAddr & SPI_SMALL_SECTOR)) {
+          txSPI(0xd7000000, 0);
         }
+        state.spiTask = SPI_NO_TASK;
+        state.lstSpiSendCmd = 0xFFFF;
+        state.spiSendIdx = 0;
+        break;
+      }
 
       state.lstSpiSendCmd = state.ms10;
 
