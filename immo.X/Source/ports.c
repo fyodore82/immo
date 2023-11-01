@@ -27,7 +27,7 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_CHANGE_NOTICE
   if (IFS1bits.CNBIF || IFS1bits.CNAIF) {
     IFS1bits.CNBIF = 0;
     IFS1bits.CNAIF = 0;
-    if (BEAN_IN_CNSTAT) processBeanInPortChange();
+    // if (BEAN_IN_CNSTAT) processBeanInPortChange();
   }
   CNSTATB = 0;
   CNSTATA = 0;
