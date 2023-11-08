@@ -55,3 +55,43 @@ unsigned char initSendBeanData(SendBeanData *pBeanData, unsigned char *buff) {
     // return CBeanFunctionsMock::instance->initSendBeanData(pBeanData, buff);
   return 0;
 }
+
+char bean_mock;
+unsigned char cnt_mock;
+
+void recBean(RecBeanData *, char bean, unsigned char cnt) {
+  bean_mock = bean;
+  cnt_mock = cnt;
+}
+
+unsigned char getCntFromTmr(unsigned short tmr, unsigned short)
+{
+  // For simlicity in testing
+  return tmr;
+}
+
+void setSendError(SendBeanData *pBeanData) {
+  pBeanData->sentBit = 7;
+  pBeanData->sendBuffPos = 0;
+  pBeanData->cnt = 0;
+  pBeanData->sendBeanState = BEAN_TR_ERR;
+
+  pBeanData->sendNextBitStaffing = 0;
+  pBeanData->bean = 0;
+}
+
+void sendBean(SendBeanData *pBeanData) {
+}
+
+unsigned char isTransferInProgress(SendBeanData *pBeanData) {
+  return pBeanData->sendBeanState != BEAN_NO_TR
+          && pBeanData->sendBeanState != BEAN_TR_ERR
+          && pBeanData->sendBeanState != BEAN_NO_TR_DATA_PRESENT;
+}
+
+unsigned char canStartTransfer(BeanTransferState sendBeanState, BeanTransferState recBeanState) {
+  return sendBeanState == BEAN_NO_TR_DATA_PRESENT && recBeanState == BEAN_NO_TR;
+}
+
+void resetSendError(SendBeanData *pBeanData, unsigned char beanIn, unsigned char cnt) {
+}

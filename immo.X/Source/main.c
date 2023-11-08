@@ -73,7 +73,7 @@ INT main(void) {
     initialTasks();
     processPortsChange();
     TRANS_LAYER_Task(); // Run Transport layer tasks
-    // beanTasks();
+    beanTasks();
     spiTasks();
     globalStateTasks();
     processStateChange();

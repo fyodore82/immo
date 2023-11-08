@@ -28,6 +28,30 @@ struct {
   unsigned int CNSTATB15;
 } CNSTATBbits;
 
+struct {
+  unsigned int ON;
+} T3CONbits;
+
+struct {
+  unsigned int ON;
+} T2CONbits;
+
+struct {
+  unsigned int T3IF;
+  unsigned int T2IF;
+} IFS0bits;
+
+#define nomips16
+#define __attribute__(a)
+#define _TIMER_2_VECTOR
+#define _TIMER_3_VECTOR
+#define vector(a)
+#define interrupt(a)
+
+uint16_t TMR3;
+uint16_t TMR2;
+uint16_t PR2;
+
 uint16_t RCON;
 
 void __delay_ms(int value);

@@ -35,9 +35,10 @@ void transfer1bit() {
   // Adjust send length to make it ideal
   PR2 = (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0xD : 0xD);
   T2CONbits.ON = !!state.sendBeanData.cnt;
-  BEAN_OUT = state.sendBeanData.bean;
-  // Is used to check if sent BEAN bit is equal to what is really on the BUS
-  state.prevBean = state.sendBeanData.bean;
+  // Set bean to 0 when transfer has been finished
+  state.prevBean = state.sendBeanData.cnt ? state.sendBeanData.bean : 0;
+  // state.prevBean is used to check if sent BEAN bit is equal to what is really on the BUS
+  BEAN_OUT = state.prevBean;
   // If cnt is zero it means that transfer has been ended
   if (state.sendBeanData.cnt) sendBean(&state.sendBeanData);
 }
@@ -50,7 +51,7 @@ void beanTasks() {
     state.recPos = 0;
     transfer1bit();
   }
-  
+
   uint16_t delay = calcDelay(state.immoInLastCmdms);
   if (delay == 500 && !state.immoIn5msDelaySpiCmdSend) state.logType = LOG_ENTRY_IMMO_IN_5S_DELAY;
   if (delay >= 1000 && state.immoInState != IMMO_IN_UNKNOWN) {
@@ -61,7 +62,7 @@ void beanTasks() {
 
   if (state.recBeanData.recBufferFull) {
     state.recBeanData.recBufferFull = 0;
-    
+
     if (!memcmp(state.recBeanData.buffer, immoInOkCmd, (immoInOkCmd[0] & 0x0F) + 2)) {
       state.immoInLastCmdms = state.ms10;
       if (state.immoInState != IMMO_IN_OK) {
@@ -78,7 +79,7 @@ void beanTasks() {
         state.immoIn5msDelaySpiCmdSend = 0;
       }
     }
-    
+
     switch (state.usbCommand) {
       case USB_LISTERN_BEAN:
         sendToUSBReceivedBeanCmd();
@@ -104,8 +105,6 @@ void beanTasks() {
 void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_2_VECTOR))) _timer2Vector(void) {
   T2CONbits.ON = 0;
   IFS0bits.T2IF = 0;
-  // Check for send error condition and reset it to restart sending
-  if (resetSendError(&state.sendBeanData)) return;
   transfer1bit();
 }
 
@@ -118,6 +117,8 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_3_VECTO
   // Sucn large cnt value will either end reception (if lat bit has been received)
   // or set error condition in case bus error
   recBean(&state.recBeanData, beanIn, BEAN_NO_TR_COND + 3);
+  // Check for send error condition and reset it to restart sending
+  resetSendError(&state.sendBeanData, beanIn, BEAN_NO_TR_COND + 3);
 }
 
 void inline processBeanInPortChange() {

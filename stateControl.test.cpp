@@ -17,6 +17,7 @@ class StateControlTestClass : public ::testing::Test
 TEST_F(StateControlTestClass, Should_Turn_On_Immo)
 {
   state.ms10 = 0;
+  state.portsState[ASR12V_IN_IDX] = 1;
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
   EXPECT_EQ(initSendBeanDataBuff.size(), 0);
@@ -28,6 +29,7 @@ TEST_F(StateControlTestClass, Nothing_should_happen_if_less_than_10_ms_elapsed_a
 {
   uint16_t ms10Initial = 12;
   state.ms10 = ms10Initial;
+  state.portsState[ASR12V_IN_IDX] = 1;
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
   EXPECT_EQ(initSendBeanDataBuff.size(), 0);
@@ -47,7 +49,9 @@ TEST_F(StateControlTestClass, Should_Send_immoOutOkCmd_when_IMMO_SENCE_is_1)
   state.ms10 = 9;
 
   IMMO_ON_OUT = 1;
+  state.immoOn = 1;
   state.portsState[IMMO_SENCE_IDX] = 1;
+  state.portsState[ASR12V_IN_IDX] = 1;
 
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
@@ -66,6 +70,7 @@ TEST_F(StateControlTestClass, Should_Send_bean_cmd_every_4_ms)
   IMMO_ON_OUT = 1;
   state.immoState = IMMO_OK_IMMO;
   state.portsState[IMMO_SENCE_IDX] = 1;
+  state.portsState[ASR12V_IN_IDX] = 1;
   processStateChange();
 
   state.ms10 = 400;
@@ -83,9 +88,11 @@ TEST_F(StateControlTestClass, Should_Send_bean_cmd_every_4_ms)
 TEST_F(StateControlTestClass, Should_Switch_to_Alert_when_IMMO_SENCE_is_0)
 {
   state.ms10 = 9;
+  state.immoOn = 1;
 
   IMMO_ON_OUT = 1;
   state.portsState[IMMO_SENCE_IDX] = 1;
+  state.portsState[ASR12V_IN_IDX] = 1;
 
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
@@ -108,9 +115,11 @@ TEST_F(StateControlTestClass, Should_Switch_to_Alert_when_IMMO_SENCE_is_0)
 TEST_F(StateControlTestClass, Should_Switch_to_Ok_when_IMMO_SENCE_become_1)
 {
   state.ms10 = 9;
+  state.immoOn = 1;
 
   IMMO_ON_OUT = 1;
   state.portsState[IMMO_SENCE_IDX] = 0;
+  state.portsState[ASR12V_IN_IDX] = 1;
 
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 1);
@@ -130,11 +139,11 @@ TEST_F(StateControlTestClass, Should_Switch_to_Ok_when_IMMO_SENCE_become_1)
   EXPECT_EQ(arg, immoOk);
 }
 
-TEST_F(StateControlTestClass, When_ASR12V_is_1_immo_is_turned_off_and_state_is_IMMO_OK)
+TEST_F(StateControlTestClass, When_ASR12V_is_0_immo_is_turned_off_and_state_is_IMMO_OK)
 {
   state.ms10 = 9;
 
-  state.portsState[ASR12V_IN_IDX] = 1;
+  state.portsState[ASR12V_IN_IDX] = 0;
 
   processStateChange();
   EXPECT_EQ(IMMO_ON_OUT, 0);
@@ -179,6 +188,7 @@ TEST_F(StateControlTestClass, Btn_Long_press)
   uint16_t initialMs10 = 9;
   state.ms10 = initialMs10;
   state.portsState[BUTTON_IN_IDX] = 1;
+  state.portsState[ASR12V_IN_IDX] = 1;
 
   processStateChange();
 

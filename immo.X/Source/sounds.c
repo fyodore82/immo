@@ -15,9 +15,11 @@ uint16_t nokiaRingtoneSound[] = {
 };
 
 uint16_t startSound[] = {
-  NOTE_E5, 8, NOTE_D5, 8, NOTE_FS4, 4, NOTE_GS4, 4,
-  NOTE_A4, 2, 0
-};
+  NOTE_E5, 8, NOTE_D5, 8, 0 
+}; 
+//NOTE_FS4, 4, NOTE_GS4, 4,
+//  NOTE_A4, 2, 0
+//};
 
 void playSound(uint16_t sound[]) {
   if (!sound[0]) return;
