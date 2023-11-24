@@ -21,7 +21,8 @@ void initGlobalState() {
   state.spiTask = SPI_NO_TASK;
   state.spiAddr = 0;
   state.spiSendIdx = 0;
-  state.initialTasks = SPI_FIND_STOP_ADDR | SPI_WRITE_RESET_REASON | PLAY_WELCOME_SOUND;
+  state.initialTasks = SPI_WRITE_RESET_REASON | PLAY_WELCOME_SOUND;
+  state.spiIsStopFound = 0;
   state.lstSpiSendCmd = 0xFFFF;
 
   state.secTasks = 0;

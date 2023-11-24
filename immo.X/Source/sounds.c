@@ -25,7 +25,7 @@ void playSound(uint16_t sound[]) {
   if (!sound[0]) return;
   state.soundPlaying = sound;
   state.soundIndex = 0;
-  PR4 = T4_2TICKS_FREQ / sound[state.soundIndex];
+  PR4 = (T4_2TICKS_FREQ / sound[state.soundIndex]) * 2;
   TMR4 = 0;
 
   state.soundLength = (WHOLE_NOTE / sound[state.soundIndex + 1]) * sound[state.soundIndex] / 1000;

@@ -140,6 +140,8 @@ typedef struct {
 
     SPITask spiTask;
     uint32_t spiAddr;   // Current SPI address to write log to
+    
+    unsigned char spiIsStopFound;   // Is 1 when stop is found. This is very first task to do
 
     // Sounds
     uint16_t* soundPlaying;

@@ -20,7 +20,7 @@ extern "C" {
 
     void playSound(uint16_t sound[]);
     
-    #define T4CON_VALUE 0x00000070 // ON = 0, TCKPS = 16 (Tpbclk = 20MHz), T32 = 0, TSC = 0
+    #define T4CON_VALUE 0x00000060 // ON = 0, TCKPS = 256 (Tpbclk = 20MHz), T32 = 0, TSC = 0
                                    // = 2 tick = 78.125kHz * 2
     #define T4_2TICKS_FREQ 156250UL
 

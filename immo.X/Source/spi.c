@@ -53,12 +53,14 @@ void spiTasks() {
       // 0xFFFFFFFF means that bytes are erased
       if (state.spiReceive[1] == 0xFFFFFFFF) {
         state.spiTask = SPI_NO_TASK;
+        state.spiIsStopFound = 1;
       } else {
         // Move by 8 bytes. In first 4 bytes - time, than 4 bytes for data
         state.spiAddr += 8;
         if (state.spiAddr >= SPI_MAX_ADDR) {
           state.spiAddr = 0;
           state.spiTask = SPI_NO_TASK;
+          state.spiIsStopFound = 1;
         } else {
           txSPI(0x03000000 | state.spiAddr, 0);
         }
@@ -90,7 +92,7 @@ void spiTasks() {
 }
 
 void writeLog() {
-  if (state.spiTask != SPI_NO_TASK || state.logType == DONT_LOG) return;
+  if (state.spiTask != SPI_NO_TASK || state.logType == DONT_LOG || !state.spiIsStopFound) return;
   state.spiSend[0] = 0x06000000;  // Write enable
   state.spiSend[1] = 0;
   state.spiSend[2] = 0x02000000 | state.spiAddr;
