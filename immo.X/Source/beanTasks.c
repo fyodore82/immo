@@ -53,10 +53,10 @@ void beanTasks() {
   }
 
   uint16_t delay = calcDelay(state.immoInLastCmdms);
-  if (delay == 500 && !state.immoIn5msDelaySpiCmdSend) state.logType = LOG_ENTRY_IMMO_IN_5S_DELAY;
+  if (delay == 500 && !state.immoIn5msDelaySpiCmdSend) logSpi(LOG_ENTRY_IMMO_IN_5S_DELAY);
   if (delay >= 1000 && state.immoInState != IMMO_IN_UNKNOWN) {
     state.immoInState = IMMO_IN_UNKNOWN;
-    state.logType = LOG_ENTRY_STATE_CHANGE;
+    logSpi(LOG_ENTRY_STATE_CHANGE);
     state.immoInLastCmdms = 0xFFFF;
   }
 
@@ -67,7 +67,7 @@ void beanTasks() {
       state.immoInLastCmdms = state.ms10;
       if (state.immoInState != IMMO_IN_OK) {
         state.immoInState = IMMO_IN_OK;
-        state.logType = LOG_ENTRY_STATE_CHANGE;
+        logSpi(LOG_ENTRY_STATE_CHANGE);
         state.immoIn5msDelaySpiCmdSend = 0;
       }
     }
@@ -75,7 +75,7 @@ void beanTasks() {
       state.immoInLastCmdms = state.ms10;
       if (state.immoInState != IMMO_IN_ALERT) {
         state.immoInState = IMMO_IN_ALERT;
-        state.logType = LOG_ENTRY_STATE_CHANGE;
+        logSpi(LOG_ENTRY_STATE_CHANGE);
         state.immoIn5msDelaySpiCmdSend = 0;
       }
     }
@@ -98,6 +98,10 @@ void beanTasks() {
         state.usbCommand = USB_LISTERN_BEAN_REC_TICKS;
         sendToUSBReceivedRecBuff();
         break;
+      case USB_SEND_BEAN_CMD_WO_LISTERN:
+        state.usbCommand = USB_NO_CMD;
+        sendToUSBReceivedRecBuff();
+        break;      
     }
   }
 }

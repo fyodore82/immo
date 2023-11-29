@@ -31,6 +31,7 @@ typedef enum {
     USB_LISTERN_BEAN = 0x22,
     USB_SEND_BEAN_CMD_REC_TICKS = 0x23, // Save ticks elapsed between NEAN IN port change
     USB_LISTERN_BEAN_REC_TICKS = 0x24, // Save ticks elapsed between NEAN IN port change
+    USB_SEND_BEAN_CMD_WO_LISTERN = 0x25,
 
     USB_PLAY_BEEP_SOUND = 0x31,
 
@@ -127,29 +128,6 @@ typedef struct {
     unsigned char recBuff[256];
     unsigned char recPos;
 
-    // SPI
-    uint32_t spiReceive[SPI_REC_BUFF];  // We're going to receive up to 4 spi cmd
-    unsigned char spiRecIdx;
-    uint32_t spiSend[SPI_SEND_BUFF]; // 0 - addr, 1 - data, 2 - addr, 1 - data
-    unsigned char spiSendIdx;
-    uint16_t lstSpiSendCmd; // ms, when last SPI write cmd has been sent
-                            // Is used to introduce delay between concurrent SPI writes
-    // Logging is done only once in a cycle
-    // So when it is required to log, code will set this var and writeLog routine will do logging
-    SPILogEntryType logType;
-
-    SPITask spiTask;
-    uint32_t spiAddr;   // Current SPI address to write log to
-    
-    unsigned char spiIsStopFound;   // Is 1 when stop is found. This is very first task to do
-
-    // Sounds
-    uint16_t* soundPlaying;
-    unsigned char soundIndex;
-    uint16_t soundLength; // length of the sound in TMR4 expirations
-                          // Depending on the playing freq, TMR4 may expire earlier of later
-    unsigned char beeper_ctrl_out; // PIC does not like when reading from output port
-    
     unsigned char portsState[4];
     unsigned char portsTest[4];
 

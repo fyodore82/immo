@@ -76,7 +76,7 @@ void processPortsChange() {
       portChanged = 1;
     }
   }
-  if (portChanged && state.logType == DONT_LOG) {
-    state.logType = LOG_ENTRY_STATE_CHANGE;
+  if (portChanged) {
+    logSpi(LOG_ENTRY_STATE_CHANGE);
   }
 }

@@ -70,14 +70,14 @@ INT main(void) {
   TRANS_LAYER_Init(0);
   
   while (1) {
+    findStop();
+    spiUsbTasks();
     initialTasks();
     processPortsChange();
     TRANS_LAYER_Task(); // Run Transport layer tasks
     beanTasks();
-    spiTasks();
     globalStateTasks();
     processStateChange();
-    writeLog();
   }
   // Close trasnport layer.
   TRANS_LAYER_Close();

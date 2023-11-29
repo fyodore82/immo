@@ -15,20 +15,26 @@ uint16_t nokiaRingtoneSound[] = {
 };
 
 uint16_t startSound[] = {
-  NOTE_E5, 8, NOTE_D5, 8, 0 
+  NOTE_B4, 8, NOTE_A4, 8, NOTE_CS4, 4, NOTE_E4, 4, 0 
 }; 
 //NOTE_FS4, 4, NOTE_GS4, 4,
 //  NOTE_A4, 2, 0
 //};
 
+static uint16_t* soundPlaying;
+static unsigned char soundIndex;
+static uint16_t soundLength; // length of the sound in TMR4 expirations
+                              // Depending on the playing freq, TMR4 may expire earlier of later
+static unsigned char beeper_ctrl_out; // PIC does not like when reading from output port
+
 void playSound(uint16_t sound[]) {
   if (!sound[0]) return;
-  state.soundPlaying = sound;
-  state.soundIndex = 0;
-  PR4 = (T4_2TICKS_FREQ / sound[state.soundIndex]) * 2;
+  soundPlaying = sound;
+  soundIndex = 0;
+  PR4 = (T4_2TICKS_FREQ / sound[soundIndex]) * 2;
   TMR4 = 0;
 
-  state.soundLength = (WHOLE_NOTE / sound[state.soundIndex + 1]) * sound[state.soundIndex] / 1000;
+  soundLength = (WHOLE_NOTE / sound[soundIndex + 1]) * sound[soundIndex] / 1000;
   BEEPER_CTRL_OUT = 0;
   T4CONbits.ON = 1;
 }
@@ -37,24 +43,24 @@ void __attribute__((nomips16)) __attribute__((interrupt(), vector(_TIMER_4_VECTO
   T4CONbits.ON = 0;
   IFS0bits.T4IF = 0;
   TMR4 = 0;
-  if (!state.beeper_ctrl_out) {
-    if (state.soundLength) state.soundLength--;
+  if (!beeper_ctrl_out) {
+    if (soundLength) soundLength--;
     else {
-      state.soundIndex += 2;
-      if (!state.soundPlaying[state.soundIndex]) {
-        state.soundPlaying = 0;
-        state.soundIndex = 0;
-        state.soundLength = 0;
+      soundIndex += 2;
+      if (!soundPlaying[soundIndex]) {
+        soundPlaying = 0;
+        soundIndex = 0;
+        soundLength = 0;
         BEEPER_CTRL_OUT = 0;
-        state.beeper_ctrl_out = 0;
+        beeper_ctrl_out = 0;
         return;
       }
-      PR4 = T4_2TICKS_FREQ / state.soundPlaying[state.soundIndex];
-      state.soundLength = (WHOLE_NOTE / state.soundPlaying[state.soundIndex + 1]) * state.soundPlaying[state.soundIndex] / 1000;
+      PR4 = T4_2TICKS_FREQ / soundPlaying[soundIndex];
+      soundLength = (WHOLE_NOTE / soundPlaying[soundIndex + 1]) * soundPlaying[soundIndex] / 1000;
     }
   }
-  state.beeper_ctrl_out = !state.beeper_ctrl_out;
-  BEEPER_CTRL_OUT = state.beeper_ctrl_out;
+  beeper_ctrl_out = !beeper_ctrl_out;
+  BEEPER_CTRL_OUT = beeper_ctrl_out;
   T4CONbits.ON = 1;
 }
 

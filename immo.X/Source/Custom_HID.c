@@ -39,14 +39,14 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
       sendGlobalState();
       break;
 
-      // -------------
-      // BEAN commands
-      // -------------
+    // -------------
+    // BEAN commands
+    // -------------
     case USB_SEND_BEAN_CMD:
     case USB_SEND_BEAN_CMD_REC_TICKS:
+    case USB_SEND_BEAN_CMD_WO_LISTERN:
       state.usbCommand = (USBReqCommand) UsbRxData[0];
       initSendBeanData(&state.sendBeanData, &UsbRxData[2]);
-//      state.recBeanData.recBufferFull = 0;
       state.recPos = 0; // Is used only to rec ticks
       break;
 
@@ -54,18 +54,15 @@ void ProcessRxFrame(unsigned char* UsbRxData, unsigned char len) {
     case USB_LISTERN_BEAN_REC_TICKS:
       state.usbCommand = (USBReqCommand) UsbRxData[0];
       state.recPos = 0; // Is used only to rec ticks
-//      state.recBeanData.recBufferFull = 0;
       break;
 
 
     case USB_SPI_SEND_CMD:
-      state.spiTask = SPI_EXEC_USB_CMD;
-      txSPI(byteArrToUint32ForSPI(&UsbRxData[2]), byteArrToUint32ForSPI(&UsbRxData[6]));
-      break;
-      
+      setUsbAddrData(
+        byteArrToUint32ForSPI(&UsbRxData[2]),
+        byteArrToUint32ForSPI(&UsbRxData[6]));
     case USB_SPI_GET_REGS:
-      state.spiTask = USB_SPI_GET_REGS;
-      txSPI(0x05000000, 0);
+      state.usbCommand = (USBReqCommand) UsbRxData[0];
       break;
 
     case USB_PLAY_BEEP_SOUND:

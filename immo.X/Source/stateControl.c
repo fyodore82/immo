@@ -24,14 +24,14 @@ void processStateChange() {
       state.immoOnOffms = state.ms10;
       state.immoOn = 1;
       IMMO_ON_OUT = 1;
-      state.logType = LOG_ENTRY_STATE_CHANGE;
+      logSpi(LOG_ENTRY_STATE_CHANGE);
     }
     // If immo is turned OFF, it can happen only by ASR12V is 1
     // Immedeately process change, as we don't need to wait for IMMO_SENCE
     if (state.immoOn && !state.portsState[ASR12V_IN_IDX]) {
       state.immoOn = 0;
       IMMO_ON_OUT = 0;
-      state.logType = LOG_ENTRY_STATE_CHANGE;
+      logSpi(LOG_ENTRY_STATE_CHANGE);
     }
   }
 
@@ -49,7 +49,7 @@ void processStateChange() {
 //          initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
 //        }
         state.immoState = IMMO_OK_ASR12V;
-        state.logType = LOG_ENTRY_STATE_CHANGE;
+        logSpi(LOG_ENTRY_STATE_CHANGE);
       }
     }
     else if (state.portsState[IMMO_SENCE_IDX] && state.immoState != IMMO_OK_IMMO) {
@@ -57,7 +57,7 @@ void processStateChange() {
 //        initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
 //      }
       state.immoState = IMMO_OK_IMMO;
-      state.logType = LOG_ENTRY_STATE_CHANGE;
+      logSpi(LOG_ENTRY_STATE_CHANGE);
     }
 
     // Immo alert = immedeately notify
@@ -68,7 +68,7 @@ void processStateChange() {
 //        initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
 //      }
       state.immoState = IMMO_ALERT;
-      state.logType = LOG_ENTRY_STATE_CHANGE;
+      logSpi(LOG_ENTRY_STATE_CHANGE);
     }
 
     // Send immoOutCmd every 4 seconds
@@ -96,7 +96,7 @@ void processStateChange() {
         state.btnLongPressed = !state.btnLongPressed;
         // state.immoState = state.immoState == IMMO_BTN_PRESSED ? IMMO_UNKNOWN : IMMO_BTN_PRESSED;
         state.longPressProcessed = 1;
-        state.logType = LOG_ENTRY_STATE_CHANGE;
+        logSpi(LOG_ENTRY_STATE_CHANGE);
         if (state.btnLongPressed) {
           playSound(nokiaRingtoneSound);
         }
@@ -108,7 +108,7 @@ void processStateChange() {
     state.shortPressProcessed = 1;
     state.immoOn = !state.immoOn;
     IMMO_ON_OUT = state.immoOn;
-    state.logType = LOG_ENTRY_STATE_CHANGE;
+    logSpi(LOG_ENTRY_STATE_CHANGE);
   }
 
   if (!state.portsState[BUTTON_IN_IDX]) {

@@ -9,161 +9,78 @@ class SpiTestClass : public ::testing::Test
   {
     initGlobalState();
     SPI1BUF.idx = 0;
+    spiIsStopFound = 0;
   }
 };
 
-TEST_F(SpiTestClass, Should_Send_Data)
+TEST_F(SpiTestClass, tsSPI_should_write_to_SPI1BUF)
 {
-  state.spiAddr = 0x123;
-  state.spiSend[0] = 0x06000000;
-  state.spiSend[1] = 0x0;
-  state.spiSend[2] = 0x02001122;
-  state.spiSend[3] = 0x12345678;
-  state.spiSend[4] = 0x06000000;
-  state.spiSend[5] = 0x0;
-  state.spiSend[6] = 0x02112233;
-  state.spiSend[7] = 0x87654321;
-
-  state.ms10 = 201;
-
-  state.spiTask = SPI_SEND_DATA;
-  IFS1bits.SPI1TXIF = 1;
-
-  // First call - send first word to SPI bus
-  spiTasks();
-  EXPECT_EQ(state.lstSpiSendCmd, state.ms10);
-  EXPECT_EQ(state.spiSendIdx, 2);
+  uint32_t addr = 0x12345678;
+  uint32_t data = 0x22334455;
+  txSPI(addr, data);
   EXPECT_EQ(SPI1BUF.idx, 2);
-  EXPECT_EQ(SPI1BUF.l[0], state.spiSend[0]);
-  EXPECT_EQ(SPI1BUF.l[1], state.spiSend[1]);
+  EXPECT_EQ(SPI1BUF.l[0], addr);
+  EXPECT_EQ(SPI1BUF.l[1], data);
+}
 
-  // Second call during same ms - nothing should happen
-  spiTasks();
-  EXPECT_EQ(state.lstSpiSendCmd, state.ms10);
-  EXPECT_EQ(state.spiSendIdx, 2);
+// findStop
+TEST_F(SpiTestClass, findStop_first_call_should_call_txSPI)
+{
+  findStop();
   EXPECT_EQ(SPI1BUF.idx, 2);
+  EXPECT_EQ(SPI1BUF.l[0], 0x03000000 | SPI_INITIAL_ADDR);
+  EXPECT_EQ(SPI1BUF.l[1], 0);
+  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR + 8);
+}
 
-  // Third call during after 20 ms - send second word to SPI bus
-  state.ms10 += 2;
-  spiTasks();
-  EXPECT_EQ(state.lstSpiSendCmd, state.ms10);
-  EXPECT_EQ(state.spiSendIdx, 4);
+TEST_F(SpiTestClass, findStop_second_call_should_only_read_SPI1BUF)
+{
+  spiAddr = SPI_INITIAL_ADDR + 8;
+  IFS1bits.SPI1RXIF = 1;
+  uint32_t data = 0x33445566;
+  SPI1BUF = data;
+  findStop();
+  EXPECT_EQ(SPI1BUF.idx, 1);
+  EXPECT_EQ(SPI1BUF.l[0], data);
+}
+
+TEST_F(SpiTestClass, findStop_second_call_should_only_read_SPI1BUF_again_and_check_for_stop)
+{
+  spiAddr = SPI_INITIAL_ADDR + 8;
+  IFS1bits.SPI1RXIF = 1;
+  SPI1BUF = 0x33445566;
+  SPI1BUF = 0xFFFFFFFF;
+  findStop();
+  findStop();
+  EXPECT_EQ(SPI1BUF.idx, 2);
+  EXPECT_EQ(spiIsStopFound, 1);
+  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR);
+}
+
+TEST_F(SpiTestClass, findStop_if_stop_not_found_shpuld_read_next_word)
+{
+  spiAddr = SPI_INITIAL_ADDR + 8;
+  IFS1bits.SPI1RXIF = 1;
+  SPI1BUF = 0x33445566;
+  SPI1BUF = 0x12345678;
+  findStop();
+  findStop();
   EXPECT_EQ(SPI1BUF.idx, 4);
-  EXPECT_EQ(SPI1BUF.l[2], state.spiSend[2]);
-  EXPECT_EQ(SPI1BUF.l[3], state.spiSend[3]);
-
-  // Send all other data
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  // We need additional call to spiTask which will check that
-  // address not pointing to next small sector and finish transmission
-  state.ms10 += 2;
-  spiTasks();
-  EXPECT_EQ(state.spiTask, SPI_NO_TASK);
-  EXPECT_EQ(state.lstSpiSendCmd, 0xFFFF);
-  EXPECT_EQ(state.spiSendIdx, 0);
-  EXPECT_EQ(SPI1BUF.idx, 8);
+  EXPECT_EQ(SPI1BUF.l[2], 0x03000000 | (SPI_INITIAL_ADDR + 8));
+  EXPECT_EQ(SPI1BUF.l[3], 0);
+  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR + 16);
+  EXPECT_EQ(spiIsStopFound, 0);
 }
 
-TEST_F(SpiTestClass, Should_Send_Data_when_time_is_near_6000)
+TEST_F(SpiTestClass, findStop_if_approached_end_of_memory_reset_to_SPI_INITIAL_ADDR)
 {
-  state.spiAddr = 0x123;
-  state.spiSend[0] = 0x06000000;
-  state.spiSend[1] = 0x0;
-  state.spiSend[2] = 0x02001122;
-  state.spiSend[3] = 0x12345678;
-
-  state.ms10 = 5999;
-
-  state.spiTask = SPI_SEND_DATA;
-  IFS1bits.SPI1TXIF = 1;
-
-  // First call - send first word to SPI bus
-  spiTasks();
-  EXPECT_EQ(state.lstSpiSendCmd, state.ms10);
-  EXPECT_EQ(state.spiSendIdx, 2);
+  spiAddr = SPI_MAX_ADDR;
+  IFS1bits.SPI1RXIF = 1;
+  SPI1BUF = 0x33445566;
+  SPI1BUF = 0x12345678;
+  findStop();
+  findStop();
   EXPECT_EQ(SPI1BUF.idx, 2);
-  EXPECT_EQ(SPI1BUF.l[0], state.spiSend[0]);
-  EXPECT_EQ(SPI1BUF.l[1], state.spiSend[1]);
-
-  // Third call during after 20 ms - send second word to SPI bus
-  state.ms10 = 1;
-  spiTasks();
-  EXPECT_EQ(state.lstSpiSendCmd, state.ms10);
-  EXPECT_EQ(state.spiSendIdx, 4);
-  EXPECT_EQ(SPI1BUF.idx, 4);
-  EXPECT_EQ(SPI1BUF.l[2], state.spiSend[2]);
-  EXPECT_EQ(SPI1BUF.l[3], state.spiSend[3]);
-}
-
-TEST_F(SpiTestClass, Should_Send_Small_Sector_Erase_For_0x0_address)
-{
-  state.spiAddr = 0;
-  state.spiSend[0] = 0x06000000;
-  state.spiSend[1] = 0x0;
-  state.spiSend[2] = 0x02001122;
-  state.spiSend[3] = 0x12345678;
-  state.spiSend[4] = 0x06000000;
-  state.spiSend[5] = 0x0;
-  state.spiSend[6] = 0x02112233;
-  state.spiSend[7] = 0x87654321;
-
-  state.ms10 = 201;
-
-  state.spiTask = SPI_SEND_DATA;
-  IFS1bits.SPI1TXIF = 1;
-
-  // Do 4 calls to send all data
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-
-  EXPECT_EQ(state.lstSpiSendCmd, 0xFFFF);
-  EXPECT_EQ(state.spiSendIdx, 0);
-  EXPECT_EQ(SPI1BUF.idx, 10);
-  EXPECT_EQ(SPI1BUF.l[8], 0xd7000000);
-  EXPECT_EQ(SPI1BUF.l[9], 0);
-}
-
-TEST_F(SpiTestClass, Should_Send_Small_Sector_Erase_For_0x1000_address)
-{
-  state.spiAddr = 0x1000;
-  state.spiSend[0] = 0x06000000;
-  state.spiSend[1] = 0x0;
-  state.spiSend[2] = 0x02001122;
-  state.spiSend[3] = 0x12345678;
-  state.spiSend[4] = 0x06000000;
-  state.spiSend[5] = 0x0;
-  state.spiSend[6] = 0x02112233;
-  state.spiSend[7] = 0x87654321;
-
-  state.ms10 = 201;
-
-  state.spiTask = SPI_SEND_DATA;
-  IFS1bits.SPI1TXIF = 1;
-
-  // Do 4 calls to send all data
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-  state.ms10 += 2;
-  spiTasks();
-
-  EXPECT_EQ(state.lstSpiSendCmd, 0xFFFF);
-  EXPECT_EQ(state.spiSendIdx, 0);
-  EXPECT_EQ(SPI1BUF.idx, 10);
-  EXPECT_EQ(SPI1BUF.l[8], 0xd7000000);
-  EXPECT_EQ(SPI1BUF.l[9], 0);
+  EXPECT_EQ(spiIsStopFound, 1);
+  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR);
 }

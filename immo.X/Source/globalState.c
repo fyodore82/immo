@@ -16,14 +16,7 @@ void initGlobalState() {
   state.prevBean = BEAN_IN;
   state.disableImmoBeanSend = 0;
   
-  state.soundPlaying = 0;
-  state.beeper_ctrl_out = 0;
-  state.spiTask = SPI_NO_TASK;
-  state.spiAddr = 0;
-  state.spiSendIdx = 0;
   state.initialTasks = SPI_WRITE_RESET_REASON | PLAY_WELCOME_SOUND;
-  state.spiIsStopFound = 0;
-  state.lstSpiSendCmd = 0xFFFF;
 
   state.secTasks = 0;
 
@@ -62,8 +55,8 @@ void sendGlobalState() {
 
   state.usbTxData[0] = 18;
   state.usbTxData[1] = USB_GOT_GLOBAL_STATE;
-  uint32ToByteArr(&state.usbTxData[2], state.spiAddr);
-  state.usbTxData[6] = state.spiTask;
+  uint32ToByteArr(&state.usbTxData[2], getSpiAddr());
+  state.usbTxData[6] = 0;
   state.usbTxData[7] = state.initialTasks;
   state.usbTxData[8] = (state.portsState[BUTTON_IN_IDX]) | (state.portsState[CAPOT_IN_IDX] << 1) | (state.portsState[IMMO_SENCE_IDX] << 2) | (state.portsState[ASR12V_IN_IDX] << 3);
   state.usbTxData[9] = state.portsTest[BUTTON_IN_IDX];
