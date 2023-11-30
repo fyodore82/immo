@@ -200,7 +200,7 @@ void logSpi(SPILogEntryType logType) {
   sendToSpi(0x02000000 | spiAddr, (state.hour << 24) | (state.min << 16) | state.ms10);
   spiAddr += 4;
   if (spiAddr >= SPI_MAX_ADDR) spiAddr = 0; // Roll over to the start
-  if (!(spiAddr & SPI_SMALL_SECTOR)) {
+  if ((spiAddr & SPI_SMALL_SECTOR) == SPI_SMALL_SECTOR) {
     sendToSpi(0xd7000000 | spiAddr, 0);
   }
 
@@ -229,7 +229,7 @@ void logSpi(SPILogEntryType logType) {
 
   spiAddr += 4;
   if (spiAddr >= SPI_MAX_ADDR) spiAddr = 0; // Roll over to the start
-  if (!(spiAddr & SPI_SMALL_SECTOR)) {
+  if ((spiAddr & SPI_SMALL_SECTOR) == SPI_SMALL_SECTOR) {
     sendToSpi(0xd7000000 | spiAddr, 0);
   }
 }

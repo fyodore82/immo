@@ -10,6 +10,9 @@ class SpiTestClass : public ::testing::Test
     initGlobalState();
     SPI1BUF.idx = 0;
     spiIsStopFound = 0;
+
+    sendIdxBottom = 0;
+    sendIdxTop = 0;
   }
 };
 
@@ -83,4 +86,61 @@ TEST_F(SpiTestClass, findStop_if_approached_end_of_memory_reset_to_SPI_INITIAL_A
   EXPECT_EQ(SPI1BUF.idx, 2);
   EXPECT_EQ(spiIsStopFound, 1);
   EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR);
+}
+
+// sendToSpi
+
+TEST_F(SpiTestClass, sendToSpi)
+{
+  uint32_t addr = 0x12345678;
+  uint32_t data = 0x87654321;
+  sendToSpi(addr, data);
+  EXPECT_EQ(spiSend[0], addr);
+  EXPECT_EQ(spiSend[1], data);
+  EXPECT_EQ(sendIdxBottom, 2);
+}
+
+// processSpiSend
+
+TEST_F(SpiTestClass, processSpiSend_should_send_first_data)
+{
+  IFS1bits.SPI1RXIF = 1;
+  state.ms10 = 10;
+
+  spiSend[0] = 0x12345678;
+  spiSend[1] = 0x87654321;
+  sendIdxBottom = 2;
+  spiIsStopFound = 1;
+
+  processSpiSend();
+
+  EXPECT_EQ(SPI1BUF.idx, 2);
+  EXPECT_EQ(SPI1BUF.l[0], spiSend[0]);
+  EXPECT_EQ(SPI1BUF.l[1], spiSend[1]);
+  EXPECT_EQ(sendIdxTop, 2);
+}
+
+// logSpi
+
+TEST_F(SpiTestClass, logSpi_with_SMALL_SECTOR_ERASE)
+{
+  uint32_t initialAddr = 0x1000 | (SPI_SMALL_SECTOR - 8);
+  spiAddr = initialAddr;
+  logSpi(LOG_ENTRY_RESET);
+
+  EXPECT_EQ(spiSend[0], 0x06000000);
+  EXPECT_EQ(spiSend[1], 0);
+
+  EXPECT_EQ(spiSend[2], 0x02000000 | initialAddr);
+  EXPECT_EQ(spiSend[3], (state.hour << 24) | (state.min << 16) | state.ms10);
+
+  EXPECT_EQ(spiSend[4], 0x06000000);
+  EXPECT_EQ(spiSend[5], 0);
+
+  EXPECT_EQ(spiSend[6], 0x02000000 | (initialAddr + 4));
+  // Do not check 7 as it complicated
+  // EXPECT_EQ(spiSend[7], ...);
+
+  EXPECT_EQ(spiSend[8], 0xd7000000 | (initialAddr + 8));
+  EXPECT_EQ(spiSend[9], 0);
 }
