@@ -22,13 +22,6 @@ typedef enum {
     LOG_ENTRY_IMMO_IN_5S_DELAY,
 } SPILogEntryType;
 
-//typedef enum {
-//    SPI_NO_TASK,
-//    SPI_SEND_DATA,
-////    SPI_FIND_STOP,
-//    SPI_EXEC_USB_CMD,
-//} SPIUSBTask;
-
 typedef union {
     struct {
         uint8_t spiLogType:8;
@@ -51,6 +44,7 @@ typedef union {
 
 void findStop();
 void logSpi(SPILogEntryType logType);
+void processSpiSend();
 
 uint32_t getSpiAddr();
 void spiUsbTasks();

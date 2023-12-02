@@ -122,8 +122,6 @@ void spiUsbTasks() {
     static uint32_t spiRec[2];
     static unsigned char recIdx;
 
-    if (!IFS1bits.SPI1RXIF) return;
-
     if (!isUsbTask) {
       if (state.usbCommand == USB_SPI_SEND_CMD) {
         txSPI(usbAddr, usbData);
@@ -132,14 +130,18 @@ void spiUsbTasks() {
         txSPI(0x05000000, 0);
       }
       isUsbTask = 1;
+      recIdx = 0;
+      spiRec[0] = 0;
+      spiRec[1] = 0;
       return;
     }
+
+    if (!IFS1bits.SPI1RXIF) return;
 
     spiRec[recIdx++] = SPI1BUF;
 
     if (recIdx == 2) {
       if (state.usbTxData[0]) return;
-      state.usbCommand = USB_NO_CMD;
       state.usbTxData[0] = 9;
       state.usbTxData[1] = state.usbCommand == USB_SPI_SEND_CMD
         ? USB_POST_SPI_RESP
@@ -147,6 +149,7 @@ void spiUsbTasks() {
       uint32ToByteArr(&state.usbTxData[2], spiRec[0]);
       uint32ToByteArr(&state.usbTxData[6], spiRec[1]);
       isUsbTask = 0;
+      state.usbCommand = USB_NO_CMD;
     }
   }
 //    case SPI_FIND_STOP:

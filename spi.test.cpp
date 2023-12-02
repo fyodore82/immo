@@ -102,14 +102,18 @@ TEST_F(SpiTestClass, sendToSpi)
 
 // processSpiSend
 
-TEST_F(SpiTestClass, processSpiSend_should_send_first_data)
+TEST_F(SpiTestClass, processSpiSend_should_send_data)
 {
   IFS1bits.SPI1RXIF = 1;
   state.ms10 = 10;
 
   spiSend[0] = 0x12345678;
   spiSend[1] = 0x87654321;
-  sendIdxBottom = 2;
+
+  spiSend[2] = 0x12345678;
+  spiSend[3] = 0x87654321;
+
+  sendIdxBottom = 4;
   spiIsStopFound = 1;
 
   processSpiSend();
@@ -118,6 +122,20 @@ TEST_F(SpiTestClass, processSpiSend_should_send_first_data)
   EXPECT_EQ(SPI1BUF.l[0], spiSend[0]);
   EXPECT_EQ(SPI1BUF.l[1], spiSend[1]);
   EXPECT_EQ(sendIdxTop, 2);
+
+  state.ms10 += 20;
+  processSpiSend();
+
+  EXPECT_EQ(SPI1BUF.idx, 4);
+  EXPECT_EQ(SPI1BUF.l[2], spiSend[2]);
+  EXPECT_EQ(SPI1BUF.l[3], spiSend[3]);
+  EXPECT_EQ(sendIdxTop, 4);
+
+  // Everything is sent. Reset send buffer
+  processSpiSend();
+  EXPECT_EQ(SPI1BUF.idx, 4);
+  EXPECT_EQ(sendIdxTop, 0);
+  EXPECT_EQ(sendIdxBottom, 0);
 }
 
 // logSpi
@@ -143,4 +161,84 @@ TEST_F(SpiTestClass, logSpi_with_SMALL_SECTOR_ERASE)
 
   EXPECT_EQ(spiSend[8], 0xd7000000 | (initialAddr + 8));
   EXPECT_EQ(spiSend[9], 0);
+}
+
+// spiUsbTasks
+
+TEST_F(SpiTestClass, spiUsbTasks_should_tx_usb_command)
+{
+  spiIsStopFound = 1;
+  state.usbCommand = USB_SPI_SEND_CMD;
+  isUsbTask = 0;
+
+  usbAddr = 0x12345678;
+  usbData = 0x98989898;
+
+  spiUsbTasks();
+
+  EXPECT_EQ(SPI1BUF.idx, 2);
+  EXPECT_EQ(SPI1BUF.l[0], usbAddr);
+  EXPECT_EQ(SPI1BUF.l[1], usbData);
+
+  EXPECT_EQ(state.usbTxData[0], 0);
+  EXPECT_EQ(state.usbTxData[1], 0);
+  EXPECT_EQ(state.usbTxData[2], 0);
+  EXPECT_EQ(state.usbTxData[3], 0);
+  EXPECT_EQ(state.usbTxData[4], 0);
+  EXPECT_EQ(state.usbTxData[5], 0);
+  EXPECT_EQ(state.usbTxData[6], 0);
+  EXPECT_EQ(state.usbTxData[7], 0);
+  EXPECT_EQ(state.usbTxData[8], 0);
+}
+
+TEST_F(SpiTestClass, spiUsbTasks_NOT_receive_data_if_IFS1bits_SPI1RXIF_is_0)
+{
+  spiIsStopFound = 1;
+  state.usbCommand = USB_SPI_SEND_CMD;
+  isUsbTask = 1;
+  IFS1bits.SPI1RXIF = 0;
+
+  usbAddr = 0x12345678;
+  usbData = 0x98989898;
+
+  spiUsbTasks();
+
+  EXPECT_EQ(SPI1BUF.idx, 0);
+
+  EXPECT_EQ(state.usbTxData[0], 0);
+}
+
+TEST_F(SpiTestClass, spiUsbTasks_should_receive_data)
+{
+  spiIsStopFound = 1;
+  state.usbCommand = USB_SPI_SEND_CMD;
+  isUsbTask = 1;
+  IFS1bits.SPI1RXIF = 1;
+
+  SPI1BUF = 0x22334455;
+
+  // First call - receive first word
+  spiUsbTasks();
+
+  EXPECT_EQ(isUsbTask, 1);
+  EXPECT_EQ(state.usbTxData[0], 0);
+
+  SPI1BUF = 0x66778899;
+
+  // Seconf call - send data thru USB
+  spiUsbTasks();
+
+  EXPECT_EQ(isUsbTask, 0);
+  EXPECT_EQ(state.usbTxData[0], 9);
+  EXPECT_EQ(state.usbTxData[1], USB_POST_SPI_RESP);
+  EXPECT_EQ(state.usbTxData[2], (uint8_t)(SPI1BUF.l[0] >> 24));
+  EXPECT_EQ(state.usbTxData[3], (uint8_t)(SPI1BUF.l[0] >> 16));
+  EXPECT_EQ(state.usbTxData[4], (uint8_t)(SPI1BUF.l[0] >> 8));
+  EXPECT_EQ(state.usbTxData[5], (uint8_t)SPI1BUF.l[0]);
+  EXPECT_EQ(state.usbTxData[6], (uint8_t)(SPI1BUF.l[1] >> 24));
+  EXPECT_EQ(state.usbTxData[7], (uint8_t)(SPI1BUF.l[1] >> 16));
+  EXPECT_EQ(state.usbTxData[8], (uint8_t)(SPI1BUF.l[1] >> 8));
+  EXPECT_EQ(state.usbTxData[9], (uint8_t)SPI1BUF.l[1]);
+
+  EXPECT_EQ(state.usbCommand, USB_NO_CMD);
 }

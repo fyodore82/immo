@@ -23,7 +23,7 @@
 // DEVCFG0
 #pragma config CP = 1
 #pragma config BWP = OFF                // Boot write protect: OFF
-// #pragma config PWP = 0b111111111       
+// #pragma config PWP = 0b111111111
 #pragma config ICESEL = ICS_PGx3    // ICE pins configured on PGx1 (PGx2 is multiplexed with USB D+ and D- pins).
 #pragma config JTAGEN = 0
 // #pragma config DEBUG = 00        // Debug can be enabled by MPLAB
@@ -58,24 +58,31 @@
 
 INT main(void) {
   initGlobalState(&state);
-  
+
   init();
-  
+
 //  UINT pbClk;
 
   // Setup configuration
 //  pbClk = SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
-  
+
   // Initialize the transport layer - UART/USB/Ethernet
   TRANS_LAYER_Init(0);
-  
+  logSpi(LOG_ENTRY_RESET);
+
   while (1) {
+    initialTasks();
+    // SPI
     findStop();
     spiUsbTasks();
-    initialTasks();
+    processSpiSend();
+    // Port
     processPortsChange();
+
     TRANS_LAYER_Task(); // Run Transport layer tasks
+
     beanTasks();
+
     globalStateTasks();
     processStateChange();
   }
