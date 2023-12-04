@@ -44,9 +44,11 @@ typedef union {
 
 void findStop();
 void logSpi(SPILogEntryType logType);
+void sendSpiLog();
 void processSpiSend();
 
 uint32_t getSpiAddr();
+unsigned char getSpiState();
 void spiUsbTasks();
 void setUsbAddrData(uint32_t addr, uint32_t data);
 

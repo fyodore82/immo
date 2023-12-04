@@ -76,6 +76,7 @@ INT main(void) {
     findStop();
     spiUsbTasks();
     processSpiSend();
+    sendSpiLog();
     // Port
     processPortsChange();
 

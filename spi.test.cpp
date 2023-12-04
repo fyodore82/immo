@@ -33,7 +33,7 @@ TEST_F(SpiTestClass, findStop_first_call_should_call_txSPI)
   EXPECT_EQ(SPI1BUF.idx, 2);
   EXPECT_EQ(SPI1BUF.l[0], 0x03000000 | SPI_INITIAL_ADDR);
   EXPECT_EQ(SPI1BUF.l[1], 0);
-  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR + 8);
+  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR);
 }
 
 TEST_F(SpiTestClass, findStop_second_call_should_only_read_SPI1BUF)
@@ -57,7 +57,7 @@ TEST_F(SpiTestClass, findStop_second_call_should_only_read_SPI1BUF_again_and_che
   findStop();
   EXPECT_EQ(SPI1BUF.idx, 2);
   EXPECT_EQ(spiIsStopFound, 1);
-  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR);
+  EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR + 8);
 }
 
 TEST_F(SpiTestClass, findStop_if_stop_not_found_shpuld_read_next_word)
@@ -69,7 +69,7 @@ TEST_F(SpiTestClass, findStop_if_stop_not_found_shpuld_read_next_word)
   findStop();
   findStop();
   EXPECT_EQ(SPI1BUF.idx, 4);
-  EXPECT_EQ(SPI1BUF.l[2], 0x03000000 | (SPI_INITIAL_ADDR + 8));
+  EXPECT_EQ(SPI1BUF.l[2], 0x03000000 | (SPI_INITIAL_ADDR + 16));
   EXPECT_EQ(SPI1BUF.l[3], 0);
   EXPECT_EQ(spiAddr, SPI_INITIAL_ADDR + 16);
   EXPECT_EQ(spiIsStopFound, 0);
@@ -140,11 +140,16 @@ TEST_F(SpiTestClass, processSpiSend_should_send_data)
 
 // logSpi
 
-TEST_F(SpiTestClass, logSpi_with_SMALL_SECTOR_ERASE)
+TEST_F(SpiTestClass, sendSpiLog_with_SMALL_SECTOR_ERASE)
 {
   uint32_t initialAddr = 0x1000 | (SPI_SMALL_SECTOR - 8);
   spiAddr = initialAddr;
-  logSpi(LOG_ENTRY_RESET);
+  spiLogBottom = 0;
+  spiLogArr[spiLogBottom] = LOG_ENTRY_RESET;
+  spiLogBottom = 1;
+  spiIsStopFound = 1;
+
+  sendSpiLog();
 
   EXPECT_EQ(spiSend[0], 0x06000000);
   EXPECT_EQ(spiSend[1], 0);
@@ -159,8 +164,13 @@ TEST_F(SpiTestClass, logSpi_with_SMALL_SECTOR_ERASE)
   // Do not check 7 as it complicated
   // EXPECT_EQ(spiSend[7], ...);
 
-  EXPECT_EQ(spiSend[8], 0xd7000000 | (initialAddr + 8));
+  EXPECT_EQ(spiSend[8], 0x06000000);
   EXPECT_EQ(spiSend[9], 0);
+
+  EXPECT_EQ(spiSend[10], 0xd7000000 | (initialAddr + 8));
+  EXPECT_EQ(spiSend[11], 0);
+
+  EXPECT_EQ(spiLogBottom, spiLogTop);
 }
 
 // spiUsbTasks

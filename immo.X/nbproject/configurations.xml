@@ -34,8 +34,8 @@
       <itemPath>Include/typeConvert.h</itemPath>
       <itemPath>Include/sounds.h</itemPath>
       <itemPath>Include/initialTasks.h</itemPath>
-      <itemPath>../../bean/bean.X/bean.h</itemPath>
       <itemPath>Include/StateControl.h</itemPath>
+      <itemPath>../bean/bean.X/bean.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -84,7 +84,7 @@
         <targetDevice>PIC32MX220F032B</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>PICkit3PlatformTool</platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.00</languageToolchainVersion>
         <platform>3</platform>
@@ -98,12 +98,12 @@
         <linkerTool>
           <linkerLibItems>
             <linkerLibProjectItem>
-              <makeArtifact PL="../../bean/bean.X"
+              <makeArtifact PL="../bean/bean.X"
                             CT="3"
                             CN="default"
                             AC="true"
                             BL="true"
-                            WD="../../bean/bean.X"
+                            WD="../bean/bean.X"
                             BC="${MAKE}  -f Makefile CONF=default"
                             DBC="${MAKE}  -f Makefile CONF=default TYPE_IMAGE=DEBUG_RUN"
                             CC="rm -rf &quot;build/default&quot; &quot;dist/default&quot;"

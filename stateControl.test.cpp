@@ -13,7 +13,7 @@ class StateControlTestClass : public ::testing::Test
     IMMO_ON_OUT = 0;
   }
 };
-/*
+
 TEST_F(StateControlTestClass, Should_Turn_On_Immo)
 {
   state.ms10 = 0;
@@ -244,5 +244,3 @@ TEST_F(StateControlTestClass, Long_press_should_out_from_btnLongPressed_state)
   EXPECT_EQ(state.btnLongPressed, 0);
 
 }
-
-*/
