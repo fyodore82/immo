@@ -45,17 +45,17 @@ void processStateChange() {
     // Immo in OK state - immediately notify
     if (!state.portsState[ASR12V_IN_IDX]) {
       if (state.immoState != IMMO_OK_ASR12V) {
-        if (!state.disableImmoBeanSend) {
-          initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
-        }
+//        if (!state.disableImmoBeanSend) {
+//          initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
+//        }
         state.immoState = IMMO_OK_ASR12V;
         logSpi(LOG_ENTRY_STATE_CHANGE);
       }
     }
     else if (state.portsState[IMMO_SENCE_IDX] && state.immoState != IMMO_OK_IMMO) {
-      if (!state.disableImmoBeanSend) {
-        initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
-      }
+//      if (!state.disableImmoBeanSend) {
+//        initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
+//      }
       state.immoState = IMMO_OK_IMMO;
       logSpi(LOG_ENTRY_STATE_CHANGE);
     }
@@ -64,20 +64,20 @@ void processStateChange() {
     if (!state.portsState[IMMO_SENCE_IDX]
         && state.portsState[ASR12V_IN_IDX]
         && state.immoState != IMMO_ALERT) {
-      if (!state.disableImmoBeanSend) {
-        initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
-      }
+//      if (!state.disableImmoBeanSend) {
+//        initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
+//      }
       state.immoState = IMMO_ALERT;
       logSpi(LOG_ENTRY_STATE_CHANGE);
     }
 
     // Send immoOutCmd every 4 seconds
-    if (state.ms10 % 400 == 0) {
+    if (state.ms10 % 4000 == 0) {
       if (!state.immoStateChangeNotified && !state.disableImmoBeanSend) {
         state.immoStateChangeNotified = 1;
-        if (state.immoState == IMMO_OK_ASR12V) initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
-        if (state.immoState == IMMO_OK_IMMO) initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
-        if (state.immoState == IMMO_ALERT) initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
+//        if (state.immoState == IMMO_OK_ASR12V) initSendBeanData(&state.sendBeanData, immoOutOkAsrCmd);
+//        if (state.immoState == IMMO_OK_IMMO) initSendBeanData(&state.sendBeanData, immoOutOkImmoCmd);
+//        if (state.immoState == IMMO_ALERT) initSendBeanData(&state.sendBeanData, immoOutAlertCmd);
       }
     } else {
       // Prepare for next 4 seconds interval

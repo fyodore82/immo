@@ -86,13 +86,14 @@ void checkForSmallSectorErase() {
 }
 
 void findStop() {
-  if (spiIsStopFound) return;
+  if (spiIsStopFound || state.ms10 < 20) return;
 
   static unsigned char recIdx;
 
   if (spiAddr == SPI_INITIAL_ADDR) {
     recIdx = 0;
     txSPI(0x03000000 | spiAddr, 0);
+    spiAddr += 8;
     return;
   }
 
@@ -105,7 +106,9 @@ void findStop() {
 
   // 0xFFFFFFFF means that bytes are erased
   if (recData == 0xFFFFFFFF) {
+    spiAddr -= 8;
     spiIsStopFound = 1;
+    
   } else {
     if (spiAddr >= SPI_MAX_ADDR) {
       spiAddr = SPI_INITIAL_ADDR;
@@ -114,8 +117,9 @@ void findStop() {
     }
     else {
       recIdx = 0;
-      spiAddr += 8;
+      
       txSPI(0x03000000 | spiAddr, 0);
+      spiAddr += 8;
     }
   }
 }
