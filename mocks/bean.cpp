@@ -4,32 +4,6 @@
 #include <list>
 // #include <gmock/gmock.h>  // Brings in gMock.
 
-// class CBeanMockBase {
-//   public:
-//     void resetRecBuffer(RecBeanData *pBeanData) {}
-//     void resetSendBuffer(SendBeanData *pBeanData) {}
-//     unsigned char initSendBeanData(SendBeanData *pBeanData, unsigned char *buff) {
-//       return 0;
-//     }
-// };
-
-// class CBeanFunctionsMock : public CBeanMockBase
-// {
-// public:
-//     CBeanFunctionsMock() {
-//     }
-
-//     ~CBeanFunctionsMock() {
-//     }
-
-//     MOCK_METHOD(unsigned char, initSendBeanData, (SendBeanData *pBeanData, unsigned char *buff));
-//     MOCK_METHOD(void, resetRecBuffer, (RecBeanData *pBeanData));
-//     MOCK_METHOD(void, resetSendBuffer, (SendBeanData *pBeanData));
-
-// };
-
-// CBeanFunctionsMock* instance = new CBeanFunctionsMock();
-
 std::list<std::vector<unsigned char>> initSendBeanDataBuff;
 
 void resetRecBuffer(RecBeanData *pBeanData) {
@@ -80,13 +54,14 @@ void setSendError(SendBeanData *pBeanData) {
   pBeanData->bean = 0;
 }
 
+unsigned char sendBeanCalledTimes;
+
 void sendBean(SendBeanData *pBeanData) {
+  sendBeanCalledTimes++;
 }
 
 unsigned char isTransferInProgress(SendBeanData *pBeanData) {
-  return pBeanData->sendBeanState != BEAN_NO_TR
-          && pBeanData->sendBeanState != BEAN_TR_ERR
-          && pBeanData->sendBeanState != BEAN_NO_TR_DATA_PRESENT;
+  return pBeanData->sendBeanState == BEAN_TR_SOF;
 }
 
 unsigned char canStartTransfer(BeanTransferState sendBeanState, BeanTransferState recBeanState) {

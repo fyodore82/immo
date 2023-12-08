@@ -32,8 +32,10 @@ void sendToUSBReceivedRecBuff() {
 
 void transfer1bit() {
   TMR2 = 0;
-  // Adjust send length to make it ideal
-  PR2 = (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0xD : 0xD);
+  PR2 = state.sendBeanData.cnt
+    // Adjust send length to make it ideal
+    ? (PR2_VALUE * state.sendBeanData.cnt) + (state.sendBeanData.bean ? -0xD : 0xD)
+    : 0;
   T2CONbits.ON = !!state.sendBeanData.cnt;
   // Set bean to 0 when transfer has been finished
   state.prevBean = state.sendBeanData.cnt ? state.sendBeanData.bean : 0;
@@ -48,7 +50,7 @@ void transfer1bit() {
 void beanTasks() {
   if (canStartTransfer(state.sendBeanData.sendBeanState, state.recBeanData.recBeanState)) {
     sendBean(&state.sendBeanData);
-    state.recPos = 0;
+//    state.recPos = 0;
     transfer1bit();
   }
 
@@ -101,7 +103,7 @@ void beanTasks() {
       case USB_SEND_BEAN_CMD_WO_LISTERN:
         state.usbCommand = USB_NO_CMD;
         sendToUSBReceivedRecBuff();
-        break;      
+        break;
     }
   }
 }

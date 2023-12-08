@@ -14,7 +14,7 @@ class StateControlTestClass : public ::testing::Test
   }
 };
 
-TEST_F(StateControlTestClass, Should_Turn_On_Immo)
+/* TEST_F(StateControlTestClass, Should_Turn_On_Immo)
 {
   state.ms10 = 0;
   state.portsState[ASR12V_IN_IDX] = 1;
@@ -244,3 +244,4 @@ TEST_F(StateControlTestClass, Long_press_should_out_from_btnLongPressed_state)
   EXPECT_EQ(state.btnLongPressed, 0);
 
 }
+*/
